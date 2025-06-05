@@ -14,6 +14,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: #0f0f23;
 }
 
 .App {
@@ -21,22 +22,22 @@ body {
   overflow: hidden;
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar for dark theme */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #1f2937;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 3px;
+  background: #6b7280;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #a1a1a1;
+  background: #9ca3af;
 }
 
 /* Animation for typing indicator */
@@ -53,7 +54,7 @@ body {
   animation: bounce 1.4s infinite;
 }
 
-/* Gradient background animation */
+/* Enhanced gradient background animation */
 @keyframes gradient {
   0% {
     background-position: 0% 50%;
@@ -68,107 +69,150 @@ body {
 
 .bg-gradient-to-br {
   background-size: 400% 400%;
-  animation: gradient 15s ease infinite;
+  animation: gradient 20s ease infinite;
 }
 
-/* Message animations */
-.message-enter {
-  opacity: 0;
-  transform: translateY(20px);
+/* Hero section animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.message-enter-active {
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity 300ms, transform 300ms;
+.animate-fadeInUp {
+  animation: fadeInUp 1s ease-out;
 }
 
-/* File upload styles */
-.file-upload-area {
-  border: 2px dashed #d1d5db;
-  border-radius: 8px;
-  padding: 2rem;
-  text-align: center;
-  transition: border-color 0.3s ease;
+/* Feature card hover effects */
+.feature-card {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
 }
 
-.file-upload-area:hover {
-  border-color: #3b82f6;
+.feature-card:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(147, 51, 234, 0.3);
 }
 
-.file-upload-area.dragover {
-  border-color: #3b82f6;
-  background-color: #eff6ff;
+/* Chat interface enhancements */
+.chat-sidebar {
+  background: linear-gradient(180deg, #1f2937 0%, #111827 100%);
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.message-bubble {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Purple theme enhancements */
+.purple-gradient {
+  background: linear-gradient(135deg, #8b5cf6, #6366f1, #3b82f6);
+}
+
+.purple-glass {
+  background: rgba(139, 92, 246, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(139, 92, 246, 0.2);
 }
 
 /* Button hover effects */
 .btn-primary {
-  background: linear-gradient(135deg, #3b82f6, #1e40af);
+  background: linear-gradient(135deg, #8b5cf6, #6366f1);
   transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, #1e40af, #1e3a8a);
+  background: linear-gradient(135deg, #7c3aed, #5b21b6);
   transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
 }
 
-/* Card hover effects */
-.chat-session-card {
+/* Feature tab animations */
+.feature-tab {
+  transition: all 0.2s ease;
+}
+
+.feature-tab:hover {
+  transform: translateX(4px);
+}
+
+.feature-tab.active {
+  background: linear-gradient(135deg, #8b5cf6, #6366f1);
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+}
+
+/* Loading states */
+.loading-pulse {
+  background: linear-gradient(90deg, #374151, #4b5563, #374151);
+  background-size: 200% 100%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Upload area styling */
+.upload-area {
+  border: 2px dashed #6b7280;
+  border-radius: 12px;
+  background: rgba(139, 92, 246, 0.05);
   transition: all 0.3s ease;
 }
 
-.chat-session-card:hover {
-  transform: translateX(4px);
-  background-color: rgba(255, 255, 255, 0.1);
+.upload-area:hover {
+  border-color: #8b5cf6;
+  background: rgba(139, 92, 246, 0.1);
 }
 
-/* Loading spinner */
-.loading-spinner {
-  border: 3px solid #f3f3f3;
-  border-top: 3px solid #3b82f6;
-  border-radius: 50%;
-  width: 24px;
-  height: 24px;
-  animation: spin 1s linear infinite;
+.upload-area.dragover {
+  border-color: #8b5cf6;
+  background: rgba(139, 92, 246, 0.2);
+  transform: scale(1.02);
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+/* Message type indicators */
+.message-user {
+  background: linear-gradient(135deg, #8b5cf6, #6366f1);
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2);
 }
 
-/* Message bubble styles */
-.message-bubble {
-  position: relative;
-  padding: 1rem;
-  border-radius: 1rem;
-  max-width: 70%;
-  word-wrap: break-word;
+.message-assistant {
+  background: linear-gradient(135deg, #374151, #4b5563);
+  border: 1px solid #6b7280;
 }
 
-.message-bubble.user {
-  background: linear-gradient(135deg, #3b82f6, #1e40af);
-  color: white;
-  margin-left: auto;
+.message-system {
+  background: linear-gradient(135deg, #059669, #047857);
+  box-shadow: 0 4px 15px rgba(5, 150, 105, 0.2);
 }
 
-.message-bubble.assistant {
-  background: #f3f4f6;
-  color: #1f2937;
-  border: 1px solid #e5e7eb;
-}
-
-.message-bubble.system {
-  background: linear-gradient(135deg, #10b981, #059669);
-  color: white;
-  text-align: center;
-  border-radius: 0.5rem;
-  padding: 0.75rem;
-  margin: 0.5rem 0;
-}
-
-/* Responsive design */
+/* Responsive design enhancements */
 @media (max-width: 768px) {
   .sidebar {
     position: fixed;
@@ -185,102 +229,168 @@ body {
   .main-content {
     width: 100%;
   }
+
+  .feature-cards {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .hero-title {
+    font-size: 2.5rem;
+    line-height: 1.2;
+  }
+
+  .hero-stats {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
 }
 
-/* Text selection */
+/* Text selection styling */
 ::selection {
-  background-color: rgba(59, 130, 246, 0.3);
+  background-color: rgba(139, 92, 246, 0.3);
+  color: white;
 }
 
-/* Focus styles */
+/* Focus states */
 .focus-ring:focus {
   outline: none;
   ring: 2px;
-  ring-color: #3b82f6;
+  ring-color: #8b5cf6;
   ring-offset: 2px;
+  ring-offset-color: #111827;
 }
 
-/* PDF upload success animation */
-@keyframes pulse {
+/* Advanced animations */
+@keyframes float {
   0%, 100% {
-    opacity: 1;
+    transform: translateY(0px);
   }
   50% {
-    opacity: 0.5;
+    transform: translateY(-20px);
   }
 }
 
-.pdf-upload-success {
-  animation: pulse 2s ease-in-out;
+.float-animation {
+  animation: float 6s ease-in-out infinite;
 }
 
-/* Smooth transitions */
-* {
-  transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+/* Glassmorphism effects */
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Message timestamp styles */
-.message-timestamp {
-  font-size: 0.75rem;
-  opacity: 0.6;
-  margin-top: 0.25rem;
+.glass-dark {
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Model selector styles */
-.model-selector {
-  background: white;
-  border: 1px solid #d1d5db;
-  border-radius: 0.5rem;
-  padding: 0.5rem;
-  font-size: 0.875rem;
-  transition: border-color 0.3s ease;
-}
-
-.model-selector:focus {
-  outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-/* Session list styles */
-.session-list {
-  max-height: calc(100vh - 200px);
-  overflow-y: auto;
-}
-
+/* Session list enhancements */
 .session-item {
-  padding: 0.75rem;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  border: 1px solid transparent;
+  transition: all 0.2s ease;
+  border-radius: 8px;
 }
 
 .session-item:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background: rgba(139, 92, 246, 0.1);
+  border-color: rgba(139, 92, 246, 0.3);
+  transform: translateX(4px);
 }
 
 .session-item.active {
-  background-color: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(139, 92, 246, 0.2);
+  border-color: rgba(139, 92, 246, 0.4);
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2);
 }
 
-/* Error message styles */
-.error-message {
-  background-color: #fee2e2;
-  border: 1px solid #fecaca;
-  color: #dc2626;
-  padding: 0.75rem;
-  border-radius: 0.5rem;
-  margin: 0.5rem 0;
+/* Enhanced typography */
+.text-gradient {
+  background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-/* Success message styles */
-.success-message {
-  background-color: #dcfce7;
-  border: 1px solid #bbf7d0;
-  color: #166534;
-  padding: 0.75rem;
-  border-radius: 0.5rem;
-  margin: 0.5rem 0;
+/* Advanced button styles */
+.btn-glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.btn-glass:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(139, 92, 246, 0.3);
+}
+
+/* Notification styles */
+.notification {
+  animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Loading spinner enhancements */
+.spinner {
+  border: 3px solid rgba(139, 92, 246, 0.3);
+  border-top: 3px solid #8b5cf6;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Enhanced dark mode */
+.dark-mode {
+  background: #0f0f23;
+  color: #e5e7eb;
+}
+
+.dark-mode .bg-white {
+  background: #1f2937;
+}
+
+.dark-mode .text-gray-900 {
+  color: #e5e7eb;
+}
+
+.dark-mode .border-gray-300 {
+  border-color: #374151;
+}
+
+/* Feature-specific styling */
+.qa-feature {
+  border-left: 4px solid #3b82f6;
+}
+
+.research-feature {
+  border-left: 4px solid #f59e0b;
+}
+
+.general-ai-feature {
+  border-left: 4px solid #10b981;
+}
+
+.chat-feature {
+  border-left: 4px solid #8b5cf6;
 }
