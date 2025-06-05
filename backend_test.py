@@ -61,6 +61,12 @@ class ChatPDFBackendTest(unittest.TestCase):
         """Test user login endpoint"""
         print("\n=== Testing User Login ===")
         
+        # Make sure we have a registered user
+        if not self.access_token:
+            self.test_01_register()
+            # Add a small delay to ensure database consistency
+            time.sleep(1)
+        
         url = f"{API_URL}/auth/login"
         payload = {
             "email": self.test_email,
