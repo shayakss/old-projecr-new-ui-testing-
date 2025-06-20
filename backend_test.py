@@ -357,6 +357,15 @@ def run_tests():
         ChatPDFBackendTest('test_10_research_detailed'),
         ChatPDFBackendTest('test_11_delete_session')
     ]
+    
+    for test_case in test_cases:
+        suite.addTest(test_case)
+    
+    # Run the tests
+    runner = unittest.TextTestRunner(verbosity=2)
+    result = runner.run(suite)
+    
+    return result
 
 if __name__ == "__main__":
     print("=" * 80)
