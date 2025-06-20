@@ -80,6 +80,28 @@ class ResearchRequest(BaseModel):
     research_type: str = "summary"  # 'summary' or 'detailed_research'
     model: str = "meta-llama/llama-3.1-8b-instruct:free"
 
+class ComparePDFsRequest(BaseModel):
+    session_ids: List[str]
+    comparison_type: str = "content"  # 'content', 'structure', 'summary'
+    model: str = "meta-llama/llama-3.1-8b-instruct:free"
+
+class TranslateRequest(BaseModel):
+    session_id: str
+    target_language: str
+    content_type: str = "full"  # 'full', 'summary'
+    model: str = "meta-llama/llama-3.1-8b-instruct:free"
+
+class SearchRequest(BaseModel):
+    query: str
+    search_type: str = "all"  # 'all', 'pdfs', 'conversations'
+    limit: int = 20
+
+class ExportRequest(BaseModel):
+    session_id: str
+    export_format: str = "pdf"  # 'pdf', 'txt', 'docx'
+    include_messages: bool = True
+    feature_type: Optional[str] = None
+
 # PDF Processing Functions
 async def extract_text_from_pdf(file_content: bytes) -> str:
     try:
