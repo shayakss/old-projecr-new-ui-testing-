@@ -402,12 +402,13 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Authentication System (Register/Login/JWT)"
-    - "PDF Upload and Text Extraction"
-    - "OpenRouter AI Integration"
-    - "Chat Session Management"
-    - "MongoDB Database Models"
-    - "API Endpoints"
+    - "Enhanced Visual Design with Grid Background"
+    - "Voice Input for Chat"
+    - "Advanced Search UI"
+    - "Translation UI"
+    - "Export UI"
+    - "Insights Dashboard UI"
+    - "New Feature Tabs"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
