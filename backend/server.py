@@ -644,6 +644,138 @@ async def delete_session(session_id: str):
     
     return {"message": "Session deleted successfully"}
 
+@api_router.post("/sessions/{session_id}/export")
+async def export_conversation(session_id: str, request: ExportRequest):
+    # Verify session exists
+    session = await db.chat_sessions.find_one({"id": session_id})
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    
+    # Get messages
+    query = {"session_id": session_id}
+    if request.feature_type:
+        query["feature_type"] = request.feature_type
+    
+    messages = await db.chat_messages.find(query).sort("timestamp", 1).to_list(1000)
+    
+    # Prepare export content
+    export_content = f"Chat Session Export: {session.get('title', 'Untitled Session')}\n"
+    export_content += f"PDF: {session.get('pdf_filename', 'No PDF uploaded')}\n"
+    export_content += f"Export Date: {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')}\n"
+    export_content += "=" * 50 + "\n\n"
+    
+    if request.include_messages:
+        for msg in messages:
+            timestamp = msg["timestamp"]
+            if isinstance(timestamp, str):
+                timestamp = datetime.fromisoformat(timestamp.replace('Z', '+00:00'))
+            
+            role_label = "You" if msg["role"] == "user" else "AI Assistant"
+            export_content += f"[{timestamp.strftime('%Y-%m-%d %H:%M:%S')}] {role_label}:\n"
+            export_content += f"{msg['content']}\n\n"
+    
+    # For this MVP, we'll return the content as text
+    # In a full implementation, you'd generate actual PDF/DOCX files
+    if request.export_format == "txt":
+        content_type = "text/plain"
+        filename = f"chat_export_{session_id}.txt"
+    elif request.export_format == "pdf":
+        content_type = "application/pdf"
+        filename = f"chat_export_{session_id}.pdf"
+        # For PDF, we'd use a library like reportlab
+        export_content = f"PDF Export functionality would generate a formatted PDF with this content:\n\n{export_content}"
+    elif request.export_format == "docx":
+        content_type = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        filename = f"chat_export_{session_id}.docx"
+        # For DOCX, we'd use python-docx
+        export_content = f"DOCX Export functionality would generate a formatted Word document with this content:\n\n{export_content}"
+    
+    return {
+        "content": export_content,
+        "filename": filename,
+        "content_type": content_type,
+        "message": f"Conversation exported successfully as {request.export_format.upper()}"
+    }
+
+@api_router.get("/insights/dashboard")
+async def get_insights_dashboard():
+    # Get total counts
+    total_sessions = await db.chat_sessions.count_documents({})
+    total_pdfs = await db.pdf_documents.count_documents({})
+    total_messages = await db.chat_messages.count_documents({})
+    
+    # Get recent activity
+    recent_sessions = await db.chat_sessions.find().sort("updated_at", -1).limit(5).to_list(5)
+    recent_sessions_data = [
+        {
+            "id": session["id"],
+            "title": session["title"],
+            "pdf_filename": session.get("pdf_filename"),
+            "updated_at": session["updated_at"]
+        }
+        for session in recent_sessions
+    ]
+    
+    # Get message statistics by feature type
+    pipeline = [
+        {"$group": {"_id": "$feature_type", "count": {"$sum": 1}}},
+        {"$sort": {"count": -1}}
+    ]
+    feature_stats = await db.chat_messages.aggregate(pipeline).to_list(None)
+    
+    # Get top PDF files by message count
+    pipeline = [
+        {"$lookup": {
+            "from": "chat_sessions",
+            "localField": "session_id",
+            "foreignField": "id",
+            "as": "session"
+        }},
+        {"$unwind": "$session"},
+        {"$match": {"session.pdf_filename": {"$exists": True, "$ne": None}}},
+        {"$group": {
+            "_id": "$session.pdf_filename",
+            "message_count": {"$sum": 1},
+            "last_used": {"$max": "$timestamp"}
+        }},
+        {"$sort": {"message_count": -1}},
+        {"$limit": 5}
+    ]
+    popular_pdfs = await db.chat_messages.aggregate(pipeline).to_list(None)
+    
+    # Calculate usage patterns (messages per day for last 7 days)
+    from datetime import timedelta
+    seven_days_ago = datetime.utcnow() - timedelta(days=7)
+    
+    pipeline = [
+        {"$match": {"timestamp": {"$gte": seven_days_ago}}},
+        {"$group": {
+            "_id": {
+                "$dateToString": {
+                    "format": "%Y-%m-%d",
+                    "date": "$timestamp"
+                }
+            },
+            "count": {"$sum": 1}
+        }},
+        {"$sort": {"_id": 1}}
+    ]
+    daily_usage = await db.chat_messages.aggregate(pipeline).to_list(None)
+    
+    return {
+        "overview": {
+            "total_sessions": total_sessions,
+            "total_pdfs": total_pdfs,
+            "total_messages": total_messages,
+            "avg_messages_per_session": total_messages / max(total_sessions, 1)
+        },
+        "recent_activity": recent_sessions_data,
+        "feature_usage": feature_stats,
+        "popular_pdfs": popular_pdfs,
+        "daily_usage": daily_usage,
+        "generated_at": datetime.utcnow()
+    }
+
 # Include the router in the main app
 app.include_router(api_router)
 
