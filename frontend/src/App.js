@@ -471,6 +471,116 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
     }
   };
 
+  const translatePDF = async (targetLanguage) => {
+    if (!currentSession || !currentSession.pdf_filename) {
+      alert('Please upload a PDF first');
+      return;
+    }
+
+    setTranslating(true);
+    try {
+      const response = await apiClient.post(`/sessions/${currentSession.id}/translate`, {
+        target_language: targetLanguage,
+        content_type: 'summary',
+        model: selectedModel
+      });
+
+      setMessages(prev => [...prev, {
+        id: Date.now().toString(),
+        role: 'assistant',
+        content: response.data.translation,
+        timestamp: new Date().toISOString(),
+        feature_type: 'translation'
+      }]);
+    } catch (error) {
+      alert('Error translating PDF: ' + (error.response?.data?.detail || error.message));
+    } finally {
+      setTranslating(false);
+    }
+  };
+
+  const comparePDFs = async () => {
+    if (selectedSessions.length < 2) {
+      alert('Please select at least 2 sessions with PDFs to compare');
+      return;
+    }
+
+    setComparing(true);
+    try {
+      const response = await apiClient.post('/compare-pdfs', {
+        session_ids: selectedSessions,
+        comparison_type: 'content',
+        model: selectedModel
+      });
+
+      setMessages(prev => [...prev, {
+        id: Date.now().toString(),
+        role: 'assistant',
+        content: `📊 PDF Comparison Results:\n\n${response.data.comparison_result}`,
+        timestamp: new Date().toISOString(),
+        feature_type: 'comparison'
+      }]);
+    } catch (error) {
+      alert('Error comparing PDFs: ' + (error.response?.data?.detail || error.message));
+    } finally {
+      setComparing(false);
+    }
+  };
+
+  const searchContent = async () => {
+    if (!searchQuery.trim()) return;
+
+    try {
+      const response = await apiClient.post('/search', {
+        query: searchQuery,
+        search_type: 'all',
+        limit: 20
+      });
+
+      setSearchResults(response.data.results);
+      setShowSearch(true);
+    } catch (error) {
+      alert('Error searching: ' + (error.response?.data?.detail || error.message));
+    }
+  };
+
+  const loadInsights = async () => {
+    try {
+      const response = await apiClient.get('/insights/dashboard');
+      setInsights(response.data);
+      setShowInsights(true);
+    } catch (error) {
+      alert('Error loading insights: ' + (error.response?.data?.detail || error.message));
+    }
+  };
+
+  const exportConversation = async (format) => {
+    if (!currentSession) return;
+
+    try {
+      const response = await apiClient.post(`/sessions/${currentSession.id}/export`, {
+        export_format: format,
+        include_messages: true,
+        feature_type: currentFeature !== 'chat' ? currentFeature : null
+      });
+
+      // Create and download file
+      const blob = new Blob([response.data.content], { 
+        type: response.data.content_type || 'text/plain' 
+      });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = response.data.filename;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      alert('Error exporting conversation: ' + (error.response?.data?.detail || error.message));
+    }
+  };
+
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
