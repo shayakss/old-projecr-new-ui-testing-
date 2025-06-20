@@ -204,8 +204,18 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [generatingQA, setGeneratingQA] = useState(false);
   const [researching, setResearching] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [showSearch, setShowSearch] = useState(false);
+  const [insights, setInsights] = useState(null);
+  const [showInsights, setShowInsights] = useState(false);
+  const [translating, setTranslating] = useState(false);
+  const [comparing, setComparing] = useState(false);
+  const [selectedSessions, setSelectedSessions] = useState([]);
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
+  const recognitionRef = useRef(null);
 
   useEffect(() => {
     loadSessions();
