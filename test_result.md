@@ -149,6 +149,12 @@ backend:
       - working: true
         agent: "testing"
         comment: "Successfully tested OpenRouter AI integration. The API correctly connects to OpenRouter, sends messages with PDF context, and receives AI responses. All available models (Llama, Gemma, Mistral, Qwen) are properly configured and accessible through the models endpoint."
+      - working: false
+        agent: "testing"
+        comment: "OpenRouter API integration is failing with 401 Unauthorized errors. The API key appears to be invalid or expired."
+      - working: true
+        agent: "testing"
+        comment: "Successfully tested OpenRouter AI integration with the new API key. All AI features are now working correctly. The API properly connects to OpenRouter, sends messages with PDF context, and receives AI responses. All models (Llama, Gemma, Mistral, Qwen) are accessible and return appropriate responses."
 
   - task: "Chat Session Management"
     implemented: true
