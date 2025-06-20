@@ -30,9 +30,9 @@ const App = () => {
 
 const HomePage = ({ setCurrentView }) => {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col grid-background">
       {/* Header */}
-      <header className="p-6">
+      <header className="p-6 relative z-10">
         <div className="flex items-center justify-center">
           <div className="flex items-center space-x-3">
             <img 
@@ -46,7 +46,7 @@ const HomePage = ({ setCurrentView }) => {
       </header>
 
       {/* Hero Section */}
-      <main className="flex-1 flex flex-col items-center justify-center px-6 text-center">
+      <main className="flex-1 flex flex-col items-center justify-center px-6 text-center relative z-10">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-6xl font-bold text-white mb-6 leading-tight">
             Transform Your PDFs into 
@@ -58,43 +58,94 @@ const HomePage = ({ setCurrentView }) => {
             Ask questions, generate Q&As, get summaries, and conduct detailed research - all powered by advanced AI models.
           </p>
 
-          {/* Feature Cards */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            <FeatureCard
-              icon="💬"
-              title="AI Chat"
-              description="Have intelligent conversations about your PDF content"
-            />
-            <FeatureCard
-              icon="❓"
-              title="Auto Q&A"
-              description="Generate 15 comprehensive questions and answers automatically"
-            />
-            <FeatureCard
-              icon="🤖"
-              title="General AI"
-              description="Ask anything beyond your PDF with our AI assistant"
-            />
-            <FeatureCard
-              icon="📊"
-              title="Research & Summary"
-              description="Get detailed analysis and comprehensive summaries"
-            />
+          {/* Feature Cards with Enhanced Styling */}
+          <div className="feature-cards-container mb-12 p-6">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <FeatureCardEnhanced
+                icon="💬"
+                title="AI Chat"
+                description="Have intelligent conversations about your PDF content"
+              />
+              <FeatureCardEnhanced
+                icon="❓"
+                title="Auto Q&A"
+                description="Generate 15 comprehensive questions and answers automatically"
+              />
+              <FeatureCardEnhanced
+                icon="🤖"
+                title="General AI"
+                description="Ask anything beyond your PDF with our AI assistant"
+              />
+              <FeatureCardEnhanced
+                icon="📊"
+                title="Research & Summary"
+                description="Get detailed analysis and comprehensive summaries"
+              />
+            </div>
+          </div>
+
+          {/* New Features Preview */}
+          <div className="feature-cards-container mb-12 p-6">
+            <h3 className="text-2xl font-bold text-white mb-6">✨ New Features Coming Soon</h3>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <FeatureCardEnhanced
+                icon="🎨"
+                title="PDF Annotations"
+                description="Highlight and annotate important sections"
+                isNew={true}
+              />
+              <FeatureCardEnhanced
+                icon="🔄"
+                title="Multi-PDF Comparison"
+                description="Compare content between multiple documents"
+                isNew={true}
+              />
+              <FeatureCardEnhanced
+                icon="📄"
+                title="Export Conversations"
+                description="Export chats to PDF, Word, or TXT files"
+                isNew={true}
+              />
+              <FeatureCardEnhanced
+                icon="🎤"
+                title="Voice Input"
+                description="Ask questions using voice commands"
+                isNew={true}
+              />
+              <FeatureCardEnhanced
+                icon="🌐"
+                title="AI Translation"
+                description="Translate PDF content to any language"
+                isNew={true}
+              />
+              <FeatureCardEnhanced
+                icon="🔍"
+                title="Advanced Search"
+                description="Search across all your PDFs and conversations"
+                isNew={true}
+              />
+              <FeatureCardEnhanced
+                icon="📈"
+                title="Insights Dashboard"
+                description="Analytics on your reading patterns and insights"
+                isNew={true}
+              />
+            </div>
           </div>
 
           {/* CTA Button */}
           <button
             onClick={() => setCurrentView('app')}
-            className="bg-white text-purple-900 px-12 py-4 rounded-full text-xl font-semibold hover:bg-purple-100 transform hover:scale-105 transition-all duration-300 shadow-2xl"
+            className="bg-white text-purple-900 px-12 py-4 rounded-full text-xl font-semibold hover:bg-purple-100 transform hover:scale-105 transition-all duration-300 shadow-2xl relative z-10"
           >
             Start Chatting with Your PDFs
           </button>
 
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-8 mt-16 text-center">
+          <div className="grid grid-cols-3 gap-8 mt-16 text-center relative z-10">
             <div>
-              <div className="text-3xl font-bold text-white">4</div>
-              <div className="text-purple-200">AI Models Available</div>
+              <div className="text-3xl font-bold text-white">11</div>
+              <div className="text-purple-200">AI Features Available</div>
             </div>
             <div>
               <div className="text-3xl font-bold text-white">100%</div>
@@ -109,7 +160,7 @@ const HomePage = ({ setCurrentView }) => {
       </main>
 
       {/* Footer */}
-      <footer className="p-6 text-center text-purple-200">
+      <footer className="p-6 text-center text-purple-200 relative z-10">
         <p>Powered by OpenRouter AI • Built with ❤️ for PDF enthusiasts</p>
       </footer>
     </div>
