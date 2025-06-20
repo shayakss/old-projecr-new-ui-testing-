@@ -18,13 +18,17 @@ import json
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# MongoDB connection
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
+# Environment configuration with defaults for local development
+MONGO_URL = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
+DB_NAME = os.environ.get('DB_NAME', 'chatpdf_database')
+OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY', '')
 
-# OpenRouter configuration
-OPENROUTER_API_KEY = os.environ['OPENROUTER_API_KEY']
+if not OPENROUTER_API_KEY:
+    raise ValueError("OPENROUTER_API_KEY environment variable is required")
+
+# MongoDB connection
+client = AsyncIOMotorClient(MONGO_URL)
+db = client[DB_NAME]
 openrouter_client = AsyncOpenAI(
     base_url="https://openrouter.ai/api/v1",
     api_key=OPENROUTER_API_KEY,
