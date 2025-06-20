@@ -429,10 +429,11 @@ async def delete_session(session_id: str):
 # Include the router in the main app
 app.include_router(api_router)
 
+# CORS configuration - allows both production and local development
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=["*"],
+    allow_origins=["*"],  # In production, replace with specific domains
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -444,6 +445,16 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+@app.on_event("startup")
+async def startup_event():
+    logger.info("🚀 ChatPDF Backend starting up...")
+    logger.info(f"📊 MongoDB URL: {MONGO_URL}")
+    logger.info(f"🗄️  Database: {DB_NAME}")
+    logger.info(f"🤖 OpenRouter API Key: {'✅ Configured' if OPENROUTER_API_KEY else '❌ Missing'}")
+    logger.info("✅ ChatPDF Backend ready!")
+
 @app.on_event("shutdown")
 async def shutdown_db_client():
+    logger.info("🛑 Shutting down ChatPDF Backend...")
     client.close()
+    logger.info("✅ Database connection closed")
