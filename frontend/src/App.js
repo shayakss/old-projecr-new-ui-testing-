@@ -720,7 +720,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                     <div className="text-sm text-gray-400">📄 {currentSession.pdf_filename}</div>
                   )}
                 </div>
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2 flex-wrap">
                   <input
                     type="file"
                     ref={fileInputRef}
@@ -735,16 +735,70 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                   <button
                     onClick={() => fileInputRef.current?.click()}
                     disabled={uploading}
-                    className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded text-sm disabled:opacity-50 transition-colors"
+                    className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded text-sm disabled:opacity-50 transition-colors"
                   >
                     {uploading ? 'Uploading...' : '📄 Upload PDF'}
                   </button>
+                  
+                  {/* Advanced Search */}
+                  <button
+                    onClick={() => setShowSearch(!showSearch)}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded text-sm transition-colors"
+                  >
+                    🔍 Search
+                  </button>
+                  
+                  {/* Insights Dashboard */}
+                  <button
+                    onClick={loadInsights}
+                    className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded text-sm transition-colors"
+                  >
+                    📈 Insights
+                  </button>
+                  
+                  {/* Translation */}
+                  {currentSession.pdf_filename && (
+                    <select
+                      onChange={(e) => {
+                        if (e.target.value) {
+                          translatePDF(e.target.value);
+                          e.target.value = '';
+                        }
+                      }}
+                      className="bg-gray-700 border border-gray-600 rounded px-3 py-2 text-sm text-white"
+                      disabled={translating}
+                    >
+                      <option value="">🌐 Translate to...</option>
+                      <option value="Spanish">Spanish</option>
+                      <option value="French">French</option>
+                      <option value="German">German</option>
+                      <option value="Chinese">Chinese</option>
+                      <option value="Japanese">Japanese</option>
+                      <option value="Portuguese">Portuguese</option>
+                    </select>
+                  )}
+                  
+                  {/* Export Options */}
+                  <select
+                    onChange={(e) => {
+                      if (e.target.value) {
+                        exportConversation(e.target.value);
+                        e.target.value = '';
+                      }
+                    }}
+                    className="bg-gray-700 border border-gray-600 rounded px-3 py-2 text-sm text-white"
+                  >
+                    <option value="">📄 Export as...</option>
+                    <option value="txt">Text File</option>
+                    <option value="pdf">PDF Document</option>
+                    <option value="docx">Word Document</option>
+                  </select>
                   
                   {currentFeature === 'qa_generation' && (
                     <button
                       onClick={generateQA}
                       disabled={generatingQA || !currentSession.pdf_filename}
-                      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm disabled:opacity-50 transition-colors"
+                      className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded text-sm disabled:opacity-50 transition-colors"
                     >
                       {generatingQA ? 'Generating...' : 'Generate 15 Q&A'}
                     </button>
@@ -755,14 +809,14 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                       <button
                         onClick={() => conductResearch('summary')}
                         disabled={researching || !currentSession.pdf_filename}
-                        className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm disabled:opacity-50 transition-colors"
+                        className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded text-sm disabled:opacity-50 transition-colors"
                       >
                         {researching ? 'Processing...' : 'Summarize'}
                       </button>
                       <button
                         onClick={() => conductResearch('detailed_research')}
                         disabled={researching || !currentSession.pdf_filename}
-                        className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded text-sm disabled:opacity-50 transition-colors"
+                        className="bg-orange-600 hover:bg-orange-700 text-white px-3 py-2 rounded text-sm disabled:opacity-50 transition-colors"
                       >
                         {researching ? 'Processing...' : 'Detailed Research'}
                       </button>
@@ -782,6 +836,50 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                   </select>
                 </div>
               </div>
+              
+              {/* Search Interface */}
+              {showSearch && (
+                <div className="mt-4 p-4 bg-gray-700 rounded-lg">
+                  <div className="flex space-x-2">
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Search across all PDFs and conversations..."
+                      className="flex-1 bg-gray-600 border border-gray-500 rounded px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      onKeyPress={(e) => e.key === 'Enter' && searchContent()}
+                    />
+                    <button
+                      onClick={searchContent}
+                      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition-colors"
+                    >
+                      Search
+                    </button>
+                    <button
+                      onClick={() => setShowSearch(false)}
+                      className="bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded transition-colors"
+                    >
+                      Close
+                    </button>
+                  </div>
+                  
+                  {searchResults.length > 0 && (
+                    <div className="mt-4 max-h-60 overflow-y-auto">
+                      <h4 className="text-white font-medium mb-2">Search Results:</h4>
+                      {searchResults.map((result, index) => (
+                        <div key={index} className="bg-gray-600 rounded p-2 mb-2">
+                          <div className="text-sm text-gray-300">
+                            {result.type === 'pdf' ? '📄 PDF' : '💬 Conversation'}: {result.filename || result.session_title}
+                          </div>
+                          <div className="text-xs text-white mt-1">
+                            {result.snippet || result.content}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Messages */}
