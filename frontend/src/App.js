@@ -944,13 +944,26 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                     rows={3}
                     disabled={loading}
                   />
-                  <button
-                    onClick={sendMessage}
-                    disabled={loading || !inputMessage.trim()}
-                    className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                  >
-                    Send
-                  </button>
+                  <div className="flex flex-col space-y-2">
+                    <button
+                      onClick={isListening ? stopListening : startListening}
+                      className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                        isListening 
+                          ? 'bg-red-600 hover:bg-red-700 text-white' 
+                          : 'bg-blue-600 hover:bg-blue-700 text-white'
+                      }`}
+                      disabled={loading}
+                    >
+                      {isListening ? '🛑 Stop' : '🎤 Voice'}
+                    </button>
+                    <button
+                      onClick={sendMessage}
+                      disabled={loading || !inputMessage.trim()}
+                      className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      Send
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
@@ -964,6 +977,64 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
           </div>
         )}
       </div>
+      
+      {/* Insights Modal */}
+      {showInsights && insights && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-gray-800 rounded-lg p-6 max-w-4xl w-full max-h-[80vh] overflow-y-auto m-4">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-2xl font-bold text-white">📈 Insights Dashboard</h2>
+              <button
+                onClick={() => setShowInsights(false)}
+                className="text-gray-400 hover:text-white text-2xl"
+              >
+                ×
+              </button>
+            </div>
+            
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+              <div className="bg-gray-700 rounded-lg p-4">
+                <div className="text-2xl font-bold text-white">{insights.overview.total_sessions}</div>
+                <div className="text-gray-400">Total Sessions</div>
+              </div>
+              <div className="bg-gray-700 rounded-lg p-4">
+                <div className="text-2xl font-bold text-white">{insights.overview.total_pdfs}</div>
+                <div className="text-gray-400">PDFs Uploaded</div>
+              </div>
+              <div className="bg-gray-700 rounded-lg p-4">
+                <div className="text-2xl font-bold text-white">{insights.overview.total_messages}</div>
+                <div className="text-gray-400">Messages Sent</div>
+              </div>
+              <div className="bg-gray-700 rounded-lg p-4">
+                <div className="text-2xl font-bold text-white">{Math.round(insights.overview.avg_messages_per_session)}</div>
+                <div className="text-gray-400">Avg Messages/Session</div>
+              </div>
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="bg-gray-700 rounded-lg p-4">
+                <h3 className="text-lg font-semibold text-white mb-3">Feature Usage</h3>
+                {insights.feature_usage.map((feature, index) => (
+                  <div key={index} className="flex justify-between items-center mb-2">
+                    <span className="text-gray-300">{feature._id}</span>
+                    <span className="text-white font-medium">{feature.count}</span>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="bg-gray-700 rounded-lg p-4">
+                <h3 className="text-lg font-semibold text-white mb-3">Popular PDFs</h3>
+                {insights.popular_pdfs.map((pdf, index) => (
+                  <div key={index} className="mb-2">
+                    <div className="text-gray-300 text-sm truncate">{pdf._id}</div>
+                    <div className="text-white font-medium">{pdf.message_count} messages</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
