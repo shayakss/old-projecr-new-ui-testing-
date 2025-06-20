@@ -186,7 +186,7 @@ backend:
         agent: "testing"
         comment: "Successfully tested MongoDB database models. All models (User, ChatMessage, ChatSession, PDFDocument) are correctly defined with UUID-based IDs and proper field types. Database operations (create, read, update, delete) work correctly for all models."
 
-  - task: "API Endpoints"
+  - task: "Advanced Search across PDFs"
     implemented: true
     working: true
     file: "/app/backend/server.py"
@@ -196,10 +196,70 @@ backend:
     status_history:
       - working: "unknown"
         agent: "main"
-        comment: "Implemented all REST API endpoints for auth, sessions, messages, PDF upload, models list"
+        comment: "Implemented advanced search endpoint that searches across PDF documents and chat messages with different search types"
       - working: true
         agent: "testing"
-        comment: "Successfully tested all API endpoints. The API correctly handles authentication, session management, message sending/receiving, PDF upload, and model listing. All endpoints return appropriate status codes and error messages for invalid inputs."
+        comment: "Successfully tested advanced search functionality. The API correctly searches across PDF documents and chat messages based on search type (all, pdfs, conversations). Search results are properly formatted and include relevant snippets and metadata."
+
+  - task: "Multi-PDF Comparison"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "unknown"
+        agent: "main"
+        comment: "Implemented multi-PDF comparison endpoint with different comparison types (content, structure, summary)"
+      - working: true
+        agent: "testing"
+        comment: "Successfully tested multi-PDF comparison functionality. The API correctly compares multiple PDF documents and provides detailed analysis based on comparison type. All comparison types (content, structure, summary) work correctly."
+
+  - task: "PDF Translation"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "unknown"
+        agent: "main"
+        comment: "Implemented PDF translation endpoint with support for multiple languages and content types"
+      - working: true
+        agent: "testing"
+        comment: "Successfully tested PDF translation functionality. The API correctly translates PDF content to different languages with both full and summary content types. Translation results are properly saved as messages."
+
+  - task: "Export Conversations"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "unknown"
+        agent: "main"
+        comment: "Implemented conversation export endpoint supporting multiple formats (PDF, TXT, DOCX)"
+      - working: true
+        agent: "testing"
+        comment: "Successfully tested conversation export functionality. The API correctly exports chat conversations in different formats (txt, pdf, docx) with proper formatting and metadata."
+
+  - task: "Insights Dashboard"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "unknown"
+        agent: "main"
+        comment: "Implemented insights dashboard endpoint with analytics on usage patterns, feature usage, and popular PDFs"
+      - working: true
+        agent: "testing"
+        comment: "Successfully tested insights dashboard functionality. The API correctly aggregates usage statistics, feature usage patterns, popular PDFs, and daily usage trends. All analytics queries work correctly."
 
 frontend:
   - task: "Authentication UI"
