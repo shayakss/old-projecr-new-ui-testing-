@@ -435,6 +435,202 @@ async def get_available_models():
         ]
     }
 
+@api_router.post("/compare-pdfs")
+async def compare_pdfs(request: ComparePDFsRequest):
+    # Verify all sessions exist and have PDFs
+    sessions_data = []
+    for session_id in request.session_ids:
+        session = await db.chat_sessions.find_one({"id": session_id})
+        if not session:
+            raise HTTPException(status_code=404, detail=f"Session {session_id} not found")
+        if not session.get("pdf_content"):
+            raise HTTPException(status_code=400, detail=f"Session {session_id} has no PDF uploaded")
+        sessions_data.append(session)
+    
+    if len(sessions_data) < 2:
+        raise HTTPException(status_code=400, detail="At least 2 sessions with PDFs are required for comparison")
+    
+    # Prepare comparison content
+    pdf_contents = []
+    for i, session in enumerate(sessions_data):
+        pdf_contents.append(f"Document {i+1} ({session['pdf_filename']}):\n{session['pdf_content'][:3000]}...")
+    
+    if request.comparison_type == "content":
+        system_message = f"""You are an expert document analyst. Compare the following PDF documents and provide a detailed analysis.
+
+{chr(10).join(pdf_contents)}
+
+Please provide:
+1. **Key Similarities**: What themes, topics, or content do these documents share?
+2. **Major Differences**: How do these documents differ in approach, conclusions, or focus?
+3. **Unique Insights**: What unique perspectives or information does each document provide?
+4. **Comparative Analysis**: Which document is more comprehensive on specific topics?
+5. **Recommendations**: Based on the comparison, what would you recommend for someone studying this topic?
+
+Provide a thorough comparative analysis."""
+    
+    elif request.comparison_type == "structure":
+        system_message = f"""Analyze the structure and organization of these PDF documents:
+
+{chr(10).join(pdf_contents)}
+
+Compare:
+1. **Document Structure**: How are the documents organized (sections, chapters, etc.)?
+2. **Information Hierarchy**: How is information prioritized and presented?
+3. **Writing Style**: Academic, technical, conversational, etc.
+4. **Content Depth**: Level of detail and complexity
+5. **Target Audience**: Who appears to be the intended reader?
+6. **Effectiveness**: Which structure better serves its purpose?"""
+    
+    else:  # summary comparison
+        system_message = f"""Provide a concise comparative summary of these documents:
+
+{chr(10).join(pdf_contents)}
+
+Include:
+1. **Main Topics**: Core subjects covered in each document
+2. **Key Points**: Most important takeaways from each
+3. **Overlapping Content**: What information is shared between documents
+4. **Distinct Content**: What's unique to each document
+5. **Overall Assessment**: Brief evaluation of each document's value"""
+    
+    ai_messages = [{"role": "system", "content": system_message}]
+    
+    # Get AI response
+    comparison_result = await get_ai_response(ai_messages, request.model)
+    
+    return {
+        "comparison_result": comparison_result,
+        "documents_compared": [{"session_id": s["id"], "filename": s["pdf_filename"]} for s in sessions_data],
+        "comparison_type": request.comparison_type,
+        "message": "PDF comparison completed successfully"
+    }
+
+@api_router.post("/sessions/{session_id}/translate")
+async def translate_pdf(session_id: str, request: TranslateRequest):
+    # Verify session exists
+    session = await db.chat_sessions.find_one({"id": session_id})
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    
+    if not session.get("pdf_content"):
+        raise HTTPException(status_code=400, detail="No PDF uploaded in this session")
+    
+    pdf_content = session["pdf_content"]
+    
+    if request.content_type == "summary":
+        # First get a summary, then translate it
+        summary_prompt = f"""Summarize the following document in English first:
+
+{pdf_content[:4000]}...
+
+Provide a clear, comprehensive summary of the main points."""
+        
+        summary_response = await get_ai_response([{"role": "system", "content": summary_prompt}], request.model)
+        content_to_translate = summary_response
+    else:
+        content_to_translate = pdf_content[:5000]  # Limit content for translation
+    
+    # Translation prompt
+    system_message = f"""You are a professional translator. Translate the following text to {request.target_language}. 
+    
+Maintain the original meaning, tone, and structure. If technical terms don't have direct translations, provide the closest equivalent and add the original term in parentheses.
+
+Text to translate:
+{content_to_translate}
+
+Provide only the translation, no additional commentary."""
+    
+    ai_messages = [{"role": "system", "content": system_message}]
+    
+    # Get translation
+    translation_result = await get_ai_response(ai_messages, request.model)
+    
+    # Save translation as a message
+    translation_message = ChatMessage(
+        session_id=session_id,
+        content=f"🌐 Translation to {request.target_language}:\n\n{translation_result}",
+        role="assistant",
+        feature_type="translation"
+    )
+    await db.chat_messages.insert_one(translation_message.dict())
+    
+    return {
+        "translation": translation_result,
+        "target_language": request.target_language,
+        "content_type": request.content_type,
+        "message": "Translation completed successfully"
+    }
+
+@api_router.post("/search")
+async def advanced_search(request: SearchRequest):
+    results = []
+    
+    if request.search_type in ["all", "pdfs"]:
+        # Search in PDF documents
+        pdf_cursor = db.pdf_documents.find(
+            {"content": {"$regex": request.query, "$options": "i"}},
+            {"_id": 0}
+        ).limit(request.limit // 2 if request.search_type == "all" else request.limit)
+        
+        pdf_docs = await pdf_cursor.to_list(None)
+        for doc in pdf_docs:
+            # Find snippet around the match
+            content_lower = doc["content"].lower()
+            query_lower = request.query.lower()
+            match_index = content_lower.find(query_lower)
+            
+            if match_index != -1:
+                start = max(0, match_index - 100)
+                end = min(len(doc["content"]), match_index + 200)
+                snippet = doc["content"][start:end]
+                
+                results.append({
+                    "type": "pdf",
+                    "filename": doc["filename"],
+                    "snippet": f"...{snippet}...",
+                    "upload_date": doc["upload_date"],
+                    "relevance_score": content_lower.count(query_lower)
+                })
+    
+    if request.search_type in ["all", "conversations"]:
+        # Search in chat messages
+        messages_cursor = db.chat_messages.find(
+            {"content": {"$regex": request.query, "$options": "i"}},
+            {"_id": 0}
+        ).limit(request.limit // 2 if request.search_type == "all" else request.limit)
+        
+        messages = await messages_cursor.to_list(None)
+        for msg in messages:
+            # Get session info
+            session = await db.chat_sessions.find_one({"id": msg["session_id"]})
+            
+            results.append({
+                "type": "conversation",
+                "session_title": session.get("title", "Untitled Session") if session else "Unknown Session",
+                "session_id": msg["session_id"],
+                "content": msg["content"][:200] + "..." if len(msg["content"]) > 200 else msg["content"],
+                "role": msg["role"],
+                "timestamp": msg["timestamp"],
+                "feature_type": msg["feature_type"]
+            })
+    
+    # Sort by relevance (for now, just by timestamp for conversations and by match count for PDFs)
+    def sort_key(item):
+        if item["type"] == "pdf":
+            return item.get("relevance_score", 0)
+        else:
+            return item["timestamp"]
+    
+    results.sort(key=sort_key, reverse=True)
+    
+    return {
+        "results": results[:request.limit],
+        "total_found": len(results),
+        "query": request.query,
+        "search_type": request.search_type
+    }
+
 @api_router.delete("/sessions/{session_id}")
 async def delete_session(session_id: str):
     # Verify session exists
