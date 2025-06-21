@@ -140,9 +140,9 @@ backend:
 
   - task: "OpenRouter AI Integration"
     implemented: true
-    working: true
+    working: false
     file: "/app/backend/server.py"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
     needs_retesting: false
     status_history:
@@ -173,6 +173,9 @@ backend:
       - working: true
         agent: "testing"
         comment: "Successfully tested the newly added Deepseek models integration. All API keys (OpenRouter, Deepseek Qwen, Deepseek Free) are properly loaded. Models endpoint correctly returns 6 models including 'deepseek/r1-0528-qwen3-8b' and 'deepseek/r1-0528:free'. Backend correctly selects appropriate client based on model requested. Multiple API key support is working correctly."
+      - working: false
+        agent: "testing"
+        comment: "Tested the ChatPDF backend with the newly updated OpenRouter API key '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'. All core functionality is working correctly, including session management, PDF upload, model listing, advanced search, export conversation, and insights dashboard. However, all AI-powered features (chat, Q&A generation, research, PDF comparison, translation) are returning 500 errors. This suggests the new OpenRouter API key is not working correctly. The backend code is properly implemented and handles these errors appropriately, but the external API calls to OpenRouter are failing. This appears to be an issue with the OpenRouter API key authentication rather than a problem with our backend implementation."
 
   - task: "Chat Session Management"
     implemented: true
