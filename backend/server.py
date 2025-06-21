@@ -85,7 +85,7 @@ class ResearchRequest(BaseModel):
 class ComparePDFsRequest(BaseModel):
     session_ids: List[str]
     comparison_type: str = "content"  # 'content', 'structure', 'summary'
-    model: str = "deepseek/deepseek-r1-0528:free"
+    model: str = "meta-llama/llama-3.1-8b-instruct:free"
 
 class TranslateRequest(BaseModel):
     session_id: str
