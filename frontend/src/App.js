@@ -197,6 +197,17 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
 
+  // Helper function to create valid message objects
+  const createMessage = (role, content, featureType = 'chat', timestamp = null) => {
+    return {
+      id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+      role: role || 'assistant',
+      content: content || '',
+      timestamp: timestamp || new Date().toISOString(),
+      feature_type: featureType || 'chat'
+    };
+  };
+
   useEffect(() => {
     loadSessions();
     loadModels();
