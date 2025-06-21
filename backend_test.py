@@ -21,7 +21,11 @@ print(f"Testing backend at: {API_URL}")
 # Load OpenRouter API key from backend .env file for verification
 load_dotenv('/app/backend/.env')
 OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY')
+DEEPSEEK_R1_QWEN_API_KEY = os.environ.get('DEEPSEEK_R1_QWEN_API_KEY')
+DEEPSEEK_R1_FREE_API_KEY = os.environ.get('DEEPSEEK_R1_FREE_API_KEY')
 print(f"Using OpenRouter API Key: {OPENROUTER_API_KEY[:10]}...{OPENROUTER_API_KEY[-5:]}")
+print(f"Using Deepseek Qwen API Key: {DEEPSEEK_R1_QWEN_API_KEY[:10]}...{DEEPSEEK_R1_QWEN_API_KEY[-5:]}")
+print(f"Using Deepseek Free API Key: {DEEPSEEK_R1_FREE_API_KEY[:10]}...{DEEPSEEK_R1_FREE_API_KEY[-5:]}")
 
 class ChatPDFBackendTest(unittest.TestCase):
     def setUp(self):
