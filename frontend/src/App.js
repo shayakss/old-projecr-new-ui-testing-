@@ -450,33 +450,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
     }
   };
 
-  const translatePDF = async (targetLanguage) => {
-    if (!currentSession || !currentSession.pdf_filename) {
-      alert('Please upload a PDF first');
-      return;
-    }
 
-    setTranslating(true);
-    try {
-      const response = await apiClient.post(`/sessions/${currentSession.id}/translate`, {
-        target_language: targetLanguage,
-        content_type: 'summary',
-        model: selectedModel
-      });
-
-      setMessages(prev => [...prev, {
-        id: Date.now().toString(),
-        role: 'assistant',
-        content: response.data.translation,
-        timestamp: new Date().toISOString(),
-        feature_type: 'translation'
-      }]);
-    } catch (error) {
-      alert('Error translating PDF: ' + (error.response?.data?.detail || error.message));
-    } finally {
-      setTranslating(false);
-    }
-  };
 
   const comparePDFs = async () => {
     if (selectedSessions.length < 2) {
