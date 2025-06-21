@@ -1,0 +1,37 @@
+from fastapi import FastAPI, APIRouter, UploadFile, File, HTTPException, Query
+from dotenv import load_dotenv
+from starlette.middleware.cors import CORSMiddleware
+from motor.motor_asyncio import AsyncIOMotorClient
+import os
+import logging
+from pathlib import Path
+from pydantic import BaseModel, Field
+from typing import List, Optional, Dict, Any
+import uuid
+from datetime import datetime
+import io
+import PyPDF2
+import openai
+from openai import AsyncOpenAI
+import json
+
+ROOT_DIR = Path(__file__).parent
+load_dotenv(ROOT_DIR / '.env')
+
+# Environment configuration with defaults for local development
+MONGO_URL = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
+DB_NAME = os.environ.get('DB_NAME', 'chatpdf_database')
+DEEPSEEK_API_KEY = os.environ.get('DEEPSEEK_API_KEY', '')
+
+if not DEEPSEEK_API_KEY:
+    raise ValueError("DEEPSEEK_API_KEY environment variable is required")
+
+# MongoDB connection
+client = AsyncIOMotorClient(MONGO_URL)
+db = client[DB_NAME]
+
+# Create DeepSeek client
+deepseek_client = AsyncOpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key=DEEPSEEK_API_KEY,
+)
