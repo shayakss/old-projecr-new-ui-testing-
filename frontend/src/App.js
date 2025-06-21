@@ -651,12 +651,6 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                   name="Research"
                 />
                 <FeatureTab 
-                  isActive={currentFeature === 'translation'} 
-                  onClick={() => setCurrentFeature('translation')}
-                  icon="🌐"
-                  name="Translation"
-                />
-                <FeatureTab 
                   isActive={currentFeature === 'comparison'} 
                   onClick={() => setCurrentFeature('comparison')}
                   icon="🔄"
