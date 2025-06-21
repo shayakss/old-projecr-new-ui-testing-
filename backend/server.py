@@ -22,6 +22,8 @@ load_dotenv(ROOT_DIR / '.env')
 MONGO_URL = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
 DB_NAME = os.environ.get('DB_NAME', 'chatpdf_database')
 OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY', '')
+DEEPSEEK_R1_QWEN_API_KEY = os.environ.get('DEEPSEEK_R1_QWEN_API_KEY', '')
+DEEPSEEK_R1_FREE_API_KEY = os.environ.get('DEEPSEEK_R1_FREE_API_KEY', '')
 
 if not OPENROUTER_API_KEY:
     raise ValueError("OPENROUTER_API_KEY environment variable is required")
@@ -29,10 +31,26 @@ if not OPENROUTER_API_KEY:
 # MongoDB connection
 client = AsyncIOMotorClient(MONGO_URL)
 db = client[DB_NAME]
+
+# Create multiple OpenRouter clients for different API keys
 openrouter_client = AsyncOpenAI(
     base_url="https://openrouter.ai/api/v1",
     api_key=OPENROUTER_API_KEY,
 )
+
+deepseek_qwen_client = None
+if DEEPSEEK_R1_QWEN_API_KEY:
+    deepseek_qwen_client = AsyncOpenAI(
+        base_url="https://openrouter.ai/api/v1",
+        api_key=DEEPSEEK_R1_QWEN_API_KEY,
+    )
+
+deepseek_free_client = None
+if DEEPSEEK_R1_FREE_API_KEY:
+    deepseek_free_client = AsyncOpenAI(
+        base_url="https://openrouter.ai/api/v1",
+        api_key=DEEPSEEK_R1_FREE_API_KEY,
+    )
 
 # Create the main app
 app = FastAPI(title="Baloch AI chat PdF & GPT API", version="2.0.0")
