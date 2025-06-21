@@ -165,15 +165,19 @@ const FeatureCard = ({ icon, title, description }) => {
 
 const FeatureCardEnhanced = ({ icon, title, description, isNew = false }) => {
   return (
-    <div className="feature-card-enhanced rounded-xl p-6 text-white group">
+    <div className="feature-card-enhanced rounded-xl text-white group">
       {isNew && (
         <div className="absolute -top-2 -right-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs px-2 py-1 rounded-full font-medium">
           NEW
         </div>
       )}
-      <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">{icon}</div>
-      <h3 className="text-xl font-semibold mb-2 group-hover:text-purple-200 transition-colors duration-300">{title}</h3>
-      <p className="text-purple-100 text-sm opacity-90 group-hover:opacity-100 transition-opacity duration-300">{description}</p>
+      <div className="feature-card-icon group-hover:scale-110 transition-transform duration-300">{icon}</div>
+      <h3 className="feature-card-title group-hover:text-purple-200 transition-colors duration-300">
+        {title}
+      </h3>
+      <p className="feature-card-description group-hover:opacity-100 transition-opacity duration-300">
+        {description}
+      </p>
     </div>
   );
 };
