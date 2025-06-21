@@ -759,7 +759,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {/* File Management Group */}
                 <div className="flex flex-col space-y-2">
-                  <h4 className="text-xs font-medium text-gray-400 uppercase tracking-wide">File Actions</h4>
+                  <h4 className="ui-label">📁 File Actions</h4>
                   <div className="flex space-x-2">
                     <input
                       type="file"
