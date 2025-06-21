@@ -36,7 +36,7 @@ const HomePage = ({ setCurrentView }) => {
         <div className="flex items-center justify-center">
           <div className="flex items-center space-x-3">
             <img 
-              src="https://images.unsplash.com/photo-1697577418970-95d99b5a55cf" 
+              src="https://images.unsplash.com/photo-1679403766665-67ed6cd2df30" 
               alt="Baloch AI chat PdF & GPT Logo" 
               className="w-12 h-12 rounded-lg object-cover"
             />
