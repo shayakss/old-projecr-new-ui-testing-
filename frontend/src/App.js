@@ -122,7 +122,7 @@ const HomePage = ({ setCurrentView }) => {
           {/* Stats */}
           <div className="grid grid-cols-3 gap-8 mt-16 text-center relative z-10">
             <div>
-              <div className="text-3xl font-bold text-white">11</div>
+              <div className="text-3xl font-bold text-white">8</div>
               <div className="text-purple-200">AI Features Available</div>
             </div>
             <div>
