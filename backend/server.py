@@ -67,7 +67,7 @@ class PDFDocument(BaseModel):
 class SendMessageRequest(BaseModel):
     session_id: str
     content: str
-    model: str = "deepseek/deepseek-r1-0528:free"
+    model: str = "meta-llama/llama-3.1-8b-instruct:free"
     feature_type: str = "chat"
 
 class CreateSessionRequest(BaseModel):
