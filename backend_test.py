@@ -830,6 +830,7 @@ def run_tests():
     
     # Add tests in order
     test_cases = [
+        ChatPDFBackendTest('test_00_api_keys_loaded'),
         ChatPDFBackendTest('test_01_create_session'),
         ChatPDFBackendTest('test_02_get_sessions'),
         ChatPDFBackendTest('test_03_upload_pdf'),
