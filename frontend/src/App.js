@@ -731,11 +731,11 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
               {/* Title Row */}
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-xl font-bold text-white">{getFeatureTitle()}</h2>
+                  <h2 className="heading-primary">{getFeatureTitle()}</h2>
                   {currentSession.pdf_filename && (
                     <div className="text-sm text-gray-400 mt-1 flex items-center">
-                      <span className="bg-purple-600 text-white px-2 py-1 rounded-full text-xs mr-2">PDF</span>
-                      {currentSession.pdf_filename}
+                      <span className="status-badge status-badge-info mr-2">PDF</span>
+                      <span className="text-gray-300">{currentSession.pdf_filename}</span>
                     </div>
                   )}
                 </div>
