@@ -1031,7 +1031,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                               {new Date(message.timestamp).toLocaleTimeString()}
                             </span>
                           </div>
-                          <div className="text-sm leading-relaxed whitespace-pre-wrap">
+                          <div className="message-content leading-relaxed whitespace-pre-wrap">
                             {message.content}
                           </div>
                         </div>
