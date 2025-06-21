@@ -81,54 +81,40 @@ const HomePage = ({ setCurrentView }) => {
                 title="Research & Summary"
                 description="Get detailed analysis and comprehensive summaries"
               />
-            </div>
-          </div>
-
-          {/* New Features Preview */}
-          <div className="feature-cards-container mb-12 p-6">
-            <h3 className="text-2xl font-bold text-white mb-6">✨ New Features Coming Soon</h3>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
               <FeatureCardEnhanced
                 icon="🎨"
                 title="PDF Annotations"
                 description="Highlight and annotate important sections"
-                isNew={true}
               />
               <FeatureCardEnhanced
                 icon="🔄"
                 title="Multi-PDF Comparison"
                 description="Compare content between multiple documents"
-                isNew={true}
               />
               <FeatureCardEnhanced
                 icon="📄"
                 title="Export Conversations"
                 description="Export chats to PDF, Word, or TXT files"
-                isNew={true}
               />
               <FeatureCardEnhanced
                 icon="🎤"
                 title="Voice Input"
                 description="Ask questions using voice commands"
-                isNew={true}
               />
               <FeatureCardEnhanced
                 icon="🌐"
                 title="AI Translation"
                 description="Translate PDF content to any language"
-                isNew={true}
               />
               <FeatureCardEnhanced
                 icon="🔍"
                 title="Advanced Search"
                 description="Search across all your PDFs and conversations"
-                isNew={true}
               />
               <FeatureCardEnhanced
                 icon="📈"
                 title="Insights Dashboard"
                 description="Analytics on your reading patterns and insights"
-                isNew={true}
               />
             </div>
           </div>
