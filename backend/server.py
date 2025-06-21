@@ -35,7 +35,7 @@ openrouter_client = AsyncOpenAI(
 )
 
 # Create the main app
-app = FastAPI(title="ChatPDF API", version="2.0.0")
+app = FastAPI(title="Baloch AI chat PdF & GPT API", version="2.0.0")
 api_router = APIRouter(prefix="/api")
 
 # Pydantic Models
@@ -797,14 +797,14 @@ logger = logging.getLogger(__name__)
 
 @app.on_event("startup")
 async def startup_event():
-    logger.info("🚀 ChatPDF Backend starting up...")
+    logger.info("🚀 Baloch AI chat PdF & GPT Backend starting up...")
     logger.info(f"📊 MongoDB URL: {MONGO_URL}")
     logger.info(f"🗄️  Database: {DB_NAME}")
     logger.info(f"🤖 OpenRouter API Key: {'✅ Configured' if OPENROUTER_API_KEY else '❌ Missing'}")
-    logger.info("✅ ChatPDF Backend ready!")
+    logger.info("✅ Baloch AI chat PdF & GPT Backend ready!")
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
-    logger.info("🛑 Shutting down ChatPDF Backend...")
+    logger.info("🛑 Shutting down Baloch AI chat PdF & GPT Backend...")
     client.close()
     logger.info("✅ Database connection closed")

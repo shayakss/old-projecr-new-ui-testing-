@@ -36,11 +36,11 @@ const HomePage = ({ setCurrentView }) => {
         <div className="flex items-center justify-center">
           <div className="flex items-center space-x-3">
             <img 
-              src="https://images.unsplash.com/photo-1657114162943-04988ff671d9?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Njd8MHwxfHNlYXJjaHwxfHx0ZWNoJTIwZG9jdW1lbnQlMjBsb2dvfGVufDB8fHx8MTc0OTE2MzUxNXww" 
-              alt="ChatPDF Logo" 
+              src="https://images.unsplash.com/photo-1697577418970-95d99b5a55cf" 
+              alt="Baloch AI chat PdF & GPT Logo" 
               className="w-12 h-12 rounded-lg object-cover"
             />
-            <h1 className="text-4xl font-bold text-white">ChatPDF</h1>
+            <h1 className="text-4xl font-bold text-white">Baloch AI chat PdF & GPT</h1>
           </div>
         </div>
       </header>
@@ -620,7 +620,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
               onClick={() => setCurrentView('home')}
               className={`${sidebarOpen ? 'block' : 'hidden'} text-lg font-bold text-purple-300 hover:text-white transition-colors`}
             >
-              ← ChatPDF
+              ← Baloch AI chat PdF & GPT
             </button>
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -921,85 +921,87 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder="Search across all PDFs and conversations..."
-                      className="w-full pl-10 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                      className="w-full pl-10 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                       onKeyPress={(e) => e.key === 'Enter' && searchContent()}
                     />
                   </div>
                   <button
                     onClick={searchContent}
-                    className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-lg"
+                    className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-lg"
                   >
                     Search
                   </button>
                   <button
                     onClick={() => setShowSearch(false)}
-                    className="bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white px-4 py-3 rounded-lg transition-all duration-200 shadow-lg"
+                    className="text-gray-400 hover:text-white p-2"
                   >
                     ✕
                   </button>
                 </div>
                 
                 {searchResults.length > 0 && (
-                  <div className="space-y-3 max-h-80 overflow-y-auto">
-                    <h4 className="text-white font-semibold text-lg mb-3 flex items-center">
-                      <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm mr-3">{searchResults.length}</span>
-                      Search Results
-                    </h4>
+                  <div className="space-y-3 max-h-60 overflow-y-auto">
                     {searchResults.map((result, index) => (
-                      <div key={index} className="bg-gray-700 hover:bg-gray-600 rounded-lg p-4 transition-all duration-200 border border-gray-600 hover:border-gray-500">
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="flex items-center space-x-2">
-                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                              result.type === 'pdf' 
-                                ? 'bg-red-600 text-white' 
-                                : 'bg-green-600 text-white'
-                            }`}>
-                              {result.type === 'pdf' ? '📄 PDF' : '💬 Chat'}
+                      <div key={index} className="bg-gray-800 rounded-lg p-4 border border-gray-600">
+                        <div className="flex items-start justify-between mb-2">
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            result.type === 'pdf' 
+                              ? 'bg-blue-600 text-white' 
+                              : 'bg-green-600 text-white'
+                          }`}>
+                            {result.type === 'pdf' ? '📄 PDF' : '💬 Chat'}
+                          </span>
+                          {result.timestamp && (
+                            <span className="text-xs text-gray-400">
+                              {new Date(result.timestamp).toLocaleDateString()}
                             </span>
-                            <span className="text-gray-300 text-sm font-medium">
-                              {result.filename || result.session_title}
-                            </span>
+                          )}
+                        </div>
+                        {result.type === 'pdf' ? (
+                          <div>
+                            <div className="font-medium text-white mb-1">{result.filename}</div>
+                            <div className="text-sm text-gray-300">{result.snippet}</div>
                           </div>
-                        </div>
-                        <div className="text-white text-sm bg-gray-800 rounded p-3 border-l-4 border-blue-500">
-                          {result.snippet || result.content}
-                        </div>
+                        ) : (
+                          <div>
+                            <div className="font-medium text-white mb-1">{result.session_title}</div>
+                            <div className="text-sm text-gray-300">
+                              <span className="font-medium">{result.role === 'user' ? 'You' : 'AI'}:</span> {result.content}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     ))}
-                  </div>
-                )}
-                
-                {searchQuery && searchResults.length === 0 && (
-                  <div className="text-center py-8">
-                    <div className="text-gray-400 text-lg">No results found</div>
-                    <div className="text-gray-500 text-sm mt-2">Try different keywords or upload more PDFs</div>
                   </div>
                 )}
               </div>
             )}
 
-            {/* Messages Area */}
+            {/* Messages Container */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
               {messages.length === 0 ? (
-                <div className="flex-1 flex items-center justify-center text-gray-400">
+                <div className="flex items-center justify-center h-full text-gray-400">
                   <div className="text-center">
-                    <div className="text-6xl mb-4">💬</div>
-                    <h3 className="text-xl font-medium mb-2">Start Your Conversation</h3>
+                    <div className="text-6xl mb-4">🤖</div>
+                    <h3 className="text-xl font-medium mb-2">Ready to Chat!</h3>
                     <p className="text-gray-500">
-                      {currentSession?.pdf_filename 
-                        ? `Ask questions about "${currentSession.pdf_filename}"` 
-                        : "Upload a PDF to start chatting with AI"}
+                      {currentFeature === 'general_ai' 
+                        ? "Ask me anything, or upload a PDF to get started with document analysis."
+                        : currentSession?.pdf_filename 
+                          ? "Your PDF is loaded. Ask questions or use the features above!"
+                          : "Upload a PDF document to start chatting with your content."
+                      }
                     </p>
                   </div>
                 </div>
               ) : (
-                messages.map(message => (
-                  <div key={message.id} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} message-bubble`}>
-                    <div className={`max-w-3xl rounded-lg p-4 shadow-lg ${
+                messages.map((message, index) => (
+                  <div key={message.id || index} className="message-bubble">
+                    <div className={`p-4 rounded-lg shadow-lg max-w-4xl ${
                       message.role === 'user' 
-                        ? 'bg-gradient-to-r from-purple-600 to-purple-700 text-white message-user' 
+                        ? 'ml-auto bg-gradient-to-r from-purple-600 to-purple-700 text-white message-user'
                         : message.role === 'system'
-                        ? 'bg-gradient-to-r from-green-600 to-green-700 text-white message-system'
+                        ? 'mr-auto bg-gradient-to-r from-green-600 to-green-700 text-white message-system'
                         : 'bg-gray-700 text-white border border-gray-600 message-assistant'
                     }`}>
                       <div className="flex items-start space-x-3">
