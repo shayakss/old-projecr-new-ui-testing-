@@ -18,6 +18,11 @@ if not BACKEND_URL:
 API_URL = f"{BACKEND_URL}/api"
 print(f"Testing backend at: {API_URL}")
 
+# Load OpenRouter API key from backend .env file for verification
+load_dotenv('/app/backend/.env')
+OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY')
+print(f"Using OpenRouter API Key: {OPENROUTER_API_KEY[:10]}...{OPENROUTER_API_KEY[-5:]}")
+
 class ChatPDFBackendTest(unittest.TestCase):
     def setUp(self):
         self.session_id = None
