@@ -381,13 +381,11 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
           : s
       ));
 
-      setMessages(prev => [...prev, {
-        id: Date.now().toString(),
-        role: 'system',
-        content: `📄 PDF "${response.data.filename}" uploaded successfully! You can now use all features with this document.`,
-        timestamp: new Date().toISOString(),
-        feature_type: 'system'
-      }]);
+      setMessages(prev => [...prev, createMessage(
+        'system',
+        `📄 PDF "${response.data.filename}" uploaded successfully! You can now use all features with this document.`,
+        'system'
+      )]);
 
     } catch (error) {
       alert('Error uploading PDF: ' + (error.response?.data?.detail || error.message));
