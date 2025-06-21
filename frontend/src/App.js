@@ -979,48 +979,108 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
               )}
             </div>
 
-            {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            {/* Enhanced Messages Area */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-gradient-to-b from-gray-900 to-gray-800">
               {messages.length === 0 ? (
-                <div className="text-center text-gray-400 mt-20">
-                  <h3 className="text-xl font-medium mb-2">Welcome to {getFeatureTitle()}!</h3>
-                  <p>
-                    {currentFeature === 'chat' && "Upload a PDF document and start asking questions about it."}
-                    {currentFeature === 'qa_generation' && "Upload a PDF and click 'Generate 15 Q&A' to create comprehensive questions and answers."}
-                    {currentFeature === 'general_ai' && "Ask me anything! I'm here to help with any questions."}
-                    {currentFeature === 'research' && "Upload a PDF and choose 'Summarize' or 'Detailed Research' for comprehensive analysis."}
-                  </p>
+                <div className="text-center mt-20 px-4">
+                  <div className="bg-gradient-to-r from-purple-600/20 to-blue-600/20 rounded-2xl p-8 border border-purple-500/30 backdrop-blur-sm">
+                    <div className="text-4xl mb-4">
+                      {currentFeature === 'chat' && "💬"}
+                      {currentFeature === 'qa_generation' && "❓"}
+                      {currentFeature === 'general_ai' && "🤖"}
+                      {currentFeature === 'research' && "📊"}
+                    </div>
+                    <h3 className="text-2xl font-bold text-white mb-4">Welcome to {getFeatureTitle()}!</h3>
+                    <p className="text-gray-300 text-lg leading-relaxed max-w-2xl mx-auto">
+                      {currentFeature === 'chat' && "Upload a PDF document and start asking questions about it. I'll help you understand and analyze your content."}
+                      {currentFeature === 'qa_generation' && "Upload a PDF and click 'Generate 15 Q&A' to create comprehensive questions and answers from your document."}
+                      {currentFeature === 'general_ai' && "Ask me anything! I'm here to help with any questions, whether they're related to your PDFs or general topics."}
+                      {currentFeature === 'research' && "Upload a PDF and choose 'Summarize' or 'Detailed Research' for comprehensive analysis and insights."}
+                    </p>
+                    {!currentSession?.pdf_filename && currentFeature !== 'general_ai' && (
+                      <div className="mt-6">
+                        <button
+                          onClick={() => fileInputRef.current?.click()}
+                          className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-3 rounded-full font-medium transition-all duration-200 transform hover:scale-105 shadow-lg"
+                        >
+                          📄 Upload Your First PDF
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               ) : (
                 messages.map(message => (
                   <div
                     key={message.id}
-                    className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                    className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} group`}
                   >
                     <div
-                      className={`max-w-3xl p-4 rounded-lg ${
+                      className={`max-w-4xl p-5 rounded-2xl shadow-lg transition-all duration-200 group-hover:shadow-xl ${
                         message.role === 'user'
-                          ? 'bg-purple-600 text-white'
+                          ? 'bg-gradient-to-br from-purple-600 to-purple-700 text-white ml-12'
                           : message.role === 'system'
-                          ? 'bg-green-600 text-white border border-green-500'
-                          : 'bg-gray-700 text-white border border-gray-600'
+                          ? 'bg-gradient-to-br from-green-600 to-green-700 text-white border border-green-500/50 mr-12'
+                          : 'bg-gradient-to-br from-gray-700 to-gray-800 text-white border border-gray-600/50 mr-12'
                       }`}
                     >
-                      <div className="whitespace-pre-wrap">{message.content}</div>
-                      <div className={`text-xs mt-2 opacity-70`}>
-                        {new Date(message.timestamp).toLocaleTimeString()}
+                      {/* Message Role Indicator */}
+                      <div className="flex items-center mb-3">
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                          message.role === 'user' 
+                            ? 'bg-white/20 text-white' 
+                            : message.role === 'system'
+                            ? 'bg-white/20 text-white'
+                            : 'bg-white/10 text-white'
+                        }`}>
+                          {message.role === 'user' ? '👤' : message.role === 'system' ? '⚙️' : '🤖'}
+                        </div>
+                        <span className="ml-3 text-sm font-medium opacity-80">
+                          {message.role === 'user' ? 'You' : message.role === 'system' ? 'System' : 'AI Assistant'}
+                        </span>
+                      </div>
+                      
+                      {/* Message Content */}
+                      <div className="whitespace-pre-wrap text-base leading-relaxed">{message.content}</div>
+                      
+                      {/* Message Timestamp */}
+                      <div className="flex items-center justify-between mt-4 pt-3 border-t border-white/10">
+                        <div className="text-xs opacity-60">
+                          {new Date(message.timestamp).toLocaleTimeString([], { 
+                            hour: '2-digit', 
+                            minute: '2-digit',
+                            month: 'short',
+                            day: 'numeric'
+                          })}
+                        </div>
+                        {message.feature_type && (
+                          <div className="text-xs bg-white/10 px-2 py-1 rounded-full opacity-70">
+                            {message.feature_type}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
                 ))
               )}
+              
+              {/* Enhanced Loading Indicator */}
               {loading && (
-                <div className="flex justify-start">
-                  <div className="bg-gray-700 text-white p-4 rounded-lg max-w-3xl">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"></div>
-                      <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                      <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                <div className="flex justify-start group">
+                  <div className="bg-gradient-to-br from-gray-700 to-gray-800 text-white p-5 rounded-2xl max-w-4xl mr-12 border border-gray-600/50">
+                    <div className="flex items-center mb-3">
+                      <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-sm">
+                        🤖
+                      </div>
+                      <span className="ml-3 text-sm font-medium opacity-80">AI Assistant</span>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <div className="flex space-x-1">
+                        <div className="w-3 h-3 bg-purple-400 rounded-full animate-bounce"></div>
+                        <div className="w-3 h-3 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                        <div className="w-3 h-3 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                      </div>
+                      <span className="text-sm text-gray-300">Thinking...</span>
                     </div>
                   </div>
                 </div>
