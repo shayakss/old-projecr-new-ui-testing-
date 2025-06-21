@@ -438,34 +438,51 @@ async def get_messages(session_id: str, feature_type: Optional[str] = Query(None
 
 @api_router.get("/models")
 async def get_available_models():
-    return {
-        "models": [
-            {
-                "id": "meta-llama/llama-3.1-8b-instruct:free",
-                "name": "Llama 3.1 8B",
-                "provider": "Meta",
-                "free": True
-            },
-            {
-                "id": "google/gemma-2-9b-it:free",
-                "name": "Gemma 2 9B",
-                "provider": "Google",
-                "free": True
-            },
-            {
-                "id": "mistralai/mistral-7b-instruct:free",
-                "name": "Mistral 7B",
-                "provider": "Mistral AI",
-                "free": True
-            },
-            {
-                "id": "qwen/qwen-2-7b-instruct:free",
-                "name": "Qwen 2 7B",
-                "provider": "Alibaba",
-                "free": True
-            }
-        ]
-    }
+    models = [
+        {
+            "id": "meta-llama/llama-3.1-8b-instruct:free",
+            "name": "Llama 3.1 8B",
+            "provider": "Meta",
+            "free": True
+        },
+        {
+            "id": "google/gemma-2-9b-it:free",
+            "name": "Gemma 2 9B",
+            "provider": "Google",
+            "free": True
+        },
+        {
+            "id": "mistralai/mistral-7b-instruct:free",
+            "name": "Mistral 7B",
+            "provider": "Mistral AI",
+            "free": True
+        },
+        {
+            "id": "qwen/qwen-2-7b-instruct:free",
+            "name": "Qwen 2 7B",
+            "provider": "Alibaba",
+            "free": True
+        }
+    ]
+    
+    # Add Deepseek models if API keys are available
+    if DEEPSEEK_R1_QWEN_API_KEY:
+        models.append({
+            "id": "deepseek/r1-0528-qwen3-8b",
+            "name": "Deepseek R1 0528 Qwen3 8B",
+            "provider": "DeepSeek",
+            "free": False
+        })
+    
+    if DEEPSEEK_R1_FREE_API_KEY:
+        models.append({
+            "id": "deepseek/r1-0528:free",
+            "name": "DeepSeek R1 0528 (free)",
+            "provider": "DeepSeek",
+            "free": True
+        })
+    
+    return {"models": models}
 
 @api_router.post("/compare-pdfs")
 async def compare_pdfs(request: ComparePDFsRequest):
