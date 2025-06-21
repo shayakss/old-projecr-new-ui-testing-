@@ -30,8 +30,8 @@ if not DEEPSEEK_API_KEY:
 client = AsyncIOMotorClient(MONGO_URL)
 db = client[DB_NAME]
 
-# Create single DeepSeek client
-deepseek_client = AsyncOpenAI(
+# Create OpenRouter client
+openrouter_client = AsyncOpenAI(
     base_url="https://openrouter.ai/api/v1",
     api_key=DEEPSEEK_API_KEY,
 )
@@ -119,8 +119,8 @@ async def extract_text_from_pdf(file_content: bytes) -> str:
 # DeepSeek AI Functions
 async def get_ai_response(messages: List[Dict], model: str = "deepseek/deepseek-r1-0528:free") -> str:
     try:
-        # Use the single DeepSeek client
-        response = await deepseek_client.chat.completions.create(
+        # Use the OpenRouter client
+        response = await openrouter_client.chat.completions.create(
             model=model,
             messages=messages,
             max_tokens=2000,
