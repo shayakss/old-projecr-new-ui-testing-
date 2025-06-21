@@ -729,122 +729,25 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
       <div className="flex-1 flex flex-col bg-gray-900">
         {currentSession ? (
           <>
-            {/* Chat Header */}
-            <div className="bg-gray-800 border-b border-gray-700 p-4">
+            {/* Chat Header - Enhanced Layout */}
+            <div className="bg-gray-800 border-b border-gray-700 p-4 space-y-4">
+              {/* Title Row */}
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-lg font-semibold text-white">{getFeatureTitle()}</h2>
+                  <h2 className="text-xl font-bold text-white">{getFeatureTitle()}</h2>
                   {currentSession.pdf_filename && (
-                    <div className="text-sm text-gray-400">📄 {currentSession.pdf_filename}</div>
-                  )}
-                </div>
-                <div className="flex items-center space-x-2 flex-wrap">
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    accept=".pdf"
-                    onChange={(e) => {
-                      if (e.target.files[0]) {
-                        uploadPDF(e.target.files[0]);
-                      }
-                    }}
-                    className="hidden"
-                  />
-                  <button
-                    onClick={() => fileInputRef.current?.click()}
-                    disabled={uploading}
-                    className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded text-sm disabled:opacity-50 transition-colors"
-                  >
-                    {uploading ? 'Uploading...' : '📄 Upload PDF'}
-                  </button>
-                  
-                  {/* Advanced Search */}
-                  <button
-                    onClick={() => setShowSearch(!showSearch)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded text-sm transition-colors"
-                  >
-                    🔍 Search
-                  </button>
-                  
-                  {/* Insights Dashboard */}
-                  <button
-                    onClick={loadInsights}
-                    className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded text-sm transition-colors"
-                  >
-                    📈 Insights
-                  </button>
-                  
-                  {/* Translation */}
-                  {currentSession.pdf_filename && (
-                    <select
-                      onChange={(e) => {
-                        if (e.target.value) {
-                          translatePDF(e.target.value);
-                          e.target.value = '';
-                        }
-                      }}
-                      className="bg-gray-700 border border-gray-600 rounded px-3 py-2 text-sm text-white"
-                      disabled={translating}
-                    >
-                      <option value="">🌐 Translate to...</option>
-                      <option value="Spanish">Spanish</option>
-                      <option value="French">French</option>
-                      <option value="German">German</option>
-                      <option value="Chinese">Chinese</option>
-                      <option value="Japanese">Japanese</option>
-                      <option value="Portuguese">Portuguese</option>
-                    </select>
-                  )}
-                  
-                  {/* Export Options */}
-                  <select
-                    onChange={(e) => {
-                      if (e.target.value) {
-                        exportConversation(e.target.value);
-                        e.target.value = '';
-                      }
-                    }}
-                    className="bg-gray-700 border border-gray-600 rounded px-3 py-2 text-sm text-white"
-                  >
-                    <option value="">📄 Export as...</option>
-                    <option value="txt">Text File</option>
-                    <option value="pdf">PDF Document</option>
-                    <option value="docx">Word Document</option>
-                  </select>
-                  
-                  {currentFeature === 'qa_generation' && (
-                    <button
-                      onClick={generateQA}
-                      disabled={generatingQA || !currentSession.pdf_filename}
-                      className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded text-sm disabled:opacity-50 transition-colors"
-                    >
-                      {generatingQA ? 'Generating...' : 'Generate 15 Q&A'}
-                    </button>
-                  )}
-                  
-                  {currentFeature === 'research' && (
-                    <div className="flex space-x-2">
-                      <button
-                        onClick={() => conductResearch('summary')}
-                        disabled={researching || !currentSession.pdf_filename}
-                        className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded text-sm disabled:opacity-50 transition-colors"
-                      >
-                        {researching ? 'Processing...' : 'Summarize'}
-                      </button>
-                      <button
-                        onClick={() => conductResearch('detailed_research')}
-                        disabled={researching || !currentSession.pdf_filename}
-                        className="bg-orange-600 hover:bg-orange-700 text-white px-3 py-2 rounded text-sm disabled:opacity-50 transition-colors"
-                      >
-                        {researching ? 'Processing...' : 'Detailed Research'}
-                      </button>
+                    <div className="text-sm text-gray-400 mt-1 flex items-center">
+                      <span className="bg-purple-600 text-white px-2 py-1 rounded-full text-xs mr-2">PDF</span>
+                      {currentSession.pdf_filename}
                     </div>
                   )}
-                  
+                </div>
+                <div className="flex items-center space-x-3">
+                  {/* AI Model Selection */}
                   <select
                     value={selectedModel}
                     onChange={(e) => setSelectedModel(e.target.value)}
-                    className="bg-gray-700 border border-gray-600 rounded px-3 py-2 text-sm text-white"
+                    className="bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-sm text-white hover:bg-gray-600 focus:ring-2 focus:ring-purple-500 transition-all"
                   >
                     {models.map(model => (
                       <option key={model.id} value={model.id}>
@@ -854,6 +757,154 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                   </select>
                 </div>
               </div>
+
+              {/* Action Buttons Row */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {/* File Management Group */}
+                <div className="flex flex-col space-y-2">
+                  <h4 className="text-xs font-medium text-gray-400 uppercase tracking-wide">File Actions</h4>
+                  <div className="flex space-x-2">
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      accept=".pdf"
+                      onChange={(e) => {
+                        if (e.target.files[0]) {
+                          uploadPDF(e.target.files[0]);
+                        }
+                      }}
+                      className="hidden"
+                    />
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={uploading}
+                      className="flex-1 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-4 py-2 rounded-lg text-sm font-medium disabled:opacity-50 transition-all duration-200 transform hover:scale-105 shadow-lg"
+                    >
+                      {uploading ? (
+                        <span className="flex items-center justify-center">
+                          <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          Uploading...
+                        </span>
+                      ) : (
+                        '📄 Upload PDF'
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Search & Analytics Group */}
+                <div className="flex flex-col space-y-2">
+                  <h4 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Discovery</h4>
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => setShowSearch(!showSearch)}
+                      className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 transform hover:scale-105 shadow-lg"
+                    >
+                      🔍 Search
+                    </button>
+                    <button
+                      onClick={loadInsights}
+                      className="flex-1 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 transform hover:scale-105 shadow-lg"
+                    >
+                      📈 Insights
+                    </button>
+                  </div>
+                </div>
+
+                {/* Export & Translation Group */}
+                <div className="flex flex-col space-y-2">
+                  <h4 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Export & Translate</h4>
+                  <div className="flex space-x-2">
+                    {/* Translation */}
+                    {currentSession.pdf_filename && (
+                      <select
+                        onChange={(e) => {
+                          if (e.target.value) {
+                            translatePDF(e.target.value);
+                            e.target.value = '';
+                          }
+                        }}
+                        className="flex-1 bg-gradient-to-r from-indigo-600 to-indigo-700 border border-indigo-500 rounded-lg px-3 py-2 text-sm text-white hover:from-indigo-700 hover:to-indigo-800 focus:ring-2 focus:ring-indigo-500 transition-all"
+                        disabled={translating}
+                      >
+                        <option value="">🌐 Translate</option>
+                        <option value="Spanish">Spanish</option>
+                        <option value="French">French</option>
+                        <option value="German">German</option>
+                        <option value="Chinese">Chinese</option>
+                        <option value="Japanese">Japanese</option>
+                        <option value="Portuguese">Portuguese</option>
+                      </select>
+                    )}
+                    
+                    {/* Export Options */}
+                    <select
+                      onChange={(e) => {
+                        if (e.target.value) {
+                          exportConversation(e.target.value);
+                          e.target.value = '';
+                        }
+                      }}
+                      className="flex-1 bg-gradient-to-r from-orange-600 to-orange-700 border border-orange-500 rounded-lg px-3 py-2 text-sm text-white hover:from-orange-700 hover:to-orange-800 focus:ring-2 focus:ring-orange-500 transition-all"
+                    >
+                      <option value="">📄 Export</option>
+                      <option value="txt">Text File</option>
+                      <option value="pdf">PDF Document</option>
+                      <option value="docx">Word Document</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Feature-Specific Actions */}
+              {(currentFeature === 'qa_generation' || currentFeature === 'research') && (
+                <div className="border-t border-gray-700 pt-4">
+                  <div className="flex flex-wrap gap-3">
+                    {currentFeature === 'qa_generation' && (
+                      <button
+                        onClick={generateQA}
+                        disabled={generatingQA || !currentSession.pdf_filename}
+                        className="bg-gradient-to-r from-cyan-600 to-cyan-700 hover:from-cyan-700 hover:to-cyan-800 text-white px-6 py-2 rounded-lg text-sm font-medium disabled:opacity-50 transition-all duration-200 transform hover:scale-105 shadow-lg"
+                      >
+                        {generatingQA ? (
+                          <span className="flex items-center">
+                            <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Generating Q&A...
+                          </span>
+                        ) : (
+                          '❓ Generate 15 Q&A'
+                        )}
+                      </button>
+                    )}
+                    
+                    {currentFeature === 'research' && (
+                      <div className="flex space-x-3">
+                        <button
+                          onClick={() => conductResearch('summary')}
+                          disabled={researching || !currentSession.pdf_filename}
+                          className="bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white px-6 py-2 rounded-lg text-sm font-medium disabled:opacity-50 transition-all duration-200 transform hover:scale-105 shadow-lg"
+                        >
+                          {researching ? 'Processing...' : '📋 Summarize'}
+                        </button>
+                        <button
+                          onClick={() => conductResearch('detailed_research')}
+                          disabled={researching || !currentSession.pdf_filename}
+                          className="bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white px-6 py-2 rounded-lg text-sm font-medium disabled:opacity-50 transition-all duration-200 transform hover:scale-105 shadow-lg"
+                        >
+                          {researching ? 'Processing...' : '🔬 Detailed Research'}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
               
               {/* Search Interface */}
               {showSearch && (
