@@ -426,14 +426,9 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Enhanced Visual Design with Grid Background"
-    - "Voice Input for Chat"
-    - "Advanced Search UI"
-    - "Translation UI"
-    - "Export UI"
-    - "Insights Dashboard UI"
-    - "New Feature Tabs"
-  stuck_tasks: []
+    - "OpenRouter AI Integration"
+  stuck_tasks:
+    - "OpenRouter AI Integration"
   test_all: false
   test_priority: "high_first"
 
