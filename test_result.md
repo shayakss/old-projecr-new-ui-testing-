@@ -505,7 +505,8 @@ metadata:
 test_plan:
   current_focus:
     - "OpenRouter AI Integration"
-  stuck_tasks: []
+  stuck_tasks:
+    - "OpenRouter AI Integration"
   test_all: false
   test_priority: "high_first"
 
