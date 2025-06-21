@@ -257,9 +257,9 @@ backend:
 
   - task: "PDF Translation"
     implemented: true
-    working: true
+    working: false
     file: "/app/backend/server.py"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
     needs_retesting: false
     status_history:
@@ -275,6 +275,9 @@ backend:
       - working: true
         agent: "testing"
         comment: "Successfully tested PDF translation functionality with the new API key. The API correctly translates PDF content to different languages with both full and summary content types. Translation results are properly saved as messages and return appropriate responses."
+      - working: false
+        agent: "testing"
+        comment: "PDF translation endpoint is correctly implemented but returns 500 errors due to the new OpenRouter API key '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' not working correctly. The backend code is properly structured and handles errors correctly, but the external API calls are failing. This is related to the OpenRouter API key authentication issue."
 
   - task: "Export Conversations"
     implemented: true
