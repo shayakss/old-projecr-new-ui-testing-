@@ -865,7 +865,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                   </div>
                 </div>
               ) : (
-                messages.map((message, index) => (
+                messages.filter(message => message && message.role && message.content).map((message, index) => (
                   <div key={message.id || index} className="message-bubble">
                     <div className={`p-4 rounded-lg shadow-lg max-w-4xl ${
                       message.role === 'user' 
@@ -901,11 +901,11 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                               </span>
                             )}
                             <span className="text-xs opacity-70">
-                              {new Date(message.timestamp).toLocaleTimeString()}
+                              {message.timestamp ? new Date(message.timestamp).toLocaleTimeString() : ''}
                             </span>
                           </div>
                           <div className="message-content leading-relaxed whitespace-pre-wrap">
-                            {message.content}
+                            {message.content || ''}
                           </div>
                         </div>
                       </div>
