@@ -135,7 +135,21 @@ async def extract_text_from_pdf(file_content: bytes) -> str:
 # OpenRouter AI Functions
 async def get_ai_response(messages: List[Dict], model: str = "meta-llama/llama-3.1-8b-instruct:free") -> str:
     try:
-        response = await openrouter_client.chat.completions.create(
+        # Select the appropriate client based on the model
+        client_to_use = openrouter_client  # default client
+        
+        if model in ["deepseek/r1-0528-qwen", "deepseek/r1-0528-qwen3-8b"]:
+            if deepseek_qwen_client:
+                client_to_use = deepseek_qwen_client
+            else:
+                raise HTTPException(status_code=500, detail="Deepseek Qwen API key not configured")
+        elif model in ["deepseek/r1-0528:free", "deepseek/r1-0528-free"]:
+            if deepseek_free_client:
+                client_to_use = deepseek_free_client
+            else:
+                raise HTTPException(status_code=500, detail="Deepseek free API key not configured")
+        
+        response = await client_to_use.chat.completions.create(
             model=model,
             messages=messages,
             max_tokens=2000,
