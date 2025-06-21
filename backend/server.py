@@ -21,7 +21,7 @@ load_dotenv(ROOT_DIR / '.env')
 # Environment configuration with defaults for local development
 MONGO_URL = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
 DB_NAME = os.environ.get('DB_NAME', 'chatpdf_database')
-DEEPSEEK_API_KEY = os.environ.get('DEEPSEEK_API_KEY', '')
+DEEPSEEK_API_KEY = os.environ.get('OPENROUTER_API_KEY', '')
 
 if not DEEPSEEK_API_KEY:
     raise ValueError("DEEPSEEK_API_KEY environment variable is required")
