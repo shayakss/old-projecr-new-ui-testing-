@@ -1126,7 +1126,10 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-gray-800 rounded-lg p-6 max-w-4xl w-full max-h-[80vh] overflow-y-auto m-4">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl font-bold text-white">📈 Insights Dashboard</h2>
+              <h2 className="heading-primary flex items-center">
+                <span className="section-icon">📈</span>
+                Insights Dashboard
+              </h2>
               <button
                 onClick={() => setShowInsights(false)}
                 className="text-gray-400 hover:text-white text-2xl"
@@ -1135,44 +1138,56 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
               </button>
             </div>
             
+            <div className="section-divider"></div>
+            
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-              <div className="bg-gray-700 rounded-lg p-4">
-                <div className="text-2xl font-bold text-white">{insights.overview.total_sessions}</div>
-                <div className="text-gray-400">Total Sessions</div>
+              <div className="content-section">
+                <div className="heading-secondary">{insights.overview.total_sessions}</div>
+                <div className="text-body">Total Sessions</div>
               </div>
-              <div className="bg-gray-700 rounded-lg p-4">
-                <div className="text-2xl font-bold text-white">{insights.overview.total_pdfs}</div>
-                <div className="text-gray-400">PDFs Uploaded</div>
+              <div className="content-section">
+                <div className="heading-secondary">{insights.overview.total_pdfs}</div>
+                <div className="text-body">PDFs Uploaded</div>
               </div>
-              <div className="bg-gray-700 rounded-lg p-4">
-                <div className="text-2xl font-bold text-white">{insights.overview.total_messages}</div>
-                <div className="text-gray-400">Messages Sent</div>
+              <div className="content-section">
+                <div className="heading-secondary">{insights.overview.total_messages}</div>
+                <div className="text-body">Messages Sent</div>
               </div>
-              <div className="bg-gray-700 rounded-lg p-4">
-                <div className="text-2xl font-bold text-white">{Math.round(insights.overview.avg_messages_per_session)}</div>
-                <div className="text-gray-400">Avg Messages/Session</div>
+              <div className="content-section">
+                <div className="heading-secondary">{Math.round(insights.overview.avg_messages_per_session)}</div>
+                <div className="text-body">Avg Messages/Session</div>
               </div>
             </div>
             
             <div className="grid md:grid-cols-2 gap-6">
-              <div className="bg-gray-700 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-white mb-3">Feature Usage</h3>
-                {insights.feature_usage.map((feature, index) => (
-                  <div key={index} className="flex justify-between items-center mb-2">
-                    <span className="text-gray-300">{feature._id}</span>
-                    <span className="text-white font-medium">{feature.count}</span>
-                  </div>
-                ))}
+              <div className="content-section">
+                <h3 className="content-section-title">
+                  <span className="section-icon">⚡</span>
+                  Feature Usage
+                </h3>
+                <ul className="bullet-list">
+                  {insights.feature_usage.map((feature, index) => (
+                    <li key={index} className="flex justify-between items-center mb-2">
+                      <span className="text-body-large">{feature._id}</span>
+                      <span className="ui-value">{feature.count}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
               
-              <div className="bg-gray-700 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-white mb-3">Popular PDFs</h3>
-                {insights.popular_pdfs.map((pdf, index) => (
-                  <div key={index} className="mb-2">
-                    <div className="text-gray-300 text-sm truncate">{pdf._id}</div>
-                    <div className="text-white font-medium">{pdf.message_count} messages</div>
-                  </div>
-                ))}
+              <div className="content-section">
+                <h3 className="content-section-title">
+                  <span className="section-icon">📄</span>
+                  Popular Documents
+                </h3>
+                <ul className="bullet-list">
+                  {insights.popular_pdfs.map((pdf, index) => (
+                    <li key={index} className="mb-3">
+                      <div className="text-body-large truncate">{pdf._id}</div>
+                      <div className="ui-value">{pdf.message_count} messages</div>
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
           </div>
