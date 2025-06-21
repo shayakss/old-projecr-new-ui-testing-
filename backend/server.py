@@ -116,8 +116,8 @@ async def extract_text_from_pdf(file_content: bytes) -> str:
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error processing PDF: {str(e)}")
 
-# DeepSeek AI Functions
-async def get_ai_response(messages: List[Dict], model: str = "deepseek/deepseek-r1-0528:free") -> str:
+# OpenRouter AI Functions
+async def get_ai_response(messages: List[Dict], model: str = "meta-llama/llama-3.1-8b-instruct:free") -> str:
     try:
         # Use the OpenRouter client
         response = await openrouter_client.chat.completions.create(
