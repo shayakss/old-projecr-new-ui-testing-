@@ -411,7 +411,18 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
         feature_type: currentFeature
       });
 
-      setMessages(prev => [...prev, response.data.ai_response]);
+      // Ensure AI response has valid structure
+      const aiResponse = response.data.ai_response;
+      if (aiResponse && aiResponse.role && aiResponse.content !== undefined) {
+        setMessages(prev => [...prev, aiResponse]);
+      } else {
+        // Fallback with valid structure
+        setMessages(prev => [...prev, createMessage(
+          'assistant',
+          aiResponse?.content || 'Response received but content is missing.',
+          currentFeature
+        )]);
+      }
     } catch (error) {
       console.error('Error sending message:', error);
       setMessages(prev => [...prev, {
