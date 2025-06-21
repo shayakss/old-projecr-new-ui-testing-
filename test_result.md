@@ -167,6 +167,12 @@ backend:
       - working: true
         agent: "testing"
         comment: "Successfully tested OpenRouter AI integration with the new API key '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'. All AI features are now working correctly. Fixed missing dependencies (httpcore and jiter) that were causing errors. Verified all AI-powered features including chat functionality, Q&A generation, research features, PDF translation, and multi-PDF comparison are working as expected. All models (Llama, Gemma, Mistral, Qwen) are accessible and return appropriate responses."
+      - working: true
+        agent: "main"
+        comment: "Added two new Deepseek models with separate API keys. Updated backend to support multiple OpenRouter API keys with proper client selection based on model. Added httpcore dependency to requirements.txt."
+      - working: true
+        agent: "testing"
+        comment: "Successfully tested the newly added Deepseek models integration. All API keys (OpenRouter, Deepseek Qwen, Deepseek Free) are properly loaded. Models endpoint correctly returns 6 models including 'deepseek/r1-0528-qwen3-8b' and 'deepseek/r1-0528:free'. Backend correctly selects appropriate client based on model requested. Multiple API key support is working correctly."
 
   - task: "Chat Session Management"
     implemented: true
