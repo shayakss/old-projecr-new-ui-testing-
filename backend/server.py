@@ -292,9 +292,33 @@ async def get_messages(session_id: str, feature_type: Optional[str] = Query(None
 async def get_available_models():
     models = [
         {
-            "id": "deepseek/deepseek-r1-0528:free",
-            "name": "DeepSeek R1 0528 (free)",
-            "provider": "DeepSeek",
+            "id": "meta-llama/llama-3.1-8b-instruct:free",
+            "name": "Llama 3.1 8B Instruct (Free)",
+            "provider": "Meta",
+            "free": True
+        },
+        {
+            "id": "google/gemma-2-9b-it:free",
+            "name": "Gemma 2 9B IT (Free)",
+            "provider": "Google",
+            "free": True
+        },
+        {
+            "id": "mistralai/mistral-7b-instruct:free",
+            "name": "Mistral 7B Instruct (Free)",
+            "provider": "Mistral AI",
+            "free": True
+        },
+        {
+            "id": "qwen/qwen-2-7b-instruct:free",
+            "name": "Qwen 2 7B Instruct (Free)",
+            "provider": "Qwen",
+            "free": True
+        },
+        {
+            "id": "microsoft/phi-3-mini-128k-instruct:free",
+            "name": "Phi 3 Mini 128K Instruct (Free)",
+            "provider": "Microsoft",
             "free": True
         }
     ]
