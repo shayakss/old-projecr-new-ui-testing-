@@ -91,7 +91,7 @@ class TranslateRequest(BaseModel):
     session_id: str
     target_language: str
     content_type: str = "full"  # 'full', 'summary'
-    model: str = "deepseek/deepseek-r1-0528:free"
+    model: str = "meta-llama/llama-3.1-8b-instruct:free"
 
 class SearchRequest(BaseModel):
     query: str
