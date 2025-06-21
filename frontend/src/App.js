@@ -497,35 +497,6 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
     }
   };
 
-
-
-  const exportConversation = async (format) => {
-    if (!currentSession) return;
-
-    try {
-      const response = await apiClient.post(`/sessions/${currentSession.id}/export`, {
-        export_format: format,
-        include_messages: true,
-        feature_type: currentFeature !== 'chat' ? currentFeature : null
-      });
-
-      // Create and download file
-      const blob = new Blob([response.data.content], { 
-        type: response.data.content_type || 'text/plain' 
-      });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = response.data.filename;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-    } catch (error) {
-      alert('Error exporting conversation: ' + (error.response?.data?.detail || error.message));
-    }
-  };
-
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
