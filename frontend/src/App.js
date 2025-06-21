@@ -781,56 +781,6 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                     >
                       🔍 Search
                     </button>
-                    <button
-                      onClick={loadInsights}
-                      className="flex-1 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 transform hover:scale-105 shadow-lg"
-                    >
-                      📈 Insights
-                    </button>
-                  </div>
-                </div>
-
-                {/* Export & Translation Group */}
-                <div className="flex flex-col space-y-2">
-                  <h4 className="ui-label">🌐 Export & Translate</h4>
-                  <div className="flex space-x-2">
-                    {/* Translation */}
-                    {currentSession.pdf_filename && (
-                      <select
-                        onChange={(e) => {
-                          if (e.target.value) {
-                            translatePDF(e.target.value);
-                            e.target.value = '';
-                          }
-                        }}
-                        className="flex-1 bg-gradient-to-r from-indigo-600 to-indigo-700 border border-indigo-500 rounded-lg px-3 py-2 text-sm text-white hover:from-indigo-700 hover:to-indigo-800 focus:ring-2 focus:ring-indigo-500 transition-all"
-                        disabled={translating}
-                      >
-                        <option value="">🌐 Translate</option>
-                        <option value="Spanish">Spanish</option>
-                        <option value="French">French</option>
-                        <option value="German">German</option>
-                        <option value="Chinese">Chinese</option>
-                        <option value="Japanese">Japanese</option>
-                        <option value="Portuguese">Portuguese</option>
-                      </select>
-                    )}
-                    
-                    {/* Export Options */}
-                    <select
-                      onChange={(e) => {
-                        if (e.target.value) {
-                          exportConversation(e.target.value);
-                          e.target.value = '';
-                        }
-                      }}
-                      className="flex-1 bg-gradient-to-r from-orange-600 to-orange-700 border border-orange-500 rounded-lg px-3 py-2 text-sm text-white hover:from-orange-700 hover:to-orange-800 focus:ring-2 focus:ring-orange-500 transition-all"
-                    >
-                      <option value="">📄 Export</option>
-                      <option value="txt">Text File</option>
-                      <option value="pdf">PDF Document</option>
-                      <option value="docx">Word Document</option>
-                    </select>
                   </div>
                 </div>
               </div>
