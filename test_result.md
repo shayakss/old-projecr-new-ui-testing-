@@ -140,11 +140,11 @@ backend:
 
   - task: "OpenRouter AI Integration"
     implemented: true
-    working: true
+    working: "unknown"
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: "unknown"
         agent: "main"
