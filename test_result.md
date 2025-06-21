@@ -140,9 +140,9 @@ backend:
 
   - task: "OpenRouter AI Integration"
     implemented: true
-    working: false
+    working: true
     file: "/app/backend/server.py"
-    stuck_count: 1
+    stuck_count: 0
     priority: "high"
     needs_retesting: false
     status_history:
@@ -161,6 +161,9 @@ backend:
       - working: false
         agent: "testing"
         comment: "OpenRouter API integration is failing with 500 errors. The backend code is correctly implemented, but the API calls to OpenRouter are failing due to authentication issues with the external service. The API key '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' appears to be invalid or expired. All endpoints that rely on OpenRouter (chat, Q&A generation, research, PDF comparison, translation) are affected. The backend correctly handles these errors and returns appropriate status codes."
+      - working: true
+        agent: "testing"
+        comment: "Successfully tested OpenRouter AI integration with the new API key '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'. All AI features are now working correctly. The API properly connects to OpenRouter, sends messages with PDF context, and receives AI responses. All models (Llama, Gemma, Mistral, Qwen) are accessible and return appropriate responses. Verified that chat functionality, Q&A generation, research features, PDF translation, and multi-PDF comparison are all working as expected."
 
   - task: "Chat Session Management"
     implemented: true
