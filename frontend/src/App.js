@@ -498,13 +498,11 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
         model: selectedModel
       });
 
-      setMessages(prev => [...prev, {
-        id: Date.now().toString(),
-        role: 'assistant',
-        content: `📊 PDF Comparison Results:\n\n${response.data.comparison_result}`,
-        timestamp: new Date().toISOString(),
-        feature_type: 'comparison'
-      }]);
+      setMessages(prev => [...prev, createMessage(
+        'assistant',
+        `📊 PDF Comparison Results:\n\n${response.data.comparison_result}`,
+        'comparison'
+      )]);
     } catch (error) {
       alert('Error comparing PDFs: ' + (error.response?.data?.detail || error.message));
     } finally {
