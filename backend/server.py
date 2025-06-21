@@ -80,7 +80,7 @@ class GenerateQARequest(BaseModel):
 class ResearchRequest(BaseModel):
     session_id: str
     research_type: str = "summary"  # 'summary' or 'detailed_research'
-    model: str = "deepseek/deepseek-r1-0528:free"
+    model: str = "meta-llama/llama-3.1-8b-instruct:free"
 
 class ComparePDFsRequest(BaseModel):
     session_ids: List[str]
