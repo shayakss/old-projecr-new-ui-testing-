@@ -99,29 +99,14 @@ const HomePage = ({ setCurrentView }) => {
                 description="Compare multiple PDFs side-by-side with AI-powered analysis"
               />
               <FeatureCardEnhanced
-                icon="📄"
-                title="Export & Share"
-                description="Export conversations to PDF, Word, or text formats for easy sharing"
-              />
-              <FeatureCardEnhanced
                 icon="🎤"
                 title="Voice Input"
                 description="Ask questions using natural voice commands with speech recognition"
               />
               <FeatureCardEnhanced
-                icon="🌐"
-                title="AI Translation"
-                description="Translate document content into multiple languages instantly"
-              />
-              <FeatureCardEnhanced
                 icon="🔍"
                 title="Advanced Search"
                 description="Search across all documents and conversations with intelligent results"
-              />
-              <FeatureCardEnhanced
-                icon="📈"
-                title="Usage Analytics"
-                description="Track reading patterns and document insights with detailed analytics"
               />
             </div>
           </div>
