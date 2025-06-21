@@ -190,9 +190,6 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [showSearch, setShowSearch] = useState(false);
-  const [insights, setInsights] = useState(null);
-  const [showInsights, setShowInsights] = useState(false);
-  const [translating, setTranslating] = useState(false);
   const [comparing, setComparing] = useState(false);
   const [selectedSessions, setSelectedSessions] = useState([]);
   const fileInputRef = useRef(null);
