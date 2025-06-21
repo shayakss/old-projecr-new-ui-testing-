@@ -206,6 +206,9 @@ backend:
       - working: true
         agent: "testing"
         comment: "Successfully tested advanced search functionality. The API correctly searches across PDF documents and chat messages based on search type (all, pdfs, conversations). Search results are properly formatted and include relevant snippets and metadata."
+      - working: true
+        agent: "testing"
+        comment: "Verified advanced search functionality is working correctly. The API successfully searches across PDF documents and chat messages with different search types (all, pdfs, conversations). Search results are properly formatted and include relevant snippets and metadata."
 
   - task: "Multi-PDF Comparison"
     implemented: true
