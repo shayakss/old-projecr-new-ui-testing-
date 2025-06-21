@@ -397,13 +397,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
   const sendMessage = async () => {
     if (!inputMessage.trim() || !currentSession || loading) return;
 
-    const userMessage = {
-      id: Date.now().toString(),
-      role: 'user',
-      content: inputMessage,
-      timestamp: new Date().toISOString(),
-      feature_type: currentFeature
-    };
+    const userMessage = createMessage('user', inputMessage, currentFeature);
 
     setMessages(prev => [...prev, userMessage]);
     setInputMessage('');
