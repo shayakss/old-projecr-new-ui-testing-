@@ -278,6 +278,9 @@ backend:
       - working: true
         agent: "testing"
         comment: "Successfully tested insights dashboard functionality. The API correctly aggregates usage statistics, feature usage patterns, popular PDFs, and daily usage trends. All analytics queries work correctly."
+      - working: true
+        agent: "testing"
+        comment: "Verified insights dashboard functionality is working correctly. The API successfully aggregates usage statistics, feature usage patterns, popular PDFs, and daily usage trends. All analytics queries return appropriate responses and handle errors correctly."
 
 frontend:
   - task: "Authentication UI"
