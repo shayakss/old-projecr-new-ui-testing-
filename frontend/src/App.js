@@ -161,7 +161,7 @@ const HomePage = ({ setCurrentView }) => {
 
       {/* Footer */}
       <footer className="p-6 text-center text-purple-200 relative z-10">
-        <p>Powered by OpenRouter AI • Built with ❤️ for PDF enthusiasts</p>
+        <p>This project is developed BY SHAYAK SIRAJ & AHMED ❤️</p>
       </footer>
     </div>
   );
