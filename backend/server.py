@@ -24,7 +24,7 @@ DB_NAME = os.environ.get('DB_NAME', 'chatpdf_database')
 DEEPSEEK_API_KEY = os.environ.get('OPENROUTER_API_KEY', '')
 
 if not DEEPSEEK_API_KEY:
-    raise ValueError("DEEPSEEK_API_KEY environment variable is required")
+    raise ValueError("OPENROUTER_API_KEY environment variable is required")
 
 # MongoDB connection
 client = AsyncIOMotorClient(MONGO_URL)
