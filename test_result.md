@@ -134,6 +134,9 @@ backend:
       - working: true
         agent: "testing"
         comment: "Successfully tested PDF upload functionality. The endpoint correctly accepts PDF files, extracts text using PyPDF2, and stores the content in the session. The extracted text is available for AI context in subsequent chat messages."
+      - working: true
+        agent: "testing"
+        comment: "Verified PDF upload and text extraction is working correctly. The API successfully accepts PDF files, extracts text using PyPDF2, and stores the content in the session. All operations return appropriate responses and handle errors correctly."
 
   - task: "OpenRouter AI Integration"
     implemented: true
