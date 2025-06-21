@@ -192,6 +192,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
   const [showSearch, setShowSearch] = useState(false);
   const [comparing, setComparing] = useState(false);
   const [selectedSessions, setSelectedSessions] = useState([]);
+  const [voiceLanguage, setVoiceLanguage] = useState('ur-PK'); // Default to Urdu
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
