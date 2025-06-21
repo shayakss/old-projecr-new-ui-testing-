@@ -48,15 +48,22 @@ const HomePage = ({ setCurrentView }) => {
       {/* Hero Section */}
       <main className="flex-1 flex flex-col items-center justify-center px-6 text-center relative z-10">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-6xl font-bold text-white mb-6 leading-tight">
+          <h2 className="text-5xl md:text-6xl font-bold text-white mb-8 leading-tight">
             Transform Your PDFs into 
-            <span className="text-purple-300"> Interactive Conversations</span>
+            <span className="text-purple-300 block mt-2"> Interactive Conversations</span>
           </h2>
           
-          <p className="text-xl text-purple-100 mb-12 leading-relaxed">
-            Upload any PDF document and unlock the power of AI-driven conversations. 
-            Ask questions, generate Q&As, get summaries, and conduct detailed research - all powered by advanced AI models.
-          </p>
+          <div className="content-spacing">
+            <p className="text-xl text-purple-100 mb-4 leading-relaxed max-w-3xl">
+              Upload any PDF document and unlock the power of AI-driven conversations.
+            </p>
+            <ul className="bullet-list max-w-2xl text-lg text-purple-200">
+              <li>Ask intelligent questions about your documents</li>
+              <li>Generate comprehensive Q&As automatically</li>
+              <li>Get detailed summaries and research insights</li>
+              <li>All powered by advanced AI models</li>
+            </ul>
+          </div>
 
           {/* Feature Cards with Enhanced Styling */}
           <div className="feature-cards-container mb-12 p-6">
