@@ -905,79 +905,78 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                 </div>
               )}
             </div>
-              
-              {/* Enhanced Search Interface */}
-              {showSearch && (
-                <div className="mt-4 bg-gradient-to-r from-gray-800 to-gray-700 rounded-xl p-6 border border-gray-600 shadow-xl">
-                  <div className="flex items-center space-x-3 mb-4">
-                    <div className="flex-1 relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
-                        </svg>
-                      </div>
-                      <input
-                        type="text"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search across all PDFs and conversations..."
-                        className="w-full pl-10 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                        onKeyPress={(e) => e.key === 'Enter' && searchContent()}
-                      />
+
+            {/* Enhanced Search Interface */}
+            {showSearch && (
+              <div className="mt-4 bg-gradient-to-r from-gray-800 to-gray-700 rounded-xl p-6 border border-gray-600 shadow-xl">
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="flex-1 relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
+                      </svg>
                     </div>
-                    <button
-                      onClick={searchContent}
-                      className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-lg"
-                    >
-                      Search
-                    </button>
-                    <button
-                      onClick={() => setShowSearch(false)}
-                      className="bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white px-4 py-3 rounded-lg transition-all duration-200 shadow-lg"
-                    >
-                      ✕
-                    </button>
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Search across all PDFs and conversations..."
+                      className="w-full pl-10 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                      onKeyPress={(e) => e.key === 'Enter' && searchContent()}
+                    />
                   </div>
-                  
-                  {searchResults.length > 0 && (
-                    <div className="space-y-3 max-h-80 overflow-y-auto">
-                      <h4 className="text-white font-semibold text-lg mb-3 flex items-center">
-                        <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm mr-3">{searchResults.length}</span>
-                        Search Results
-                      </h4>
-                      {searchResults.map((result, index) => (
-                        <div key={index} className="bg-gray-700 hover:bg-gray-600 rounded-lg p-4 transition-all duration-200 border border-gray-600 hover:border-gray-500">
-                          <div className="flex items-center justify-between mb-2">
-                            <div className="flex items-center space-x-2">
-                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                result.type === 'pdf' 
-                                  ? 'bg-red-600 text-white' 
-                                  : 'bg-green-600 text-white'
-                              }`}>
-                                {result.type === 'pdf' ? '📄 PDF' : '💬 Chat'}
-                              </span>
-                              <span className="text-gray-300 text-sm font-medium">
-                                {result.filename || result.session_title}
-                              </span>
-                            </div>
-                          </div>
-                          <div className="text-white text-sm bg-gray-800 rounded p-3 border-l-4 border-blue-500">
-                            {result.snippet || result.content}
+                  <button
+                    onClick={searchContent}
+                    className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-lg"
+                  >
+                    Search
+                  </button>
+                  <button
+                    onClick={() => setShowSearch(false)}
+                    className="bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white px-4 py-3 rounded-lg transition-all duration-200 shadow-lg"
+                  >
+                    ✕
+                  </button>
+                </div>
+                
+                {searchResults.length > 0 && (
+                  <div className="space-y-3 max-h-80 overflow-y-auto">
+                    <h4 className="text-white font-semibold text-lg mb-3 flex items-center">
+                      <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm mr-3">{searchResults.length}</span>
+                      Search Results
+                    </h4>
+                    {searchResults.map((result, index) => (
+                      <div key={index} className="bg-gray-700 hover:bg-gray-600 rounded-lg p-4 transition-all duration-200 border border-gray-600 hover:border-gray-500">
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center space-x-2">
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                              result.type === 'pdf' 
+                                ? 'bg-red-600 text-white' 
+                                : 'bg-green-600 text-white'
+                            }`}>
+                              {result.type === 'pdf' ? '📄 PDF' : '💬 Chat'}
+                            </span>
+                            <span className="text-gray-300 text-sm font-medium">
+                              {result.filename || result.session_title}
+                            </span>
                           </div>
                         </div>
-                      ))}
-                    </div>
-                  )}
-                  
-                  {searchQuery && searchResults.length === 0 && (
-                    <div className="text-center py-8">
-                      <div className="text-gray-400 text-lg">No results found</div>
-                      <div className="text-gray-500 text-sm mt-2">Try different keywords or upload more PDFs</div>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
+                        <div className="text-white text-sm bg-gray-800 rounded p-3 border-l-4 border-blue-500">
+                          {result.snippet || result.content}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                
+                {searchQuery && searchResults.length === 0 && (
+                  <div className="text-center py-8">
+                    <div className="text-gray-400 text-lg">No results found</div>
+                    <div className="text-gray-500 text-sm mt-2">Try different keywords or upload more PDFs</div>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Messages Area */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
