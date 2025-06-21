@@ -292,9 +292,19 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
     try {
       const params = featureType && featureType !== 'chat' ? { feature_type: featureType } : {};
       const response = await apiClient.get(`/sessions/${sessionId}/messages`, { params });
-      setMessages(response.data);
+      
+      // Filter out any invalid messages
+      const validMessages = (response.data || []).filter(message => 
+        message && 
+        typeof message === 'object' && 
+        message.role && 
+        (message.content !== undefined && message.content !== null)
+      );
+      
+      setMessages(validMessages);
     } catch (error) {
       console.error('Error loading messages:', error);
+      setMessages([]); // Set empty array on error
     }
   };
 
