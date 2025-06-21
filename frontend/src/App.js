@@ -979,6 +979,138 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
               )}
             </div>
 
+            {/* Messages Area */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+              {messages.length === 0 ? (
+                <div className="flex-1 flex items-center justify-center text-gray-400">
+                  <div className="text-center">
+                    <div className="text-6xl mb-4">💬</div>
+                    <h3 className="text-xl font-medium mb-2">Start Your Conversation</h3>
+                    <p className="text-gray-500">
+                      {currentSession?.pdf_filename 
+                        ? `Ask questions about "${currentSession.pdf_filename}"` 
+                        : "Upload a PDF to start chatting with AI"}
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                messages.map(message => (
+                  <div key={message.id} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} message-bubble`}>
+                    <div className={`max-w-3xl rounded-lg p-4 shadow-lg ${
+                      message.role === 'user' 
+                        ? 'bg-gradient-to-r from-purple-600 to-purple-700 text-white message-user' 
+                        : message.role === 'system'
+                        ? 'bg-gradient-to-r from-green-600 to-green-700 text-white message-system'
+                        : 'bg-gray-700 text-white border border-gray-600 message-assistant'
+                    }`}>
+                      <div className="flex items-start space-x-3">
+                        <div className="flex-shrink-0">
+                          {message.role === 'user' ? (
+                            <div className="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                              <span className="text-sm font-bold">You</span>
+                            </div>
+                          ) : message.role === 'system' ? (
+                            <div className="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                              <span className="text-sm">🔧</span>
+                            </div>
+                          ) : (
+                            <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
+                              <span className="text-sm">🤖</span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-2 mb-1">
+                            <span className="font-medium text-sm">
+                              {message.role === 'user' ? 'You' : message.role === 'system' ? 'System' : 'AI Assistant'}
+                            </span>
+                            {message.feature_type && message.feature_type !== 'chat' && (
+                              <span className="bg-white bg-opacity-20 px-2 py-1 rounded-full text-xs">
+                                {message.feature_type.replace('_', ' ').toUpperCase()}
+                              </span>
+                            )}
+                            <span className="text-xs opacity-70">
+                              {new Date(message.timestamp).toLocaleTimeString()}
+                            </span>
+                          </div>
+                          <div className="text-sm leading-relaxed whitespace-pre-wrap">
+                            {message.content}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+              {loading && (
+                <div className="flex justify-start message-bubble">
+                  <div className="bg-gray-700 text-white border border-gray-600 rounded-lg p-4 shadow-lg max-w-xs">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
+                        <span className="text-sm">🤖</span>
+                      </div>
+                      <div className="flex space-x-1">
+                        <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"></div>
+                        <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                        <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+              <div ref={messagesEndRef} />
+            </div>
+
+            {/* Message Input Area */}
+            <div className="border-t border-gray-700 p-4 bg-gray-800">
+              <div className="flex space-x-4">
+                <div className="flex-1 relative">
+                  <textarea
+                    value={inputMessage}
+                    onChange={(e) => setInputMessage(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    placeholder={getPlaceholder()}
+                    disabled={loading || (currentFeature !== 'general_ai' && !currentSession?.pdf_filename)}
+                    className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent disabled:opacity-50 transition-all"
+                    rows={inputMessage.split('\n').length || 1}
+                    style={{minHeight: '52px', maxHeight: '120px'}}
+                  />
+                  {recognitionRef.current && (currentFeature === 'chat' || currentFeature === 'general_ai') && (
+                    <button
+                      onClick={isListening ? stopListening : startListening}
+                      className={`absolute right-3 top-3 p-2 rounded-lg transition-all ${
+                        isListening 
+                          ? 'bg-red-600 hover:bg-red-700 text-white' 
+                          : 'bg-gray-600 hover:bg-gray-500 text-gray-300'
+                      }`}
+                      disabled={loading}
+                    >
+                      {isListening ? '🛑 Stop' : '🎤 Voice'}
+                    </button>
+                  )}
+                </div>
+                <button
+                  onClick={sendMessage}
+                  disabled={!inputMessage.trim() || loading || (currentFeature !== 'general_ai' && !currentSession?.pdf_filename)}
+                  className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-6 py-3 rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105 shadow-lg flex items-center space-x-2"
+                >
+                  {loading ? (
+                    <>
+                      <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      <span>Sending...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Send</span>
+                      <span>↗</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
 
           </>
         ) : (
