@@ -813,7 +813,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
 
                 {/* Export & Translation Group */}
                 <div className="flex flex-col space-y-2">
-                  <h4 className="text-xs font-medium text-gray-400 uppercase tracking-wide">Export & Translate</h4>
+                  <h4 className="ui-label">🌐 Export & Translate</h4>
                   <div className="flex space-x-2">
                     {/* Translation */}
                     {currentSession.pdf_filename && (
