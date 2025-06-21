@@ -206,9 +206,9 @@ backend:
 
   - task: "Multi-PDF Comparison"
     implemented: true
-    working: true
+    working: false
     file: "/app/backend/server.py"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
     needs_retesting: false
     status_history:
@@ -218,6 +218,9 @@ backend:
       - working: true
         agent: "testing"
         comment: "Successfully tested multi-PDF comparison functionality. The API correctly compares multiple PDF documents and provides detailed analysis based on comparison type. All comparison types (content, structure, summary) work correctly."
+      - working: false
+        agent: "testing"
+        comment: "Multi-PDF comparison endpoint is correctly implemented but returns 500 errors due to OpenRouter API authentication issues. The backend code is properly structured and handles errors correctly, but the external API calls are failing. This is related to the OpenRouter API key issue."
 
   - task: "PDF Translation"
     implemented: true
