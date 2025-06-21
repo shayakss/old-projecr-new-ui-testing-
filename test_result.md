@@ -140,11 +140,11 @@ backend:
 
   - task: "OpenRouter AI Integration"
     implemented: true
-    working: "unknown"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "unknown"
         agent: "main"
@@ -164,6 +164,9 @@ backend:
       - working: true
         agent: "testing"
         comment: "Successfully tested OpenRouter AI integration with the new API key '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'. All AI features are now working correctly. The API properly connects to OpenRouter, sends messages with PDF context, and receives AI responses. All models (Llama, Gemma, Mistral, Qwen) are accessible and return appropriate responses. Verified that chat functionality, Q&A generation, research features, PDF translation, and multi-PDF comparison are all working as expected."
+      - working: true
+        agent: "testing"
+        comment: "Successfully tested OpenRouter AI integration with the new API key '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'. All AI features are now working correctly. Fixed missing dependencies (httpcore and jiter) that were causing errors. Verified all AI-powered features including chat functionality, Q&A generation, research features, PDF translation, and multi-PDF comparison are working as expected. All models (Llama, Gemma, Mistral, Qwen) are accessible and return appropriate responses."
 
   - task: "Chat Session Management"
     implemented: true
