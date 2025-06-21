@@ -497,15 +497,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
     }
   };
 
-  const loadInsights = async () => {
-    try {
-      const response = await apiClient.get('/insights/dashboard');
-      setInsights(response.data);
-      setShowInsights(true);
-    } catch (error) {
-      alert('Error loading insights: ' + (error.response?.data?.detail || error.message));
-    }
-  };
+
 
   const exportConversation = async (format) => {
     if (!currentSession) return;
