@@ -75,7 +75,7 @@ class CreateSessionRequest(BaseModel):
 
 class GenerateQARequest(BaseModel):
     session_id: str
-    model: str = "deepseek/deepseek-r1-0528:free"
+    model: str = "meta-llama/llama-3.1-8b-instruct:free"
 
 class ResearchRequest(BaseModel):
     session_id: str
