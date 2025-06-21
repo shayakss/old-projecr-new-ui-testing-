@@ -31,7 +31,28 @@ class ChatPDFBackendTest(unittest.TestCase):
     def setUp(self):
         self.session_id = None
         print("\n=== Setting up test ===")
-
+        
+    def test_00_api_keys_loaded(self):
+        """Test that all API keys are loaded correctly"""
+        print("\n=== Testing API Keys Loaded ===")
+        
+        # Verify OpenRouter API key
+        self.assertIsNotNone(OPENROUTER_API_KEY, "OpenRouter API key not loaded")
+        self.assertTrue(len(OPENROUTER_API_KEY) > 20, "OpenRouter API key is too short")
+        
+        # Verify Deepseek Qwen API key
+        self.assertIsNotNone(DEEPSEEK_R1_QWEN_API_KEY, "Deepseek Qwen API key not loaded")
+        self.assertTrue(len(DEEPSEEK_R1_QWEN_API_KEY) > 20, "Deepseek Qwen API key is too short")
+        
+        # Verify Deepseek Free API key
+        self.assertIsNotNone(DEEPSEEK_R1_FREE_API_KEY, "Deepseek Free API key not loaded")
+        self.assertTrue(len(DEEPSEEK_R1_FREE_API_KEY) > 20, "Deepseek Free API key is too short")
+        
+        print("All API keys loaded successfully")
+        print(f"OpenRouter API Key: {OPENROUTER_API_KEY[:10]}...{OPENROUTER_API_KEY[-5:]}")
+        print(f"Deepseek Qwen API Key: {DEEPSEEK_R1_QWEN_API_KEY[:10]}...{DEEPSEEK_R1_QWEN_API_KEY[-5:]}")
+        print(f"Deepseek Free API Key: {DEEPSEEK_R1_FREE_API_KEY[:10]}...{DEEPSEEK_R1_FREE_API_KEY[-5:]}")
+        
     def test_01_create_session(self):
         """Test creating a chat session"""
         print("\n=== Testing Create Chat Session ===")
