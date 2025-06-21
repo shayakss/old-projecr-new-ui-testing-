@@ -64,57 +64,57 @@ const HomePage = ({ setCurrentView }) => {
               <FeatureCardEnhanced
                 icon="💬"
                 title="AI Chat"
-                description="Have intelligent conversations about your PDF content"
+                description="Interactive conversations with your PDF documents using advanced AI models"
               />
               <FeatureCardEnhanced
                 icon="❓"
                 title="Auto Q&A"
-                description="Generate 15 comprehensive questions and answers automatically"
+                description="Generate comprehensive question-answer pairs automatically from any document"
               />
               <FeatureCardEnhanced
                 icon="🤖"
                 title="General AI"
-                description="Ask anything beyond your PDF with our AI assistant"
+                description="Access powerful AI assistance beyond your documents for any query"
               />
               <FeatureCardEnhanced
                 icon="📊"
-                title="Research & Summary"
-                description="Get detailed analysis and comprehensive summaries"
+                title="Research & Analysis"
+                description="Detailed document analysis with insights and comprehensive summaries"
               />
               <FeatureCardEnhanced
                 icon="🎨"
-                title="PDF Annotations"
-                description="Highlight and annotate important sections"
+                title="Smart Annotations"
+                description="Highlight key sections and add intelligent annotations to your documents"
               />
               <FeatureCardEnhanced
                 icon="🔄"
-                title="Multi-PDF Comparison"
-                description="Compare content between multiple documents"
+                title="Document Comparison"
+                description="Compare multiple PDFs side-by-side with AI-powered analysis"
               />
               <FeatureCardEnhanced
                 icon="📄"
-                title="Export Conversations"
-                description="Export chats to PDF, Word, or TXT files"
+                title="Export & Share"
+                description="Export conversations to PDF, Word, or text formats for easy sharing"
               />
               <FeatureCardEnhanced
                 icon="🎤"
                 title="Voice Input"
-                description="Ask questions using voice commands"
+                description="Ask questions using natural voice commands with speech recognition"
               />
               <FeatureCardEnhanced
                 icon="🌐"
                 title="AI Translation"
-                description="Translate PDF content to any language"
+                description="Translate document content into multiple languages instantly"
               />
               <FeatureCardEnhanced
                 icon="🔍"
                 title="Advanced Search"
-                description="Search across all your PDFs and conversations"
+                description="Search across all documents and conversations with intelligent results"
               />
               <FeatureCardEnhanced
                 icon="📈"
-                title="Insights Dashboard"
-                description="Analytics on your reading patterns and insights"
+                title="Usage Analytics"
+                description="Track reading patterns and document insights with detailed analytics"
               />
             </div>
           </div>
