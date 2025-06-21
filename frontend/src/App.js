@@ -208,7 +208,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = false;
       recognitionRef.current.interimResults = false;
-      recognitionRef.current.lang = 'en-US';
+      recognitionRef.current.lang = 'ur-PK'; // Set to Urdu (Pakistan) as default
 
       recognitionRef.current.onstart = () => {
         setIsListening(true);
@@ -223,11 +223,20 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
       recognitionRef.current.onerror = (event) => {
         console.error('Speech recognition error:', event.error);
         setIsListening(false);
+        if (event.error === 'not-allowed') {
+          alert('Microphone access denied. Please allow microphone access to use voice input.');
+        } else if (event.error === 'no-speech') {
+          alert('No speech detected. Please try again.');
+        } else {
+          alert('Speech recognition error: ' + event.error);
+        }
       };
 
       recognitionRef.current.onend = () => {
         setIsListening(false);
       };
+    } else {
+      console.warn('Speech recognition not supported in this browser');
     }
   };
 
