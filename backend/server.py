@@ -292,34 +292,22 @@ async def get_messages(session_id: str, feature_type: Optional[str] = Query(None
 async def get_available_models():
     models = [
         {
-            "id": "meta-llama/llama-3.1-8b-instruct:free",
-            "name": "Llama 3.1 8B Instruct (Free)",
-            "provider": "Meta",
-            "free": True
+            "id": "claude-3-opus-20240229",
+            "name": "Claude 3 Opus",
+            "provider": "Anthropic",
+            "free": False
         },
         {
-            "id": "google/gemma-2-9b-it:free",
-            "name": "Gemma 2 9B IT (Free)",
-            "provider": "Google",
-            "free": True
+            "id": "claude-3-sonnet-20240229",
+            "name": "Claude 3 Sonnet",
+            "provider": "Anthropic",
+            "free": False
         },
         {
-            "id": "mistralai/mistral-7b-instruct:free",
-            "name": "Mistral 7B Instruct (Free)",
-            "provider": "Mistral AI",
-            "free": True
-        },
-        {
-            "id": "qwen/qwen-2-7b-instruct:free",
-            "name": "Qwen 2 7B Instruct (Free)",
-            "provider": "Qwen",
-            "free": True
-        },
-        {
-            "id": "microsoft/phi-3-mini-128k-instruct:free",
-            "name": "Phi 3 Mini 128K Instruct (Free)",
-            "provider": "Microsoft",
-            "free": True
+            "id": "claude-3-haiku-20240307",
+            "name": "Claude 3 Haiku",
+            "provider": "Anthropic",
+            "free": False
         }
     ]
     return {"models": models}
