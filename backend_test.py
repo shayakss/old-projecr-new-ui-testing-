@@ -18,14 +18,14 @@ if not BACKEND_URL:
 API_URL = f"{BACKEND_URL}/api"
 print(f"Testing backend at: {API_URL}")
 
-# Load OpenRouter API key from backend .env file for verification
+# Load Anthropic API key from backend .env file for verification
 load_dotenv('/app/backend/.env')
-OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY')
-DEEPSEEK_R1_QWEN_API_KEY = os.environ.get('DEEPSEEK_R1_QWEN_API_KEY')
-DEEPSEEK_R1_FREE_API_KEY = os.environ.get('DEEPSEEK_R1_FREE_API_KEY')
-print(f"Using OpenRouter API Key: {OPENROUTER_API_KEY[:10]}...{OPENROUTER_API_KEY[-5:]}")
-print(f"Using Deepseek Qwen API Key: {DEEPSEEK_R1_QWEN_API_KEY[:10]}...{DEEPSEEK_R1_QWEN_API_KEY[-5:]}")
-print(f"Using Deepseek Free API Key: {DEEPSEEK_R1_FREE_API_KEY[:10]}...{DEEPSEEK_R1_FREE_API_KEY[-5:]}")
+ANTHROPIC_API_KEY = os.environ.get('ANTHROPIC_API_KEY')
+if ANTHROPIC_API_KEY:
+    masked_key = f"{ANTHROPIC_API_KEY[:10]}...{ANTHROPIC_API_KEY[-5:]}"
+    print(f"Using Anthropic API Key: {masked_key}")
+else:
+    print("WARNING: Anthropic API Key not found in environment variables")
 
 class ChatPDFBackendTest(unittest.TestCase):
     def setUp(self):
@@ -33,25 +33,17 @@ class ChatPDFBackendTest(unittest.TestCase):
         print("\n=== Setting up test ===")
         
     def test_00_api_keys_loaded(self):
-        """Test that all API keys are loaded correctly"""
-        print("\n=== Testing API Keys Loaded ===")
+        """Test that the Anthropic API key is loaded correctly"""
+        print("\n=== Testing API Key Loaded ===")
         
-        # Verify OpenRouter API key
-        self.assertIsNotNone(OPENROUTER_API_KEY, "OpenRouter API key not loaded")
-        self.assertTrue(len(OPENROUTER_API_KEY) > 20, "OpenRouter API key is too short")
+        # Verify Anthropic API key
+        self.assertIsNotNone(ANTHROPIC_API_KEY, "Anthropic API key not loaded")
+        self.assertTrue(len(ANTHROPIC_API_KEY) > 20, "Anthropic API key is too short")
+        self.assertTrue(ANTHROPIC_API_KEY.startswith("sk-ant-"), "Anthropic API key has incorrect format")
         
-        # Verify Deepseek Qwen API key
-        self.assertIsNotNone(DEEPSEEK_R1_QWEN_API_KEY, "Deepseek Qwen API key not loaded")
-        self.assertTrue(len(DEEPSEEK_R1_QWEN_API_KEY) > 20, "Deepseek Qwen API key is too short")
-        
-        # Verify Deepseek Free API key
-        self.assertIsNotNone(DEEPSEEK_R1_FREE_API_KEY, "Deepseek Free API key not loaded")
-        self.assertTrue(len(DEEPSEEK_R1_FREE_API_KEY) > 20, "Deepseek Free API key is too short")
-        
-        print("All API keys loaded successfully")
-        print(f"OpenRouter API Key: {OPENROUTER_API_KEY[:10]}...{OPENROUTER_API_KEY[-5:]}")
-        print(f"Deepseek Qwen API Key: {DEEPSEEK_R1_QWEN_API_KEY[:10]}...{DEEPSEEK_R1_QWEN_API_KEY[-5:]}")
-        print(f"Deepseek Free API Key: {DEEPSEEK_R1_FREE_API_KEY[:10]}...{DEEPSEEK_R1_FREE_API_KEY[-5:]}")
+        print("Anthropic API key loaded successfully")
+        masked_key = f"{ANTHROPIC_API_KEY[:10]}...{ANTHROPIC_API_KEY[-5:]}"
+        print(f"Anthropic API Key: {masked_key}")
         
     def test_01_create_session(self):
         """Test creating a chat session"""
