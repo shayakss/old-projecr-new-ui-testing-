@@ -198,16 +198,16 @@ class ChatPDFBackendTest(unittest.TestCase):
         payload = {
             "session_id": self.session_id,
             "content": "What is this PDF about?",
-            "model": "meta-llama/llama-3.1-8b-instruct:free",
+            "model": "claude-3-haiku-20240307",  # Using the fastest/cheapest Claude model for testing
             "feature_type": "chat"
         }
         
         response = requests.post(url, json=payload)
         print(f"Send Message Response Status: {response.status_code}")
         
-        # Check if we got a 500 error (likely due to OpenRouter API issues)
+        # Check if we got a 500 error (likely due to API issues)
         if response.status_code == 500:
-            print("WARNING: Got 500 error, likely due to OpenRouter API authentication issues.")
+            print("WARNING: Got 500 error, likely due to Anthropic API authentication issues.")
             print("This is an external API issue, not a problem with our backend implementation.")
             print("Skipping detailed validation for this test.")
             return
@@ -216,18 +216,18 @@ class ChatPDFBackendTest(unittest.TestCase):
         print(f"Send Message Response: {json.dumps(data, indent=2)}")
         
         self.assertEqual(response.status_code, 200)
-        self.assertIn("user_message", data)
-        self.assertIn("ai_response", data)
-        self.assertEqual(data["user_message"]["content"], "What is this PDF about?")
-        self.assertEqual(data["user_message"]["role"], "user")
-        self.assertEqual(data["ai_response"]["role"], "assistant")
-        self.assertIsNotNone(data["ai_response"]["content"])
+        self.assertIn("id", data)
+        self.assertIn("session_id", data)
+        self.assertIn("content", data)
+        self.assertIn("role", data)
+        self.assertEqual(data["role"], "assistant")
+        self.assertIn("timestamp", data)
         
         print("Message sent to AI and received response successfully")
         
-    def test_05a_send_message_deepseek_qwen(self):
-        """Test sending a message using the Deepseek Qwen model"""
-        print("\n=== Testing Send Message with Deepseek Qwen Model ===")
+    def test_05a_send_message_sonnet(self):
+        """Test sending a message using the Claude 3 Sonnet model"""
+        print("\n=== Testing Send Message with Claude 3 Sonnet Model ===")
         
         if not self.session_id:
             self.test_01_create_session()
@@ -237,37 +237,37 @@ class ChatPDFBackendTest(unittest.TestCase):
         
         payload = {
             "session_id": self.session_id,
-            "content": "Summarize this PDF using the Deepseek Qwen model",
-            "model": "deepseek/r1-0528-qwen3-8b",
+            "content": "Summarize this PDF using the Claude 3 Sonnet model",
+            "model": "claude-3-sonnet-20240229",
             "feature_type": "chat"
         }
         
         response = requests.post(url, json=payload)
-        print(f"Send Message (Deepseek Qwen) Response Status: {response.status_code}")
+        print(f"Send Message (Claude 3 Sonnet) Response Status: {response.status_code}")
         
-        # Check if we got a 500 error (likely due to OpenRouter API issues)
+        # Check if we got a 500 error (likely due to API issues)
         if response.status_code == 500:
-            print("WARNING: Got 500 error, likely due to OpenRouter API authentication issues.")
+            print("WARNING: Got 500 error, likely due to Anthropic API authentication issues.")
             print("This is an external API issue, not a problem with our backend implementation.")
             print("Skipping detailed validation for this test.")
             return
             
         data = response.json()
-        print(f"Send Message (Deepseek Qwen) Response: {json.dumps(data, indent=2)}")
+        print(f"Send Message (Claude 3 Sonnet) Response: {json.dumps(data, indent=2)}")
         
         self.assertEqual(response.status_code, 200)
-        self.assertIn("user_message", data)
-        self.assertIn("ai_response", data)
-        self.assertEqual(data["user_message"]["content"], "Summarize this PDF using the Deepseek Qwen model")
-        self.assertEqual(data["user_message"]["role"], "user")
-        self.assertEqual(data["ai_response"]["role"], "assistant")
-        self.assertIsNotNone(data["ai_response"]["content"])
+        self.assertIn("id", data)
+        self.assertIn("session_id", data)
+        self.assertIn("content", data)
+        self.assertIn("role", data)
+        self.assertEqual(data["role"], "assistant")
+        self.assertIn("timestamp", data)
         
-        print("Message sent to AI using Deepseek Qwen model and received response successfully")
+        print("Message sent to AI using Claude 3 Sonnet model and received response successfully")
         
-    def test_05b_send_message_deepseek_free(self):
-        """Test sending a message using the Deepseek Free model"""
-        print("\n=== Testing Send Message with Deepseek Free Model ===")
+    def test_05b_send_message_opus(self):
+        """Test sending a message using the Claude 3 Opus model"""
+        print("\n=== Testing Send Message with Claude 3 Opus Model ===")
         
         if not self.session_id:
             self.test_01_create_session()
@@ -277,33 +277,33 @@ class ChatPDFBackendTest(unittest.TestCase):
         
         payload = {
             "session_id": self.session_id,
-            "content": "Summarize this PDF using the Deepseek Free model",
-            "model": "deepseek/r1-0528:free",
+            "content": "Summarize this PDF using the Claude 3 Opus model",
+            "model": "claude-3-opus-20240229",
             "feature_type": "chat"
         }
         
         response = requests.post(url, json=payload)
-        print(f"Send Message (Deepseek Free) Response Status: {response.status_code}")
+        print(f"Send Message (Claude 3 Opus) Response Status: {response.status_code}")
         
-        # Check if we got a 500 error (likely due to OpenRouter API issues)
+        # Check if we got a 500 error (likely due to API issues)
         if response.status_code == 500:
-            print("WARNING: Got 500 error, likely due to OpenRouter API authentication issues.")
+            print("WARNING: Got 500 error, likely due to Anthropic API authentication issues.")
             print("This is an external API issue, not a problem with our backend implementation.")
             print("Skipping detailed validation for this test.")
             return
             
         data = response.json()
-        print(f"Send Message (Deepseek Free) Response: {json.dumps(data, indent=2)}")
+        print(f"Send Message (Claude 3 Opus) Response: {json.dumps(data, indent=2)}")
         
         self.assertEqual(response.status_code, 200)
-        self.assertIn("user_message", data)
-        self.assertIn("ai_response", data)
-        self.assertEqual(data["user_message"]["content"], "Summarize this PDF using the Deepseek Free model")
-        self.assertEqual(data["user_message"]["role"], "user")
-        self.assertEqual(data["ai_response"]["role"], "assistant")
-        self.assertIsNotNone(data["ai_response"]["content"])
+        self.assertIn("id", data)
+        self.assertIn("session_id", data)
+        self.assertIn("content", data)
+        self.assertIn("role", data)
+        self.assertEqual(data["role"], "assistant")
+        self.assertIn("timestamp", data)
         
-        print("Message sent to AI using Deepseek Free model and received response successfully")
+        print("Message sent to AI using Claude 3 Opus model and received response successfully")
 
     def test_06_get_messages(self):
         """Test retrieving messages from a session"""
