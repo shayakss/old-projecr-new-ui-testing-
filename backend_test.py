@@ -42,6 +42,10 @@ class ChatPDFBackendTest(unittest.TestCase):
         self.assertTrue(len(ANTHROPIC_API_KEY) > 20, "Anthropic API key is too short")
         self.assertTrue(ANTHROPIC_API_KEY.startswith("sk-ant-"), "Anthropic API key has incorrect format")
         
+        # Verify the specific new API key is loaded
+        expected_key = "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"
+        self.assertEqual(ANTHROPIC_API_KEY, expected_key, "The new Anthropic API key is not loaded correctly")
+        
         print("Anthropic API key loaded successfully")
         masked_key = f"{ANTHROPIC_API_KEY[:10]}...{ANTHROPIC_API_KEY[-5:]}"
         print(f"Anthropic API Key: {masked_key}")
