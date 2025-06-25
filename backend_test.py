@@ -144,7 +144,7 @@ class ChatPDFBackendTest(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("models", data)
         self.assertIsInstance(data["models"], list)
-        self.assertGreaterEqual(len(data["models"]), 1)
+        self.assertGreaterEqual(len(data["models"]), 3)
         
         # Verify model structure
         for model in data["models"]:
@@ -153,28 +153,35 @@ class ChatPDFBackendTest(unittest.TestCase):
             self.assertIn("provider", model)
             self.assertIn("free", model)
         
-        # Verify the total number of models (4 original + 2 new Deepseek)
-        self.assertEqual(len(data["models"]), 6, "Expected 6 models (4 original + 2 Deepseek)")
+        # Verify the total number of models (3 Claude models)
+        self.assertEqual(len(data["models"]), 3, "Expected 3 Claude models")
         
-        # Verify the Deepseek models are present
+        # Verify the Claude models are present
         model_ids = [model["id"] for model in data["models"]]
-        self.assertIn("deepseek/r1-0528-qwen3-8b", model_ids, "Deepseek Qwen3 8B model not found")
-        self.assertIn("deepseek/r1-0528:free", model_ids, "Deepseek R1 0528 free model not found")
+        self.assertIn("claude-3-opus-20240229", model_ids, "Claude 3 Opus model not found")
+        self.assertIn("claude-3-sonnet-20240229", model_ids, "Claude 3 Sonnet model not found")
+        self.assertIn("claude-3-haiku-20240307", model_ids, "Claude 3 Haiku model not found")
         
-        # Verify the Deepseek model details
-        deepseek_qwen_model = next((model for model in data["models"] if model["id"] == "deepseek/r1-0528-qwen3-8b"), None)
-        deepseek_free_model = next((model for model in data["models"] if model["id"] == "deepseek/r1-0528:free"), None)
+        # Verify the Claude model details
+        opus_model = next((model for model in data["models"] if model["id"] == "claude-3-opus-20240229"), None)
+        sonnet_model = next((model for model in data["models"] if model["id"] == "claude-3-sonnet-20240229"), None)
+        haiku_model = next((model for model in data["models"] if model["id"] == "claude-3-haiku-20240307"), None)
         
-        self.assertIsNotNone(deepseek_qwen_model, "Deepseek Qwen3 8B model not found")
-        self.assertIsNotNone(deepseek_free_model, "Deepseek R1 0528 free model not found")
+        self.assertIsNotNone(opus_model, "Claude 3 Opus model not found")
+        self.assertIsNotNone(sonnet_model, "Claude 3 Sonnet model not found")
+        self.assertIsNotNone(haiku_model, "Claude 3 Haiku model not found")
         
-        self.assertEqual(deepseek_qwen_model["name"], "Deepseek R1 0528 Qwen3 8B")
-        self.assertEqual(deepseek_qwen_model["provider"], "DeepSeek")
-        self.assertEqual(deepseek_qwen_model["free"], False)
+        self.assertEqual(opus_model["name"], "Claude 3 Opus")
+        self.assertEqual(opus_model["provider"], "Anthropic")
+        self.assertEqual(opus_model["free"], False)
         
-        self.assertEqual(deepseek_free_model["name"], "DeepSeek R1 0528 (free)")
-        self.assertEqual(deepseek_free_model["provider"], "DeepSeek")
-        self.assertEqual(deepseek_free_model["free"], True)
+        self.assertEqual(sonnet_model["name"], "Claude 3 Sonnet")
+        self.assertEqual(sonnet_model["provider"], "Anthropic")
+        self.assertEqual(sonnet_model["free"], False)
+        
+        self.assertEqual(haiku_model["name"], "Claude 3 Haiku")
+        self.assertEqual(haiku_model["provider"], "Anthropic")
+        self.assertEqual(haiku_model["free"], False)
         
         print(f"Retrieved {len(data['models'])} AI models successfully")
 
