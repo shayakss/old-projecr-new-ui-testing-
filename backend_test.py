@@ -757,7 +757,7 @@ class ChatPDFBackendTest(unittest.TestCase):
         print(f"Created session {session_id} with PDF and message for export testing")
         
         # Test export
-        url = f"{API_URL}/sessions/{session_id}/export"
+        url = f"{API_URL}/export"
         
         for export_format in ["txt", "pdf", "docx"]:
             print(f"\nTesting export format: {export_format}")
