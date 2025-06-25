@@ -11,8 +11,7 @@ import uuid
 from datetime import datetime
 import io
 import PyPDF2
-import openai
-from openai import AsyncOpenAI
+import anthropic
 import json
 
 ROOT_DIR = Path(__file__).parent
@@ -21,19 +20,18 @@ load_dotenv(ROOT_DIR / '.env')
 # Environment configuration with defaults for local development
 MONGO_URL = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
 DB_NAME = os.environ.get('DB_NAME', 'chatpdf_database')
-DEEPSEEK_API_KEY = os.environ.get('OPENROUTER_API_KEY', '')
+ANTHROPIC_API_KEY = os.environ.get('ANTHROPIC_API_KEY', '')
 
-if not DEEPSEEK_API_KEY:
-    raise ValueError("OPENROUTER_API_KEY environment variable is required")
+if not ANTHROPIC_API_KEY:
+    raise ValueError("ANTHROPIC_API_KEY environment variable is required")
 
 # MongoDB connection
 client = AsyncIOMotorClient(MONGO_URL)
 db = client[DB_NAME]
 
-# Create OpenRouter client
-openrouter_client = AsyncOpenAI(
-    base_url="https://openrouter.ai/api/v1",
-    api_key=DEEPSEEK_API_KEY,
+# Create Anthropic client
+anthropic_client = anthropic.AsyncAnthropic(
+    api_key=ANTHROPIC_API_KEY,
 )
 
 # Create the main app
@@ -67,7 +65,7 @@ class PDFDocument(BaseModel):
 class SendMessageRequest(BaseModel):
     session_id: str
     content: str
-    model: str = "meta-llama/llama-3.1-8b-instruct:free"
+    model: str = "claude-3-opus-20240229"
     feature_type: str = "chat"
 
 class CreateSessionRequest(BaseModel):
@@ -75,23 +73,23 @@ class CreateSessionRequest(BaseModel):
 
 class GenerateQARequest(BaseModel):
     session_id: str
-    model: str = "meta-llama/llama-3.1-8b-instruct:free"
+    model: str = "claude-3-opus-20240229"
 
 class ResearchRequest(BaseModel):
     session_id: str
     research_type: str = "summary"  # 'summary' or 'detailed_research'
-    model: str = "meta-llama/llama-3.1-8b-instruct:free"
+    model: str = "claude-3-opus-20240229"
 
 class ComparePDFsRequest(BaseModel):
     session_ids: List[str]
     comparison_type: str = "content"  # 'content', 'structure', 'summary'
-    model: str = "meta-llama/llama-3.1-8b-instruct:free"
+    model: str = "claude-3-opus-20240229"
 
 class TranslateRequest(BaseModel):
     session_id: str
     target_language: str
     content_type: str = "full"  # 'full', 'summary'
-    model: str = "meta-llama/llama-3.1-8b-instruct:free"
+    model: str = "claude-3-opus-20240229"
 
 class SearchRequest(BaseModel):
     query: str
@@ -116,17 +114,22 @@ async def extract_text_from_pdf(file_content: bytes) -> str:
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error processing PDF: {str(e)}")
 
-# OpenRouter AI Functions
-async def get_ai_response(messages: List[Dict], model: str = "meta-llama/llama-3.1-8b-instruct:free") -> str:
+# AI Functions
+async def get_ai_response(messages: List[Dict], model: str = "claude-3-opus-20240229") -> str:
     try:
-        # Use the OpenRouter client
-        response = await openrouter_client.chat.completions.create(
+        # Convert chat format to Anthropic format
+        system_message = next((msg["content"] for msg in messages if msg["role"] == "system"), None)
+        chat_messages = [{"role": msg["role"], "content": msg["content"]} for msg in messages if msg["role"] != "system"]
+        
+        # Use the Anthropic client
+        response = await anthropic_client.messages.create(
             model=model,
-            messages=messages,
+            system=system_message,
+            messages=chat_messages,
             max_tokens=2000,
             temperature=0.7
         )
-        return response.choices[0].message.content
+        return response.content[0].text
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"AI service error: {str(e)}")
 
@@ -757,7 +760,7 @@ async def startup_event():
     logger.info("🚀 Baloch AI chat PdF & GPT Backend starting up...")
     logger.info(f"📊 MongoDB URL: {MONGO_URL}")
     logger.info(f"🗄️  Database: {DB_NAME}")
-    logger.info(f"🆓 DeepSeek API Key: {'✅ Configured' if DEEPSEEK_API_KEY else '❌ Missing'}")
+    logger.info(f"🔑 Anthropic API Key: {'✅ Configured' if ANTHROPIC_API_KEY else '❌ Missing'}")
     logger.info("✅ Baloch AI chat PdF & GPT Backend ready!")
 
 @app.on_event("shutdown")
