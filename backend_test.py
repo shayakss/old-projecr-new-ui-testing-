@@ -833,8 +833,8 @@ def run_tests():
         ChatPDFBackendTest('test_03_upload_pdf'),
         ChatPDFBackendTest('test_04_get_available_models'),
         ChatPDFBackendTest('test_05_send_message'),
-        ChatPDFBackendTest('test_05a_send_message_deepseek_qwen'),
-        ChatPDFBackendTest('test_05b_send_message_deepseek_free'),
+        ChatPDFBackendTest('test_05a_send_message_sonnet'),
+        ChatPDFBackendTest('test_05b_send_message_opus'),
         ChatPDFBackendTest('test_06_get_messages'),
         ChatPDFBackendTest('test_07_get_messages_with_filter'),
         ChatPDFBackendTest('test_08_generate_qa'),
@@ -861,6 +861,7 @@ if __name__ == "__main__":
     print("=" * 80)
     print(f"CHATPDF BACKEND TEST SUITE")
     print(f"Backend URL: {API_URL}")
+    print(f"Using Anthropic API Key: {ANTHROPIC_API_KEY[:10]}...{ANTHROPIC_API_KEY[-5:]}")
     print("=" * 80)
     
     result = run_tests()
