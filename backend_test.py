@@ -795,7 +795,7 @@ class ChatPDFBackendTest(unittest.TestCase):
         """Test insights dashboard"""
         print("\n=== Testing Insights Dashboard ===")
         
-        url = f"{API_URL}/insights/dashboard"
+        url = f"{API_URL}/insights"
         
         response = requests.get(url)
         data = response.json()
