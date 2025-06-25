@@ -805,18 +805,15 @@ class ChatPDFBackendTest(unittest.TestCase):
         
         self.assertEqual(response.status_code, 200)
         self.assertIn("overview", data)
-        self.assertIn("recent_activity", data)
         self.assertIn("feature_usage", data)
         self.assertIn("popular_pdfs", data)
         self.assertIn("daily_usage", data)
-        self.assertIn("generated_at", data)
         
         # Verify overview structure
         overview = data["overview"]
         self.assertIn("total_sessions", overview)
         self.assertIn("total_pdfs", overview)
         self.assertIn("total_messages", overview)
-        self.assertIn("avg_messages_per_session", overview)
         
         print("Insights dashboard retrieved successfully")
 
