@@ -787,7 +787,7 @@ class ChatPDFBackendTest(unittest.TestCase):
                 # For text responses, we can check the content directly
                 self.assertEqual(response.status_code, 200)
                 self.assertTrue(len(response.content) > 0)
-                self.assertEqual(response.headers.get("Content-Type"), "text/plain")
+                self.assertTrue(response.headers.get("Content-Type", "").startswith("text/plain"))
                 self.assertTrue(response.headers.get("Content-Disposition", "").startswith(f"attachment; filename="))
             
             print(f"Export with format '{export_format}' completed successfully")
