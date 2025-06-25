@@ -770,19 +770,25 @@ class ChatPDFBackendTest(unittest.TestCase):
             }
             
             response = requests.post(url, json=payload)
-            data = response.json()
-            
             print(f"Export Response Status: {response.status_code}")
-            print(f"Export Response: {json.dumps(data, indent=2)}")
+            print(f"Export Response Content: {response.content[:100]}")
             
-            self.assertEqual(response.status_code, 200)
-            self.assertIn("content", data)
-            self.assertIn("filename", data)
-            self.assertIn("content_type", data)
-            self.assertIn("message", data)
-            
-            # Verify filename has correct extension
-            self.assertTrue(data["filename"].endswith(f".{export_format}"))
+            # For binary responses (PDF, DOCX), we can't parse as JSON
+            if export_format in ["pdf", "docx"]:
+                self.assertEqual(response.status_code, 200)
+                self.assertTrue(len(response.content) > 0)
+                content_type_map = {
+                    "pdf": "application/pdf",
+                    "docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                }
+                self.assertEqual(response.headers.get("Content-Type"), content_type_map[export_format])
+                self.assertTrue(response.headers.get("Content-Disposition", "").startswith(f"attachment; filename="))
+            else:
+                # For text responses, we can check the content directly
+                self.assertEqual(response.status_code, 200)
+                self.assertTrue(len(response.content) > 0)
+                self.assertEqual(response.headers.get("Content-Type"), "text/plain")
+                self.assertTrue(response.headers.get("Content-Disposition", "").startswith(f"attachment; filename="))
             
             print(f"Export with format '{export_format}' completed successfully")
         
