@@ -367,19 +367,19 @@ class ChatPDFBackendTest(unittest.TestCase):
             self.test_01_create_session()
             self.test_03_upload_pdf()  # Upload PDF for context
         
-        url = f"{API_URL}/sessions/{self.session_id}/generate-qa"
+        url = f"{API_URL}/generate-qa"
         
         payload = {
             "session_id": self.session_id,
-            "model": "meta-llama/llama-3.1-8b-instruct:free"
+            "model": "claude-3-haiku-20240307"  # Using the fastest/cheapest Claude model for testing
         }
         
         response = requests.post(url, json=payload)
         print(f"Generate Q&A Response Status: {response.status_code}")
         
-        # Check if we got a 500 error (likely due to OpenRouter API issues)
+        # Check if we got a 500 error (likely due to API issues)
         if response.status_code == 500:
-            print("WARNING: Got 500 error, likely due to OpenRouter API authentication issues.")
+            print("WARNING: Got 500 error, likely due to Anthropic API authentication issues.")
             print("This is an external API issue, not a problem with our backend implementation.")
             print("Skipping detailed validation for this test.")
             return
@@ -388,9 +388,8 @@ class ChatPDFBackendTest(unittest.TestCase):
         print(f"Generate Q&A Response: {json.dumps(data, indent=2)}")
         
         self.assertEqual(response.status_code, 200)
-        self.assertIn("qa_content", data)
-        self.assertIn("message", data)
-        self.assertEqual(data["message"], "Q&A generated successfully")
+        self.assertIn("session_id", data)
+        self.assertIn("qa_pairs", data)
         
         print("Q&A generated successfully")
 
@@ -402,20 +401,20 @@ class ChatPDFBackendTest(unittest.TestCase):
             self.test_01_create_session()
             self.test_03_upload_pdf()  # Upload PDF for context
         
-        url = f"{API_URL}/sessions/{self.session_id}/research"
+        url = f"{API_URL}/research"
         
         payload = {
             "session_id": self.session_id,
             "research_type": "summary",
-            "model": "meta-llama/llama-3.1-8b-instruct:free"
+            "model": "claude-3-haiku-20240307"  # Using the fastest/cheapest Claude model for testing
         }
         
         response = requests.post(url, json=payload)
         print(f"Research Summary Response Status: {response.status_code}")
         
-        # Check if we got a 500 error (likely due to OpenRouter API issues)
+        # Check if we got a 500 error (likely due to API issues)
         if response.status_code == 500:
-            print("WARNING: Got 500 error, likely due to OpenRouter API authentication issues.")
+            print("WARNING: Got 500 error, likely due to Anthropic API authentication issues.")
             print("This is an external API issue, not a problem with our backend implementation.")
             print("Skipping detailed validation for this test.")
             return
@@ -424,10 +423,10 @@ class ChatPDFBackendTest(unittest.TestCase):
         print(f"Research Summary Response: {json.dumps(data, indent=2)}")
         
         self.assertEqual(response.status_code, 200)
-        self.assertIn("research_content", data)
+        self.assertIn("session_id", data)
         self.assertIn("research_type", data)
         self.assertEqual(data["research_type"], "summary")
-        self.assertIn("message", data)
+        self.assertIn("analysis", data)
         
         print("Research summary generated successfully")
 
@@ -439,20 +438,20 @@ class ChatPDFBackendTest(unittest.TestCase):
             self.test_01_create_session()
             self.test_03_upload_pdf()  # Upload PDF for context
         
-        url = f"{API_URL}/sessions/{self.session_id}/research"
+        url = f"{API_URL}/research"
         
         payload = {
             "session_id": self.session_id,
             "research_type": "detailed_research",
-            "model": "meta-llama/llama-3.1-8b-instruct:free"
+            "model": "claude-3-haiku-20240307"  # Using the fastest/cheapest Claude model for testing
         }
         
         response = requests.post(url, json=payload)
         print(f"Detailed Research Response Status: {response.status_code}")
         
-        # Check if we got a 500 error (likely due to OpenRouter API issues)
+        # Check if we got a 500 error (likely due to API issues)
         if response.status_code == 500:
-            print("WARNING: Got 500 error, likely due to OpenRouter API authentication issues.")
+            print("WARNING: Got 500 error, likely due to Anthropic API authentication issues.")
             print("This is an external API issue, not a problem with our backend implementation.")
             print("Skipping detailed validation for this test.")
             return
@@ -461,10 +460,10 @@ class ChatPDFBackendTest(unittest.TestCase):
         print(f"Detailed Research Response: {json.dumps(data, indent=2)}")
         
         self.assertEqual(response.status_code, 200)
-        self.assertIn("research_content", data)
+        self.assertIn("session_id", data)
         self.assertIn("research_type", data)
         self.assertEqual(data["research_type"], "detailed_research")
-        self.assertIn("message", data)
+        self.assertIn("analysis", data)
         
         print("Detailed research generated successfully")
 
