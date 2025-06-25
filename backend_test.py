@@ -24,6 +24,7 @@ ANTHROPIC_API_KEY = os.environ.get('ANTHROPIC_API_KEY')
 if ANTHROPIC_API_KEY:
     masked_key = f"{ANTHROPIC_API_KEY[:10]}...{ANTHROPIC_API_KEY[-5:]}"
     print(f"Using Anthropic API Key: {masked_key}")
+    print(f"Testing new Anthropic API key: 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")
 else:
     print("WARNING: Anthropic API Key not found in environment variables")
 
