@@ -538,15 +538,15 @@ class ChatPDFBackendTest(unittest.TestCase):
             payload = {
                 "session_ids": session_ids,
                 "comparison_type": comparison_type,
-                "model": "meta-llama/llama-3.1-8b-instruct:free"
+                "model": "claude-3-haiku-20240307"  # Using the fastest/cheapest Claude model for testing
             }
             
             response = requests.post(url, json=payload)
             print(f"Compare PDFs Response Status: {response.status_code}")
             
-            # Check if we got a 500 error (likely due to OpenRouter API issues)
+            # Check if we got a 500 error (likely due to API issues)
             if response.status_code == 500:
-                print("WARNING: Got 500 error, likely due to OpenRouter API authentication issues.")
+                print("WARNING: Got 500 error, likely due to Anthropic API authentication issues.")
                 print("This is an external API issue, not a problem with our backend implementation.")
                 print("Skipping detailed validation for this test.")
                 continue
@@ -555,11 +555,10 @@ class ChatPDFBackendTest(unittest.TestCase):
             print(f"Compare PDFs Response: {json.dumps(data, indent=2)}")
             
             self.assertEqual(response.status_code, 200)
-            self.assertIn("comparison_result", data)
-            self.assertIn("documents_compared", data)
             self.assertIn("comparison_type", data)
             self.assertEqual(data["comparison_type"], comparison_type)
-            self.assertIn("message", data)
+            self.assertIn("sessions_compared", data)
+            self.assertIn("result", data)
             
             print(f"PDF comparison with type '{comparison_type}' completed successfully")
         
@@ -599,7 +598,7 @@ class ChatPDFBackendTest(unittest.TestCase):
         print(f"Created session {session_id} with PDF for translation")
         
         # Test translation
-        url = f"{API_URL}/sessions/{session_id}/translate"
+        url = f"{API_URL}/translate"
         
         for content_type in ["full", "summary"]:
             print(f"\nTesting translation content type: {content_type}")
@@ -608,15 +607,15 @@ class ChatPDFBackendTest(unittest.TestCase):
                 "session_id": session_id,
                 "target_language": "Spanish",
                 "content_type": content_type,
-                "model": "meta-llama/llama-3.1-8b-instruct:free"
+                "model": "claude-3-haiku-20240307"  # Using the fastest/cheapest Claude model for testing
             }
             
             response = requests.post(url, json=payload)
             print(f"Translate PDF Response Status: {response.status_code}")
             
-            # Check if we got a 500 error (likely due to OpenRouter API issues)
+            # Check if we got a 500 error (likely due to API issues)
             if response.status_code == 500:
-                print("WARNING: Got 500 error, likely due to OpenRouter API authentication issues.")
+                print("WARNING: Got 500 error, likely due to Anthropic API authentication issues.")
                 print("This is an external API issue, not a problem with our backend implementation.")
                 print("Skipping detailed validation for this test.")
                 continue
@@ -625,12 +624,12 @@ class ChatPDFBackendTest(unittest.TestCase):
             print(f"Translate PDF Response: {json.dumps(data, indent=2)}")
             
             self.assertEqual(response.status_code, 200)
-            self.assertIn("translation", data)
+            self.assertIn("session_id", data)
             self.assertIn("target_language", data)
             self.assertEqual(data["target_language"], "Spanish")
             self.assertIn("content_type", data)
             self.assertEqual(data["content_type"], content_type)
-            self.assertIn("message", data)
+            self.assertIn("translation", data)
             
             print(f"PDF translation with content type '{content_type}' completed successfully")
         
