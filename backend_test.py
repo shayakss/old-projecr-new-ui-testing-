@@ -883,6 +883,7 @@ def run_tests():
         ChatPDFBackendTest('test_02_get_sessions'),
         ChatPDFBackendTest('test_03_upload_pdf'),
         ChatPDFBackendTest('test_04_get_available_models'),
+        ChatPDFBackendTest('test_05c_simple_chat_message'),  # Test simple chat first
         ChatPDFBackendTest('test_05_send_message'),
         ChatPDFBackendTest('test_05a_send_message_sonnet'),
         ChatPDFBackendTest('test_05b_send_message_opus'),
