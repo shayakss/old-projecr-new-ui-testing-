@@ -697,7 +697,7 @@ class ChatPDFBackendTest(unittest.TestCase):
             
             self.assertEqual(response.status_code, 200)
             self.assertIn("results", data)
-            self.assertIn("total_found", data)
+            self.assertIn("total_results", data)
             self.assertIn("query", data)
             self.assertEqual(data["query"], "searchable")
             self.assertIn("search_type", data)
