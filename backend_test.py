@@ -529,7 +529,10 @@ if __name__ == "__main__":
     print("=" * 80)
     print(f"CHATPDF BACKEND TEST SUITE")
     print(f"Backend URL: {API_URL}")
-    print(f"Using OpenRouter API Key: {OPENROUTER_API_KEY[:10]}...{OPENROUTER_API_KEY[-5:]}")
+    if OPENROUTER_API_KEY:
+        print(f"Using OpenRouter API Key: {OPENROUTER_API_KEY[:10]}...{OPENROUTER_API_KEY[-5:]}")
+    if GEMINI_API_KEY:
+        print(f"Using Gemini API Key: {GEMINI_API_KEY[:10]}...{GEMINI_API_KEY[-5:]}")
     print("=" * 80)
     
     result = run_tests()
