@@ -684,8 +684,8 @@ def test_research_endpoint(research_type="summary"):
         return False, str(e)
 
 def test_compare_pdfs_endpoint():
-    """Test the Compare PDFs feature"""
-    print("\n=== Testing Compare PDFs Endpoint ===")
+    """Test that the Compare PDFs feature has been removed"""
+    print("\n=== Testing Compare PDFs Endpoint Removal ===")
     
     # Create two sessions and upload PDFs to both
     test_instance1 = ChatPDFBackendTest()
@@ -724,32 +724,17 @@ def test_compare_pdfs_endpoint():
     try:
         response = requests.post(url, json=payload)
         print(f"Compare PDFs Response Status: {response.status_code}")
-        print(f"Response Headers: {response.headers}")
         
-        if response.status_code != 200:
-            print(f"Error Response: {response.text}")
-            
-            # Check if this is an API authentication issue
-            if response.status_code == 500 and "AI service error" in response.text:
-                print("WARNING: Got 500 error, likely due to OpenRouter API authentication issues.")
-                print("This is an external API issue, not a problem with our backend implementation.")
-                print("The endpoint is correctly implemented but external API call is failing.")
-                return True, "External API authentication issue, but endpoint is correctly implemented"
-            
-            return False, f"Unexpected status code: {response.status_code}, Response: {response.text}"
-        
-        data = response.json()
-        print(f"Compare PDFs Response: {json.dumps(data, indent=2)}")
-        
-        assert "comparison_type" in data, "Response missing 'comparison_type' field"
-        assert data["comparison_type"] == "content", f"Expected comparison_type 'content', got '{data['comparison_type']}'"
-        assert "sessions_compared" in data, "Response missing 'sessions_compared' field"
-        assert data["sessions_compared"] == 2, f"Expected 2 sessions compared, got {data['sessions_compared']}"
-        assert "result" in data, "Response missing 'result' field"
-        assert len(data["result"]) > 0, "Comparison result is empty"
-        
-        print("✅ Compare PDFs endpoint is working correctly")
-        return True, None
+        # We expect a 404 or 405 error since the endpoint should be removed
+        if response.status_code in [404, 405]:
+            print("✅ Compare PDFs endpoint has been successfully removed (returns 404/405 as expected)")
+            return True, "Compare PDFs endpoint has been successfully removed"
+        elif response.status_code == 200:
+            print("❌ Compare PDFs endpoint is still available (returns 200)")
+            return False, "Compare PDFs endpoint is still available and should be removed"
+        else:
+            print(f"❓ Compare PDFs endpoint returns unexpected status code: {response.status_code}")
+            return False, f"Compare PDFs endpoint returns unexpected status code: {response.status_code}"
         
     except Exception as e:
         print(f"Error testing Compare PDFs endpoint: {str(e)}")
