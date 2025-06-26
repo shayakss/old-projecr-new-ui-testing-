@@ -985,7 +985,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
             )}
 
             {/* Messages Container */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            <div className="flex-1 overflow-y-auto p-6 space-y-6" style={{background: '#000000'}}>
               {messages.length === 0 ? (
                 <div className="flex items-center justify-center h-full text-quaternary">
                   <div className="text-center">
@@ -1002,58 +1002,47 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                   </div>
                 </div>
               ) : (
-                messages.filter(message => message && message.role && message.content).map((message, index) => (
+                messages.map((message, index) => (
                   <div key={message.id || index} className="message-bubble">
-                    <div className={`p-4 rounded-lg shadow-lg max-w-4xl ${
-                      message.role === 'user' 
-                        ? 'ml-auto bg-gradient-to-r from-green-400 to-green-600 text-black message-user'
-                        : message.role === 'system'
-                        ? 'mr-auto bg-gradient-to-r from-green-500 to-green-700 text-black message-system'
-                        : 'bg-black text-white border border-green-400/30 message-assistant'
-                    }`}>
-                      <div className="flex items-start space-x-3">
-                        <div className="flex-shrink-0">
-                          {message.role === 'user' ? (
-                            <div className="w-8 h-8 bg-black bg-opacity-20 rounded-full flex items-center justify-center">
-                              <span className="text-sm font-bold text-green-400">You</span>
+                    <div className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                      <div className={`max-w-4xl ${message.role === 'user' ? 'text-right' : 'text-left'}`}>
+                        {/* Message Header */}
+                        <div className={`flex items-center mb-2 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                          <div className={`flex items-center space-x-2 ${message.role === 'user' ? 'flex-row-reverse space-x-reverse' : ''}`}>
+                            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${
+                              message.role === 'user' 
+                                ? 'bg-green-400/20 text-green-400' 
+                                : message.role === 'system'
+                                ? 'bg-blue-400/20 text-blue-400'
+                                : 'bg-purple-400/20 text-purple-400'
+                            }`}>
+                              {message.role === 'user' ? '👤' : message.role === 'system' ? '📄' : '🤖'}
                             </div>
-                          ) : message.role === 'system' ? (
-                            <div className="w-8 h-8 bg-black bg-opacity-20 rounded-full flex items-center justify-center">
-                              <span className="text-sm">🔧</span>
-                            </div>
-                          ) : (
-                            <div className="w-8 h-8 bg-green-400 rounded-full flex items-center justify-center">
-                              <span className="text-sm text-black">🤖</span>
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center space-x-2 mb-1">
-                            <span className="font-ui text-primary">
+                            <span className="text-sm font-medium text-gray-400">
                               {message.role === 'user' ? 'You' : message.role === 'system' ? 'System' : 'AI Assistant'}
                             </span>
-                            {message.feature_type && message.feature_type !== 'chat' && (
-                              <span className="bg-green-400 bg-opacity-20 px-2 py-1 rounded-full font-ui-sm text-green-400">
-                                {message.feature_type.replace('_', ' ').toUpperCase()}
-                              </span>
-                            )}
-                            <span className="font-caption text-muted">
+                            <span className="text-xs text-gray-500">
                               {message.timestamp ? new Date(message.timestamp).toLocaleTimeString() : ''}
                             </span>
                           </div>
-                          <div className="message-content leading-relaxed">
-                            {/* Use improved markdown detection */}
-                            {containsMarkdown(message.content) ? (
+                        </div>
+                        
+                        {/* Message Content */}
+                        <div className={`${message.role === 'user' ? 'text-right' : 'text-left'}`}>
+                          {containsMarkdown(message.content) ? (
+                            <div className="prose prose-invert max-w-none">
                               <MarkdownRenderer 
                                 content={message.content} 
                                 messageType={message.role}
                               />
-                            ) : (
-                              <span className="font-['Inter','system-ui',sans-serif] text-white whitespace-pre-wrap">
-                                {message.content || ''}
-                              </span>
-                            )}
-                          </div>
+                            </div>
+                          ) : (
+                            <div className={`text-base leading-relaxed whitespace-pre-wrap ${
+                              message.role === 'user' ? 'text-gray-200' : 'text-gray-100'
+                            }`}>
+                              {message.content || ''}
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
