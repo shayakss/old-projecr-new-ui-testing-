@@ -1015,7 +1015,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                         </div>
                         
                         {/* Message Content */}
-                        <div className={`${message.role === 'user' ? 'text-left' : 'text-right'}`}>
+                        <div className={`${message.role === 'user' ? 'text-right' : 'text-left'}`}>
                           {containsMarkdown(message.content) ? (
                             <div className="prose prose-invert max-w-none">
                               <MarkdownRenderer 
