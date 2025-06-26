@@ -508,9 +508,11 @@ def run_tests():
         ChatPDFBackendTest('test_03_upload_pdf'),
         ChatPDFBackendTest('test_04_get_available_models'),
         ChatPDFBackendTest('test_05_simple_chat_message'),
+        ChatPDFBackendTest('test_05a_gemini_chat_message'),
         ChatPDFBackendTest('test_06_pdf_chat_message'),
         ChatPDFBackendTest('test_07_generate_qa'),
         ChatPDFBackendTest('test_08_research_summary'),
+        ChatPDFBackendTest('test_08a_backup_functionality'),
         ChatPDFBackendTest('test_09_delete_session')
     ]
     
