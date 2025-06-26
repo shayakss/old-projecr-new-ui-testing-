@@ -763,7 +763,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder="Search across all PDFs and conversations..."
-                      className="w-full pl-10 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                      className="w-full pl-10 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-primary placeholder-quaternary focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all font-body"
                       onKeyPress={(e) => e.key === 'Enter' && searchContent()}
                     />
                   </div>
