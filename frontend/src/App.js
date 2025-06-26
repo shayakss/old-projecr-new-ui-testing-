@@ -786,7 +786,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                     {searchResults.map((result, index) => (
                       <div key={index} className="bg-gray-800 rounded-lg p-4 border border-gray-600">
                         <div className="flex items-start justify-between mb-2">
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          <span className={`px-2 py-1 rounded-full font-ui-sm ${
                             result.type === 'pdf' 
                               ? 'bg-blue-600 text-white' 
                               : 'bg-green-600 text-white'
@@ -794,20 +794,20 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                             {result.type === 'pdf' ? '📄 PDF' : '💬 Chat'}
                           </span>
                           {result.timestamp && (
-                            <span className="text-xs text-gray-400">
+                            <span className="font-caption text-muted">
                               {new Date(result.timestamp).toLocaleDateString()}
                             </span>
                           )}
                         </div>
                         {result.type === 'pdf' ? (
                           <div>
-                            <div className="font-medium text-white mb-1">{result.filename}</div>
-                            <div className="text-sm text-gray-300">{result.snippet}</div>
+                            <div className="font-ui text-primary mb-1">{result.filename}</div>
+                            <div className="font-body-sm text-secondary">{result.snippet}</div>
                           </div>
                         ) : (
                           <div>
-                            <div className="font-medium text-white mb-1">{result.session_title}</div>
-                            <div className="text-sm text-gray-300">
+                            <div className="font-ui text-primary mb-1">{result.session_title}</div>
+                            <div className="font-body-sm text-secondary">
                               <span className="font-medium">{result.role === 'user' ? 'You' : 'AI'}:</span> {result.content}
                             </div>
                           </div>
