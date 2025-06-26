@@ -15,8 +15,12 @@ BACKEND_URL = os.environ.get('REACT_APP_BACKEND_URL')
 if not BACKEND_URL:
     raise ValueError("REACT_APP_BACKEND_URL not found in environment variables")
 
-API_URL = f"{BACKEND_URL}/api"
+# For testing, we'll use the internal URL since we're running inside the container
+INTERNAL_API_URL = "http://localhost:8001/api"
+API_URL = INTERNAL_API_URL
+
 print(f"Testing backend at: {API_URL}")
+print(f"External backend URL: {BACKEND_URL}/api")
 
 # Load API keys from backend .env file for verification
 load_dotenv('/app/backend/.env')
