@@ -40,7 +40,54 @@ app = FastAPI(title="Baloch AI chat PdF & GPT API", version="2.0.0")
 api_router = APIRouter(prefix="/api")
 
 # AI Functions
-async def get_ai_response(messages: List[Dict], model: str = "claude-3-opus-20240229") -> str:
+def is_gemini_model(model: str) -> bool:
+    """Check if the model is a Gemini model"""
+    gemini_models = [
+        'gemini-2.5-flash-preview-04-17',
+        'gemini-2.5-pro-preview-05-06', 
+        'gemini-2.0-flash',
+        'gemini-2.0-flash-preview-image-generation',
+        'gemini-2.0-flash-lite',
+        'gemini-1.5-flash',
+        'gemini-1.5-flash-8b',
+        'gemini-1.5-pro'
+    ]
+    return model in gemini_models
+
+async def get_ai_response_gemini(messages: List[Dict], model: str) -> str:
+    """Handle Gemini API requests using emergentintegrations"""
+    try:
+        # Create a unique session ID for this conversation
+        session_id = str(uuid.uuid4())
+        
+        # Extract system message
+        system_message = next((msg["content"] for msg in messages if msg["role"] == "system"), "You are a helpful assistant.")
+        
+        # Initialize LlmChat with Gemini
+        chat = LlmChat(
+            api_key=GEMINI_API_KEY,
+            session_id=session_id,
+            system_message=system_message
+        ).with_model("gemini", model)
+        
+        # Get the last user message (most recent)
+        user_messages = [msg for msg in messages if msg["role"] == "user"]
+        if not user_messages:
+            raise HTTPException(status_code=400, detail="No user message found")
+        
+        last_user_message = user_messages[-1]["content"]
+        
+        # Create UserMessage and send
+        user_message = UserMessage(text=last_user_message)
+        response = await chat.send_message(user_message)
+        
+        return response
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Gemini AI service error: {str(e)}")
+
+async def get_ai_response_openrouter(messages: List[Dict], model: str) -> str:
+    """Handle OpenRouter API requests (Claude models)"""
     try:
         # Convert chat format to OpenRouter format
         system_message = next((msg["content"] for msg in messages if msg["role"] == "system"), None)
@@ -67,7 +114,31 @@ async def get_ai_response(messages: List[Dict], model: str = "claude-3-opus-2024
             result = response.json()
             return result["choices"][0]["message"]["content"]
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"AI service error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"OpenRouter AI service error: {str(e)}")
+
+async def get_ai_response(messages: List[Dict], model: str = "claude-3-opus-20240229") -> str:
+    """Route AI requests to appropriate provider based on model"""
+    try:
+        if is_gemini_model(model):
+            if not GEMINI_API_KEY:
+                raise HTTPException(status_code=500, detail="Gemini API key not configured")
+            return await get_ai_response_gemini(messages, model)
+        else:
+            if not OPENROUTER_API_KEY:
+                raise HTTPException(status_code=500, detail="OpenRouter API key not configured")
+            return await get_ai_response_openrouter(messages, model)
+    except Exception as e:
+        # If there's an error with the primary provider, try the backup
+        if is_gemini_model(model) and OPENROUTER_API_KEY:
+            # If Gemini fails, try with a Claude model as backup
+            logger.warning(f"Gemini model {model} failed, trying Claude backup: {str(e)}")
+            return await get_ai_response_openrouter(messages, "claude-3-haiku-20240307")
+        elif not is_gemini_model(model) and GEMINI_API_KEY:
+            # If Claude fails, try with Gemini as backup
+            logger.warning(f"Claude model {model} failed, trying Gemini backup: {str(e)}")
+            return await get_ai_response_gemini(messages, "gemini-1.5-flash")
+        else:
+            raise e
 
 # Configure logging
 logging.basicConfig(
