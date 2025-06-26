@@ -1130,6 +1130,30 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
   );
 };
 
+const ModernNavTab = ({ isActive, onClick, icon, name, isCompact }) => {
+  return (
+    <button
+      onClick={onClick}
+      className={`w-full flex items-center transition-all duration-200 rounded-xl p-3 group ${
+        isActive 
+          ? 'bg-green-400/20 border border-green-400/40 text-green-400' 
+          : 'hover:bg-green-400/10 border border-transparent hover:border-green-400/20 text-gray-400 hover:text-green-400'
+      }`}
+    >
+      <div className={`flex-shrink-0 w-8 h-8 rounded-xl flex items-center justify-center text-lg transition-all duration-200 ${
+        isActive 
+          ? 'bg-green-400/30' 
+          : 'bg-gray-700/50 group-hover:bg-green-400/20'
+      }`}>
+        {icon}
+      </div>
+      {!isCompact && (
+        <span className="ml-3 font-medium text-sm truncate">{name}</span>
+      )}
+    </button>
+  );
+};
+
 const FeatureTab = ({ isActive, onClick, icon, name }) => {
   return (
     <button
