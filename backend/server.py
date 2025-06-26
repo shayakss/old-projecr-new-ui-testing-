@@ -842,10 +842,10 @@ async def get_insights():
         "daily_usage": daily_usage
     }
 
-# Add CORS middleware
+# Add CORS middleware with environment-specific origins
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Configure appropriately for production
+    allow_origins=ALLOWED_ORIGINS if ENVIRONMENT == 'production' else ["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
