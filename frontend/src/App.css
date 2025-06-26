@@ -677,6 +677,75 @@ body {
   border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
+/* Modern Navigation Design */
+.modern-nav-tab {
+  backdrop-filter: blur(10px);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modern-nav-tab:hover {
+  transform: translateX(2px);
+}
+
+.modern-nav-tab.active {
+  box-shadow: 0 4px 12px rgba(0, 255, 136, 0.3);
+}
+
+/* Modern Chat Header */
+.modern-chat-header {
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(0, 255, 136, 0.1);
+}
+
+/* Modern Action Buttons */
+.modern-action-btn {
+  backdrop-filter: blur(10px);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modern-action-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Modern Input Styling */
+.modern-input {
+  backdrop-filter: blur(10px);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modern-input:focus {
+  box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.1);
+}
+
+/* Modern Card Styling */
+.modern-card {
+  backdrop-filter: blur(10px);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modern-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Gradient Overlays */
+.gradient-overlay-blue {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(29, 78, 216, 0.05) 100%);
+}
+
+.gradient-overlay-purple {
+  background: linear-gradient(135deg, rgba(147, 51, 234, 0.1) 0%, rgba(109, 40, 217, 0.05) 100%);
+}
+
+.gradient-overlay-orange {
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.1) 0%, rgba(234, 88, 12, 0.05) 100%);
+}
+
+.gradient-overlay-red {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.05) 100%);
+}
+
 /* Enhanced dark mode */
 .dark-mode {
   background: #000000;
