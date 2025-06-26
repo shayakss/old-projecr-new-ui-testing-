@@ -174,6 +174,9 @@ backend:
       - working: true
         agent: "testing"
         comment: "Successfully tested Research & Summary features. The /api/research endpoint is working correctly for both research types (summary and detailed_research). It properly accepts a session_id with a PDF and generates either a concise summary or a detailed research analysis based on the research_type parameter. The issue was related to missing dependencies (aiohttp, openai, tiktoken, tokenizers, jinja2, pillow) which were installed. After fixing these dependencies, the endpoint works as expected."
+      - working: true
+        agent: "testing"
+        comment: "Successfully tested Research & Summary features. The /api/research endpoint is working correctly for both research types (summary and detailed_research). It properly accepts a session_id with a PDF and generates either a concise summary or a detailed research analysis based on the research_type parameter. Fixed by installing additional missing dependencies (multidict, attrs, yarl, aiohappyeyeballs, aiosignal, regex, markupsafe)."
 
   - task: "Compare PDFs Feature"
     implemented: false
