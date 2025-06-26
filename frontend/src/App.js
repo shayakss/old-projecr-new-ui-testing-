@@ -864,15 +864,15 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center space-x-2 mb-1">
-                            <span className="font-medium text-sm">
+                            <span className="font-ui text-primary">
                               {message.role === 'user' ? 'You' : message.role === 'system' ? 'System' : 'AI Assistant'}
                             </span>
                             {message.feature_type && message.feature_type !== 'chat' && (
-                              <span className="bg-white bg-opacity-20 px-2 py-1 rounded-full text-xs">
+                              <span className="bg-white bg-opacity-20 px-2 py-1 rounded-full font-ui-sm">
                                 {message.feature_type.replace('_', ' ').toUpperCase()}
                               </span>
                             )}
-                            <span className="text-xs opacity-70">
+                            <span className="font-caption text-muted">
                               {message.timestamp ? new Date(message.timestamp).toLocaleTimeString() : ''}
                             </span>
                           </div>
