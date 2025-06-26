@@ -527,7 +527,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Gemini AI Integration"
+    - "Backend Connection and CORS Configuration"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
