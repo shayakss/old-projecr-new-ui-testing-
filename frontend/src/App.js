@@ -594,9 +594,9 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
-                        <div className="text-sm font-medium truncate">{session.title}</div>
+                        <div className="font-ui text-primary truncate">{session.title}</div>
                         {session.pdf_filename && (
-                          <div className="text-xs text-gray-400 truncate">📄 {session.pdf_filename}</div>
+                          <div className="font-caption text-quaternary truncate">📄 {session.pdf_filename}</div>
                         )}
                       </div>
                       <button
@@ -604,7 +604,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                           e.stopPropagation();
                           deleteSession(session.id);
                         }}
-                        className="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-300 text-sm transition-opacity"
+                        className="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-300 font-ui-sm transition-opacity"
                       >
                         ✕
                       </button>
