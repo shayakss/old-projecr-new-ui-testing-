@@ -372,7 +372,7 @@ Please answer questions based on this PDF content. Be specific and reference the
         {"$set": {"updated_at": datetime.utcnow()}}
     )
     
-    return ai_message
+    return {"ai_response": ai_message}
 
 @api_router.delete("/sessions/{session_id}")
 async def delete_session(session_id: str):
