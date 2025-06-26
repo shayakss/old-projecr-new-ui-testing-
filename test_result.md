@@ -105,6 +105,37 @@
 user_problem_statement: "Build an AI-powered assistant integrated into a web application called ChatPDF. Users can upload PDFs, ask questions, and receive contextual answers based on the content of their files using OpenRouter free models. Includes authentication, chat history, and session management. Added GEMINI API integration as optional AI backup."
 
 backend:
+  - task: "Backend Dependencies Resolution"
+    implemented: true
+    working: true
+    file: "/app/backend/requirements.txt"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "user"
+        comment: "User reported 502 errors when accessing /api/sessions and /api/models endpoints, indicating backend startup issues"
+      - working: true
+        agent: "main"
+        comment: "FIXED: Resolved missing backend dependencies issue. The backend was failing to start due to missing 'aiohttp' module and other dependencies (openai, tiktoken, tokenizers, jinja2, pillow). Added missing dependencies to requirements.txt and installed them. Backend is now running successfully on port 8001 with all API endpoints responding correctly. Health check returns 200 OK, models endpoint returns 7 AI models, and sessions endpoint responds properly."
+
+  - task: "PostHog Analytics CORS Issue"
+    implemented: true 
+    working: true
+    file: "/app/frontend/public/index.html"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "user"
+        comment: "User reported CORS errors with PostHog analytics: 'Access to fetch at 'https://us-assets.i.posthog.com/array/...' has been blocked by CORS policy'"
+      - working: true
+        agent: "main"
+        comment: "FIXED: Removed PostHog analytics code from index.html to eliminate CORS errors. The PostHog script was trying to load from external domain which caused CORS policy violations. Analytics functionality has been disabled to resolve the immediate issue and ensure core app functionality works properly."
+
+backend:
   - task: "Auto Q&A Generation"
     implemented: true
     working: true
