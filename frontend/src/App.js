@@ -11,74 +11,114 @@ const apiClient = axios.create({
   baseURL: API,
 });
 
-// Markdown renderer component with custom styling
-const MarkdownRenderer = ({ content }) => {
+// Markdown renderer component with custom styling for dark theme
+const MarkdownRenderer = ({ content, messageType = 'assistant' }) => {
+  const isDark = messageType === 'assistant';
+  
   return (
-    <div className="markdown-content bg-gray-50 rounded-lg p-4 my-3 border border-gray-200">
+    <div className={`markdown-content rounded-lg p-4 my-2 ${
+      isDark 
+        ? 'bg-black/40 border border-green-400/20' 
+        : 'bg-black/20 border border-green-400/30'
+    }`}>
       <ReactMarkdown
         components={{
           // Custom styling for different markdown elements
           p: ({ children }) => (
-            <p className="mb-3 text-gray-800 leading-relaxed font-['Inter','system-ui',sans-serif]">
+            <p className={`mb-3 leading-relaxed font-['Inter','system-ui',sans-serif] ${
+              isDark ? 'text-gray-200' : 'text-white'
+            }`}>
               {children}
             </p>
           ),
           strong: ({ children }) => (
-            <strong className="font-semibold text-gray-900 font-['Inter','system-ui',sans-serif]">
+            <strong className={`font-semibold font-['Inter','system-ui',sans-serif] ${
+              isDark ? 'text-green-400' : 'text-green-300'
+            }`}>
               {children}
             </strong>
           ),
           em: ({ children }) => (
-            <em className="italic text-gray-700 font-['Inter','system-ui',sans-serif]">
+            <em className={`italic font-['Inter','system-ui',sans-serif] ${
+              isDark ? 'text-gray-300' : 'text-gray-100'
+            }`}>
               {children}
             </em>
           ),
           ul: ({ children }) => (
-            <ul className="space-y-2 mb-4 pl-0">
+            <ul className="space-y-3 mb-4 pl-0">
               {children}
             </ul>
           ),
           ol: ({ children }) => (
-            <ol className="space-y-2 mb-4 pl-0 list-decimal list-inside">
+            <ol className="space-y-3 mb-4 pl-0 list-decimal list-inside">
               {children}
             </ol>
           ),
           li: ({ children }) => (
-            <li className="flex items-start space-x-3 py-2 px-3 bg-white rounded-md border border-gray-100 shadow-sm">
-              <span className="text-green-500 font-bold text-sm mt-0.5">•</span>
-              <span className="flex-1 text-gray-800 font-['Inter','system-ui',sans-serif] leading-relaxed">
+            <li className={`flex items-start space-x-3 py-3 px-4 rounded-md border shadow-sm ${
+              isDark 
+                ? 'bg-black/60 border-green-400/30' 
+                : 'bg-black/40 border-green-400/40'
+            }`}>
+              <span className="text-green-400 font-bold text-sm mt-0.5 flex-shrink-0">•</span>
+              <span className={`flex-1 font-['Inter','system-ui',sans-serif] leading-relaxed ${
+                isDark ? 'text-gray-200' : 'text-white'
+              }`}>
                 {children}
               </span>
             </li>
           ),
           h1: ({ children }) => (
-            <h1 className="text-2xl font-bold text-gray-900 mb-4 font-['Inter','system-ui',sans-serif] border-b border-gray-300 pb-2">
+            <h1 className={`text-2xl font-bold mb-4 font-['Inter','system-ui',sans-serif] border-b pb-2 ${
+              isDark 
+                ? 'text-green-400 border-green-400/30' 
+                : 'text-green-300 border-green-300/30'
+            }`}>
               {children}
             </h1>
           ),
           h2: ({ children }) => (
-            <h2 className="text-xl font-semibold text-gray-900 mb-3 font-['Inter','system-ui',sans-serif]">
+            <h2 className={`text-xl font-semibold mb-3 font-['Inter','system-ui',sans-serif] ${
+              isDark ? 'text-green-400' : 'text-green-300'
+            }`}>
               {children}
             </h2>
           ),
           h3: ({ children }) => (
-            <h3 className="text-lg font-medium text-gray-900 mb-2 font-['Inter','system-ui',sans-serif]">
+            <h3 className={`text-lg font-medium mb-2 font-['Inter','system-ui',sans-serif] ${
+              isDark ? 'text-green-400' : 'text-green-300'
+            }`}>
               {children}
             </h3>
           ),
           code: ({ inline, children }) => (
             inline ? (
-              <code className="bg-gray-100 text-gray-800 px-2 py-1 rounded text-sm font-mono">
+              <code className={`px-2 py-1 rounded text-sm font-mono ${
+                isDark 
+                  ? 'bg-black/80 text-green-400 border border-green-400/20' 
+                  : 'bg-black/60 text-green-300 border border-green-300/20'
+              }`}>
                 {children}
               </code>
             ) : (
-              <pre className="bg-gray-100 text-gray-800 p-4 rounded-lg overflow-x-auto mb-4">
-                <code className="font-mono text-sm">{children}</code>
+              <pre className={`p-4 rounded-lg overflow-x-auto mb-4 ${
+                isDark 
+                  ? 'bg-black/80 border border-green-400/20' 
+                  : 'bg-black/60 border border-green-300/20'
+              }`}>
+                <code className={`font-mono text-sm ${
+                  isDark ? 'text-green-400' : 'text-green-300'
+                }`}>{children}</code>
               </pre>
             )
           ),
           blockquote: ({ children }) => (
-            <blockquote className="border-l-4 border-green-400 pl-4 py-2 bg-green-50 rounded-r-lg mb-4 italic text-gray-700">
+            <blockquote className={`border-l-4 pl-4 py-2 rounded-r-lg mb-4 italic ${
+              isDark 
+                ? 'border-green-400 bg-green-400/10 text-gray-300' 
+                : 'border-green-300 bg-green-300/10 text-gray-200'
+            }`}>
               {children}
             </blockquote>
           ),
