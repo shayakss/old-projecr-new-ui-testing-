@@ -198,6 +198,9 @@ backend:
       - working: false
         agent: "main"
         comment: "REMOVED: Compare PDFs feature has been removed from backend (/api/compare-pdfs endpoint) and frontend (Compare PDFs tab) as requested by user. The ComparePDFsRequest model and compare_pdfs function have been deleted from server.py. Frontend tabs and related functionality have been removed from App.js."
+      - working: false
+        agent: "testing"
+        comment: "Successfully verified that the Compare PDFs feature has been removed. The /api/compare-pdfs endpoint returns a 404 error as expected, confirming that the endpoint has been properly removed from the backend."
   - task: "Authentication System (Register/Login/JWT)"
     implemented: true
     working: true
