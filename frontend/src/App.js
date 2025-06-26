@@ -772,131 +772,152 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
       <div className="flex-1 flex flex-col" style={{background: '#000000'}}>
         {currentSession ? (
           <>
-            {/* Chat Header - Enhanced Layout */}
-            <div className="border-b border-green-400/30 p-4 space-y-4" style={{background: '#0a0a0a'}}>
-              {/* Title Row */}
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="font-heading-md text-primary">{getFeatureTitle()}</h2>
-                  {currentSession.pdf_filename && (
-                    <div className="font-body-sm text-quaternary mt-1 flex items-center">
-                      <span className="status-badge status-badge-info mr-2">PDF</span>
-                      <span className="text-secondary font-medium">{currentSession.pdf_filename}</span>
-                    </div>
-                  )}
-                </div>
+            {/* Modern Chat Header */}
+            <div className="border-b border-green-400/20 p-6" style={{background: 'linear-gradient(135deg, #0f1419 0%, #1a1f2e 100%)'}}>
+              {/* Title and Status Row */}
+              <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center space-x-3">
-                  {/* AI Model Selection */}
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                    currentFeature === 'chat' ? 'bg-blue-500/20 text-blue-400' :
+                    currentFeature === 'qa_generation' ? 'bg-purple-500/20 text-purple-400' :
+                    currentFeature === 'general_ai' ? 'bg-green-500/20 text-green-400' :
+                    'bg-orange-500/20 text-orange-400'
+                  }`}>
+                    <span className="text-lg">
+                      {currentFeature === 'chat' ? '💬' :
+                       currentFeature === 'qa_generation' ? '❓' :
+                       currentFeature === 'general_ai' ? '🤖' : '📊'}
+                    </span>
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-semibold text-white">{getFeatureTitle()}</h2>
+                    {currentSession?.pdf_filename && (
+                      <div className="flex items-center space-x-2 mt-1">
+                        <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                        <span className="text-sm text-gray-400">{currentSession.pdf_filename}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                
+                {/* AI Model Selection */}
+                <div className="flex items-center space-x-3">
+                  <div className="text-xs text-gray-400 uppercase tracking-wider">Model</div>
                   <select
                     value={selectedModel}
                     onChange={(e) => setSelectedModel(e.target.value)}
-                    className="bg-black border border-green-400/30 rounded-lg px-4 py-2 font-ui text-primary hover:bg-green-400/10 focus:ring-2 focus:ring-green-400 transition-all"
+                    className="bg-gray-800/50 border border-green-400/20 rounded-lg px-3 py-2 text-sm text-white focus:border-green-400/50 focus:ring-0 focus:outline-none transition-all"
                   >
                     {models.map(model => (
-                      <option key={model.id} value={model.id} className="bg-black">
-                        {model.name} ({model.provider})
+                      <option key={model.id} value={model.id} className="bg-gray-800">
+                        {model.name}
                       </option>
                     ))}
                   </select>
                 </div>
               </div>
 
-              {/* Action Buttons Row */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {/* File Management Group */}
-                <div className="flex flex-col space-y-2">
-                  <h4 className="ui-label">📁 File Actions</h4>
-                  <div className="flex space-x-2">
-                    <input
-                      type="file"
-                      ref={fileInputRef}
-                      accept=".pdf"
-                      onChange={(e) => {
-                        if (e.target.files[0]) {
-                          uploadPDF(e.target.files[0]);
-                        }
-                      }}
-                      className="hidden"
-                    />
+              {/* Quick Actions */}
+              <div className="flex flex-wrap gap-3">
+                {/* Upload PDF Button */}
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  accept=".pdf"
+                  onChange={(e) => {
+                    if (e.target.files[0]) {
+                      uploadPDF(e.target.files[0]);
+                    }
+                  }}
+                  className="hidden"
+                />
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
+                  className="flex items-center space-x-2 px-4 py-2 bg-green-400/10 hover:bg-green-400/20 border border-green-400/30 hover:border-green-400/50 text-green-400 rounded-lg text-sm font-medium transition-all duration-200 disabled:opacity-50"
+                >
+                  {uploading ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-green-400/30 border-t-green-400 rounded-full animate-spin"></div>
+                      <span>Uploading...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>📄</span>
+                      <span>Upload PDF</span>
+                    </>
+                  )}
+                </button>
+
+                {/* Search Button */}
+                <button
+                  onClick={() => setShowSearch(!showSearch)}
+                  className="flex items-center space-x-2 px-4 py-2 bg-blue-400/10 hover:bg-blue-400/20 border border-blue-400/30 hover:border-blue-400/50 text-blue-400 rounded-lg text-sm font-medium transition-all duration-200"
+                >
+                  <span>🔍</span>
+                  <span>Search</span>
+                </button>
+
+                {/* Feature-Specific Actions */}
+                {currentFeature === 'qa_generation' && (
+                  <button
+                    onClick={generateQA}
+                    disabled={generatingQA || !currentSession?.pdf_filename}
+                    className="flex items-center space-x-2 px-4 py-2 bg-purple-400/10 hover:bg-purple-400/20 border border-purple-400/30 hover:border-purple-400/50 text-purple-400 rounded-lg text-sm font-medium transition-all duration-200 disabled:opacity-50"
+                  >
+                    {generatingQA ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-purple-400/30 border-t-purple-400 rounded-full animate-spin"></div>
+                        <span>Generating...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>❓</span>
+                        <span>Generate Q&A</span>
+                      </>
+                    )}
+                  </button>
+                )}
+
+                {currentFeature === 'research' && (
+                  <>
                     <button
-                      onClick={() => fileInputRef.current?.click()}
-                      disabled={uploading}
-                      className="flex-1 bg-gradient-to-r from-green-400 to-green-600 hover:from-green-300 hover:to-green-500 text-black px-4 py-2 rounded-lg btn-text disabled:opacity-50 transition-all duration-200 transform hover:scale-105 shadow-lg font-semibold"
+                      onClick={() => conductResearch('summary')}
+                      disabled={researching || !currentSession?.pdf_filename}
+                      className="flex items-center space-x-2 px-4 py-2 bg-orange-400/10 hover:bg-orange-400/20 border border-orange-400/30 hover:border-orange-400/50 text-orange-400 rounded-lg text-sm font-medium transition-all duration-200 disabled:opacity-50"
                     >
-                      {uploading ? (
-                        <span className="flex items-center justify-center">
-                          <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                          </svg>
-                          Uploading...
-                        </span>
+                      {researching ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-orange-400/30 border-t-orange-400 rounded-full animate-spin"></div>
+                          <span>Processing...</span>
+                        </>
                       ) : (
-                        '📄 Upload PDF'
+                        <>
+                          <span>📋</span>
+                          <span>Summarize</span>
+                        </>
                       )}
                     </button>
-                  </div>
-                </div>
-
-                {/* Search & Analytics Group */}
-                <div className="flex flex-col space-y-2">
-                  <h4 className="ui-label">🔍 Discovery</h4>
-                  <div className="flex space-x-2">
                     <button
-                      onClick={() => setShowSearch(!showSearch)}
-                      className="flex-1 bg-gradient-to-r from-green-500 to-green-700 hover:from-green-400 hover:to-green-600 text-black px-4 py-2 rounded-lg btn-text transition-all duration-200 transform hover:scale-105 shadow-lg font-semibold"
+                      onClick={() => conductResearch('detailed_research')}
+                      disabled={researching || !currentSession?.pdf_filename}
+                      className="flex items-center space-x-2 px-4 py-2 bg-red-400/10 hover:bg-red-400/20 border border-red-400/30 hover:border-red-400/50 text-red-400 rounded-lg text-sm font-medium transition-all duration-200 disabled:opacity-50"
                     >
-                      🔍 Search
+                      {researching ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-red-400/30 border-t-red-400 rounded-full animate-spin"></div>
+                          <span>Processing...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>🔬</span>
+                          <span>Research</span>
+                        </>
+                      )}
                     </button>
-                  </div>
-                </div>
+                  </>
+                )}
               </div>
-
-              {/* Feature-Specific Actions */}
-              {(currentFeature === 'qa_generation' || currentFeature === 'research') && (
-                <div className="border-t border-green-400/30 pt-4">
-                  <div className="flex flex-wrap gap-3">
-                    {currentFeature === 'qa_generation' && (
-                      <button
-                        onClick={generateQA}
-                        disabled={generatingQA || !currentSession.pdf_filename}
-                        className="bg-gradient-to-r from-green-400 to-green-600 hover:from-green-300 hover:to-green-500 text-black px-6 py-2 rounded-lg btn-text disabled:opacity-50 transition-all duration-200 transform hover:scale-105 shadow-lg font-semibold"
-                      >
-                        {generatingQA ? (
-                          <span className="flex items-center">
-                            <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                            Generating Q&A...
-                          </span>
-                        ) : (
-                          '❓ Generate 15 Q&A'
-                        )}
-                      </button>
-                    )}
-                    
-                    {currentFeature === 'research' && (
-                      <div className="flex space-x-3">
-                        <button
-                          onClick={() => conductResearch('summary')}
-                          disabled={researching || !currentSession.pdf_filename}
-                          className="bg-gradient-to-r from-green-400 to-green-600 hover:from-green-300 hover:to-green-500 text-black px-6 py-2 rounded-lg btn-text disabled:opacity-50 transition-all duration-200 transform hover:scale-105 shadow-lg font-semibold"
-                        >
-                          {researching ? 'Processing...' : '📋 Summarize'}
-                        </button>
-                        <button
-                          onClick={() => conductResearch('detailed_research')}
-                          disabled={researching || !currentSession.pdf_filename}
-                          className="bg-gradient-to-r from-green-500 to-green-700 hover:from-green-400 hover:to-green-600 text-black px-6 py-2 rounded-lg btn-text disabled:opacity-50 transition-all duration-200 transform hover:scale-105 shadow-lg font-semibold"
-                        >
-                          {researching ? 'Processing...' : '🔬 Detailed Research'}
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
             </div>
 
             {/* Enhanced Search Interface */}
