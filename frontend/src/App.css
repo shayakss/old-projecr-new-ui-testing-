@@ -769,3 +769,56 @@ body {
 .chat-feature {
   border-left: 4px solid #00ff88;
 }
+
+/* Markdown Content Styling for Dark Theme */
+.markdown-content {
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+
+.message-user .markdown-content {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+.message-assistant .markdown-content {
+  background: rgba(0, 255, 136, 0.1);
+  border: 1px solid rgba(0, 255, 136, 0.2);
+}
+
+.message-system .markdown-content {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+/* Dark theme overrides for markdown elements */
+.message-assistant .markdown-content p,
+.message-assistant .markdown-content li span {
+  color: #e5e7eb !important;
+}
+
+.message-assistant .markdown-content strong {
+  color: #00ff88 !important;
+}
+
+.message-assistant .markdown-content li {
+  background: rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid rgba(0, 255, 136, 0.2) !important;
+}
+
+.message-assistant .markdown-content h1,
+.message-assistant .markdown-content h2,
+.message-assistant .markdown-content h3 {
+  color: #00ff88 !important;
+  border-color: rgba(0, 255, 136, 0.3) !important;
+}
+
+.message-assistant .markdown-content code {
+  background: rgba(0, 0, 0, 0.5) !important;
+  color: #00ff88 !important;
+}
+
+.message-assistant .markdown-content blockquote {
+  background: rgba(0, 255, 136, 0.1) !important;
+  border-color: #00ff88 !important;
+  color: #e5e7eb !important;
+}
