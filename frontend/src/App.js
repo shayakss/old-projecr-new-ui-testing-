@@ -654,99 +654,118 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
 
   return (
     <div className="h-screen flex" style={{background: '#000000'}}>
-      {/* Sidebar */}
-      <div className={`${sidebarOpen ? 'w-80' : 'w-16'} text-white transition-all duration-300 flex flex-col border-r border-green-400/30`} style={{background: 'linear-gradient(180deg, #0a0a0a 0%, #000000 100%)'}}>
-        <div className="p-4 border-b border-green-400/30">
+      {/* Modern Compact Sidebar */}
+      <div className={`${sidebarOpen ? 'w-72' : 'w-20'} text-white transition-all duration-300 flex flex-col`} style={{background: 'linear-gradient(180deg, #0f1419 0%, #0a0e13 100%)'}}>
+        {/* Header Section */}
+        <div className="p-4 border-b border-green-400/20">
           <div className="flex items-center justify-between">
-            <button
-              onClick={() => setCurrentView('home')}
-              className={`${sidebarOpen ? 'block' : 'hidden'} font-heading-sm text-green-400 hover:text-green-300 transition-colors`}
-            >
-              ← Baloch AI chat PdF & GPT
-            </button>
+            {sidebarOpen && (
+              <button
+                onClick={() => setCurrentView('home')}
+                className="flex items-center space-x-2 text-green-400 hover:text-green-300 transition-colors font-medium text-sm"
+              >
+                <div className="w-6 h-6 rounded-full bg-green-400/20 flex items-center justify-center">
+                  <span className="text-xs">←</span>
+                </div>
+                <span>Home</span>
+              </button>
+            )}
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="p-2 hover:bg-green-400/20 rounded text-green-400"
+              className="w-8 h-8 rounded-full bg-green-400/10 hover:bg-green-400/20 flex items-center justify-center text-green-400 transition-all duration-200"
             >
-              {sidebarOpen ? '←' : '→'}
+              <span className="text-sm">{sidebarOpen ? '←' : '→'}</span>
             </button>
           </div>
-          {sidebarOpen && (
-            <button
-              onClick={createNewSession}
-              className="w-full mt-4 bg-gradient-to-r from-green-400 to-green-600 hover:from-green-300 hover:to-green-500 text-black py-2 px-4 rounded btn-text transition-colors font-semibold"
-            >
-              + New Chat
-            </button>
-          )}
         </div>
 
-        {sidebarOpen && (
-          <>
-            {/* Feature Tabs */}
-            <div className="p-4 border-b border-green-400/30">
-              <div className="space-y-2">
-                <FeatureTab 
-                  isActive={currentFeature === 'chat'} 
-                  onClick={() => setCurrentFeature('chat')}
-                  icon="💬"
-                  name="PDF Chat"
-                />
-                <FeatureTab 
-                  isActive={currentFeature === 'qa_generation'} 
-                  onClick={() => setCurrentFeature('qa_generation')}
-                  icon="❓"
-                  name="Auto Q&A"
-                />
-                <FeatureTab 
-                  isActive={currentFeature === 'general_ai'} 
-                  onClick={() => setCurrentFeature('general_ai')}
-                  icon="🤖"
-                  name="General AI"
-                />
-                <FeatureTab 
-                  isActive={currentFeature === 'research'} 
-                  onClick={() => setCurrentFeature('research')}
-                  icon="📊"
-                  name="Research"
-                />
-              </div>
-            </div>
+        {/* Navigation Tabs - Modern Circular Design */}
+        <div className="flex-1 p-4 space-y-3">
+          <div className="space-y-2">
+            <ModernNavTab 
+              isActive={currentFeature === 'chat'} 
+              onClick={() => setCurrentFeature('chat')}
+              icon="💬"
+              name="Chat"
+              isCompact={!sidebarOpen}
+            />
+            <ModernNavTab 
+              isActive={currentFeature === 'qa_generation'} 
+              onClick={() => setCurrentFeature('qa_generation')}
+              icon="❓"
+              name="Auto Q&A"
+              isCompact={!sidebarOpen}
+            />
+            <ModernNavTab 
+              isActive={currentFeature === 'general_ai'} 
+              onClick={() => setCurrentFeature('general_ai')}
+              icon="🤖"
+              name="General AI"
+              isCompact={!sidebarOpen}
+            />
+            <ModernNavTab 
+              isActive={currentFeature === 'research'} 
+              onClick={() => setCurrentFeature('research')}
+              icon="📊"
+              name="Research"
+              isCompact={!sidebarOpen}
+            />
+          </div>
 
-            {/* Sessions */}
-            <div className="flex-1 overflow-y-auto p-4">
-              <div className="space-y-2">
-                {sessions.map(session => (
-                  <div
-                    key={session.id}
-                    className={`p-3 rounded cursor-pointer group hover:bg-green-400/20 transition-colors border border-transparent hover:border-green-400/30 ${
-                      currentSession?.id === session.id ? 'bg-green-400/20 border-green-400/30' : ''
-                    }`}
-                    onClick={() => selectSession(session)}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <div className="font-ui text-primary truncate">{session.title}</div>
-                        {session.pdf_filename && (
-                          <div className="font-caption text-quaternary truncate">📄 {session.pdf_filename}</div>
-                        )}
-                      </div>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          deleteSession(session.id);
-                        }}
-                        className="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-300 font-ui-sm transition-opacity"
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  </div>
-                ))}
+          {sidebarOpen && (
+            <>
+              {/* New Chat Button */}
+              <div className="pt-4 border-t border-green-400/20">
+                <button
+                  onClick={createNewSession}
+                  className="w-full bg-green-400/10 hover:bg-green-400/20 border border-green-400/30 hover:border-green-400/50 text-green-400 py-3 px-4 rounded-xl font-medium text-sm transition-all duration-200 flex items-center justify-center space-x-2"
+                >
+                  <span className="text-lg">+</span>
+                  <span>New Chat</span>
+                </button>
               </div>
-            </div>
-          </>
-        )}
+
+              {/* Sessions List */}
+              <div className="pt-4">
+                <div className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-3 px-2">Sessions</div>
+                <div className="space-y-2 max-h-64 overflow-y-auto">
+                  {sessions.map(session => (
+                    <div
+                      key={session.id}
+                      className={`p-3 rounded-xl cursor-pointer group transition-all duration-200 ${
+                        currentSession?.id === session.id 
+                          ? 'bg-green-400/15 border border-green-400/30' 
+                          : 'hover:bg-green-400/10 border border-transparent hover:border-green-400/20'
+                      }`}
+                      onClick={() => selectSession(session)}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm font-medium text-white truncate">{session.title}</div>
+                          {session.pdf_filename && (
+                            <div className="text-xs text-gray-400 truncate mt-1 flex items-center">
+                              <span className="w-2 h-2 bg-green-400 rounded-full mr-2"></span>
+                              {session.pdf_filename}
+                            </div>
+                          )}
+                        </div>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            deleteSession(session.id);
+                          }}
+                          className="opacity-0 group-hover:opacity-100 w-6 h-6 rounded-full bg-red-400/20 hover:bg-red-400/30 text-red-400 flex items-center justify-center text-xs transition-all duration-200"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
+        </div>
       </div>
 
       {/* Main Chat Area */}
