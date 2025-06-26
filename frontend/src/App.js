@@ -1079,9 +1079,9 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Message Input Area */}
-            <div className="border-t border-green-400/30 p-4" style={{background: '#0a0a0a'}}>
-              <div className="flex space-x-4">
+            {/* Modern Message Input Area */}
+            <div className="border-t border-green-400/20 p-4" style={{background: 'linear-gradient(135deg, #0f1419 0%, #1a1f2e 100%)'}}>
+              <div className="flex items-end space-x-4">
                 <div className="flex-1 relative">
                   <textarea
                     value={inputMessage}
@@ -1089,41 +1089,38 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                     onKeyPress={handleKeyPress}
                     placeholder={getPlaceholder()}
                     disabled={loading || (currentFeature !== 'general_ai' && !currentSession?.pdf_filename)}
-                    className="w-full bg-black border border-green-400/30 rounded-lg px-4 py-3 text-primary placeholder-quaternary resize-none focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent disabled:opacity-50 transition-all font-body"
+                    className="w-full bg-gray-800/50 border border-gray-600/50 rounded-xl px-4 py-3 text-white placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-green-400/50 focus:border-transparent disabled:opacity-50 transition-all"
                     rows={inputMessage.split('\n').length || 1}
-                    style={{minHeight: '52px', maxHeight: '120px'}}
+                    style={{minHeight: '48px', maxHeight: '120px'}}
                   />
                   {recognitionRef.current && (currentFeature === 'chat' || currentFeature === 'general_ai') && (
                     <button
                       onClick={isListening ? stopListening : startListening}
-                      className={`absolute right-3 top-3 p-2 rounded-lg transition-all font-ui-sm ${
+                      className={`absolute right-3 bottom-3 w-8 h-8 rounded-lg flex items-center justify-center text-xs font-medium transition-all ${
                         isListening 
-                          ? 'bg-red-600 hover:bg-red-700 text-white' 
-                          : 'bg-green-400/20 hover:bg-green-400/30 text-green-400'
+                          ? 'bg-red-500/20 text-red-400 border border-red-500/30' 
+                          : 'bg-green-400/10 text-green-400 border border-green-400/30 hover:bg-green-400/20'
                       }`}
                       disabled={loading}
                     >
-                      {isListening ? '🛑 Stop' : '🎤 Voice'}
+                      {isListening ? '⏹' : '🎤'}
                     </button>
                   )}
                 </div>
                 <button
                   onClick={sendMessage}
                   disabled={!inputMessage.trim() || loading || (currentFeature !== 'general_ai' && !currentSession?.pdf_filename)}
-                  className="bg-gradient-to-r from-green-400 to-green-600 hover:from-green-300 hover:to-green-500 text-black px-6 py-3 rounded-lg btn-text disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105 shadow-lg flex items-center space-x-2 font-semibold"
+                  className="flex items-center space-x-2 px-6 py-3 bg-green-400/10 hover:bg-green-400/20 border border-green-400/30 hover:border-green-400/50 text-green-400 rounded-xl font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loading ? (
                     <>
-                      <svg className="animate-spin h-4 w-4 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
+                      <div className="w-4 h-4 border-2 border-green-400/30 border-t-green-400 rounded-full animate-spin"></div>
                       <span>Sending...</span>
                     </>
                   ) : (
                     <>
                       <span>Send</span>
-                      <span>↗</span>
+                      <span className="text-lg">↗</span>
                     </>
                   )}
                 </button>
