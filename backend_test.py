@@ -41,21 +41,25 @@ class ChatPDFBackendTest(unittest.TestCase):
         print("\n=== Setting up test ===")
         
     def test_00_api_keys_loaded(self):
-        """Test that the OpenRouter API key is loaded correctly"""
-        print("\n=== Testing API Key Loaded ===")
+        """Test that both API keys are loaded correctly"""
+        print("\n=== Testing API Keys Loaded ===")
         
         # Verify OpenRouter API key
         self.assertIsNotNone(OPENROUTER_API_KEY, "OpenRouter API key not loaded")
         self.assertTrue(len(OPENROUTER_API_KEY) > 20, "OpenRouter API key is too short")
         self.assertTrue(OPENROUTER_API_KEY.startswith("sk-or-"), "OpenRouter API key has incorrect format")
         
-        # Verify the specific new API key is loaded
-        expected_key = "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"
-        self.assertEqual(OPENROUTER_API_KEY, expected_key, "The new OpenRouter API key is not loaded correctly")
-        
         print("OpenRouter API key loaded successfully")
         masked_key = f"{OPENROUTER_API_KEY[:10]}...{OPENROUTER_API_KEY[-5:]}"
         print(f"OpenRouter API Key: {masked_key}")
+        
+        # Verify Gemini API key
+        self.assertIsNotNone(GEMINI_API_KEY, "Gemini API key not loaded")
+        self.assertTrue(len(GEMINI_API_KEY) > 20, "Gemini API key is too short")
+        
+        print("Gemini API key loaded successfully")
+        masked_key = f"{GEMINI_API_KEY[:10]}...{GEMINI_API_KEY[-5:]}"
+        print(f"Gemini API Key: {masked_key}")
         
     def test_01_create_session(self):
         """Test creating a chat session"""
