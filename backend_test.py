@@ -160,7 +160,9 @@ class ChatPDFBackendTest(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("models", data)
         self.assertIsInstance(data["models"], list)
-        self.assertGreaterEqual(len(data["models"]), 3)
+        
+        # We should have at least 7 models (3 Claude + 4 Gemini)
+        self.assertGreaterEqual(len(data["models"]), 7, "Expected at least 7 models (3 Claude + 4 Gemini)")
         
         # Verify model structure
         for model in data["models"]:
@@ -171,11 +173,30 @@ class ChatPDFBackendTest(unittest.TestCase):
         
         # Verify the Claude models are present
         model_ids = [model["id"] for model in data["models"]]
+        
+        # Check Claude models
         self.assertIn("claude-3-opus-20240229", model_ids, "Claude 3 Opus model not found")
         self.assertIn("claude-3-sonnet-20240229", model_ids, "Claude 3 Sonnet model not found")
         self.assertIn("claude-3-haiku-20240307", model_ids, "Claude 3 Haiku model not found")
         
+        # Check Gemini models
+        self.assertIn("gemini-2.0-flash", model_ids, "Gemini 2.0 Flash model not found")
+        self.assertIn("gemini-1.5-flash", model_ids, "Gemini 1.5 Flash model not found")
+        self.assertIn("gemini-1.5-pro", model_ids, "Gemini 1.5 Pro model not found")
+        self.assertIn("gemini-1.5-flash-8b", model_ids, "Gemini 1.5 Flash 8B model not found")
+        
+        # Verify providers
+        claude_models = [model for model in data["models"] if "claude" in model["id"]]
+        gemini_models = [model for model in data["models"] if "gemini" in model["id"]]
+        
+        for model in claude_models:
+            self.assertEqual(model["provider"], "OpenRouter", f"Expected Claude model {model['id']} to have provider 'OpenRouter'")
+        
+        for model in gemini_models:
+            self.assertEqual(model["provider"], "Google", f"Expected Gemini model {model['id']} to have provider 'Google'")
+        
         print(f"Retrieved {len(data['models'])} AI models successfully")
+        print(f"Found {len(claude_models)} Claude models and {len(gemini_models)} Gemini models")
 
     def test_05_simple_chat_message(self):
         """Test sending a simple chat message to verify AI integration"""
