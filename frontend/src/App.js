@@ -822,11 +822,11 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
             {/* Messages Container */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
               {messages.length === 0 ? (
-                <div className="flex items-center justify-center h-full text-gray-400">
+                <div className="flex items-center justify-center h-full text-quaternary">
                   <div className="text-center">
                     <div className="text-6xl mb-4">🤖</div>
-                    <h3 className="text-xl font-medium mb-2">Ready to Chat!</h3>
-                    <p className="text-gray-500">
+                    <h3 className="font-heading-sm text-primary mb-2">Ready to Chat!</h3>
+                    <p className="font-body text-secondary">
                       {currentFeature === 'general_ai' 
                         ? "Ask me anything, or upload a PDF to get started with document analysis."
                         : currentSession?.pdf_filename 
