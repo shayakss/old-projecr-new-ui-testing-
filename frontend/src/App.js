@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 import axios from 'axios';
+import ReactMarkdown from 'react-markdown';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -9,6 +10,85 @@ const API = `${BACKEND_URL}/api`;
 const apiClient = axios.create({
   baseURL: API,
 });
+
+// Markdown renderer component with custom styling
+const MarkdownRenderer = ({ content }) => {
+  return (
+    <div className="markdown-content bg-gray-50 rounded-lg p-4 my-3 border border-gray-200">
+      <ReactMarkdown
+        components={{
+          // Custom styling for different markdown elements
+          p: ({ children }) => (
+            <p className="mb-3 text-gray-800 leading-relaxed font-['Inter','system-ui',sans-serif]">
+              {children}
+            </p>
+          ),
+          strong: ({ children }) => (
+            <strong className="font-semibold text-gray-900 font-['Inter','system-ui',sans-serif]">
+              {children}
+            </strong>
+          ),
+          em: ({ children }) => (
+            <em className="italic text-gray-700 font-['Inter','system-ui',sans-serif]">
+              {children}
+            </em>
+          ),
+          ul: ({ children }) => (
+            <ul className="space-y-2 mb-4 pl-0">
+              {children}
+            </ul>
+          ),
+          ol: ({ children }) => (
+            <ol className="space-y-2 mb-4 pl-0 list-decimal list-inside">
+              {children}
+            </ol>
+          ),
+          li: ({ children }) => (
+            <li className="flex items-start space-x-3 py-2 px-3 bg-white rounded-md border border-gray-100 shadow-sm">
+              <span className="text-green-500 font-bold text-sm mt-0.5">•</span>
+              <span className="flex-1 text-gray-800 font-['Inter','system-ui',sans-serif] leading-relaxed">
+                {children}
+              </span>
+            </li>
+          ),
+          h1: ({ children }) => (
+            <h1 className="text-2xl font-bold text-gray-900 mb-4 font-['Inter','system-ui',sans-serif] border-b border-gray-300 pb-2">
+              {children}
+            </h1>
+          ),
+          h2: ({ children }) => (
+            <h2 className="text-xl font-semibold text-gray-900 mb-3 font-['Inter','system-ui',sans-serif]">
+              {children}
+            </h2>
+          ),
+          h3: ({ children }) => (
+            <h3 className="text-lg font-medium text-gray-900 mb-2 font-['Inter','system-ui',sans-serif]">
+              {children}
+            </h3>
+          ),
+          code: ({ inline, children }) => (
+            inline ? (
+              <code className="bg-gray-100 text-gray-800 px-2 py-1 rounded text-sm font-mono">
+                {children}
+              </code>
+            ) : (
+              <pre className="bg-gray-100 text-gray-800 p-4 rounded-lg overflow-x-auto mb-4">
+                <code className="font-mono text-sm">{children}</code>
+              </pre>
+            )
+          ),
+          blockquote: ({ children }) => (
+            <blockquote className="border-l-4 border-green-400 pl-4 py-2 bg-green-50 rounded-r-lg mb-4 italic text-gray-700">
+              {children}
+            </blockquote>
+          ),
+        }}
+      >
+        {content}
+      </ReactMarkdown>
+    </div>
+  );
+};
 
 const App = () => {
   const [currentView, setCurrentView] = useState('home');
