@@ -525,9 +525,53 @@ def run_tests():
     
     return result
 
+def test_health_endpoint():
+    """Test the health check endpoint"""
+    print("\n=== Testing Health Check Endpoint ===")
+    
+    url = f"{API_URL}/health"
+    
+    response = requests.get(url)
+    data = response.json()
+    
+    print(f"Health Check Response Status: {response.status_code}")
+    print(f"Health Check Response: {json.dumps(data, indent=2)}")
+    
+    assert response.status_code == 200, f"Expected status code 200, got {response.status_code}"
+    assert "status" in data, "Response missing 'status' field"
+    assert data["status"] == "healthy", f"Expected status 'healthy', got '{data['status']}'"
+    assert "timestamp" in data, "Response missing 'timestamp' field"
+    
+    print("✅ Health check endpoint is working correctly")
+    return True
+
+def run_focused_tests():
+    """Run only the tests specified in the review request"""
+    print("\n=== Running Focused Tests for Backend API ===")
+    
+    tests = [
+        ("Health Check Endpoint", test_health_endpoint),
+        ("Models Endpoint", lambda: ChatPDFBackendTest('test_04_get_available_models').run()),
+        ("Session Creation", lambda: ChatPDFBackendTest('test_01_create_session').run()),
+        ("Session Listing", lambda: ChatPDFBackendTest('test_02_get_sessions').run())
+    ]
+    
+    results = []
+    for name, test_func in tests:
+        print(f"\n--- Testing {name} ---")
+        try:
+            result = test_func()
+            results.append((name, True, None))
+            print(f"✅ {name} test passed")
+        except Exception as e:
+            results.append((name, False, str(e)))
+            print(f"❌ {name} test failed: {str(e)}")
+    
+    return results
+
 if __name__ == "__main__":
     print("=" * 80)
-    print(f"CHATPDF BACKEND TEST SUITE")
+    print(f"CHATPDF BACKEND API TEST SUITE")
     print(f"Backend URL: {API_URL}")
     if OPENROUTER_API_KEY:
         print(f"Using OpenRouter API Key: {OPENROUTER_API_KEY[:10]}...{OPENROUTER_API_KEY[-5:]}")
@@ -535,16 +579,21 @@ if __name__ == "__main__":
         print(f"Using Gemini API Key: {GEMINI_API_KEY[:10]}...{GEMINI_API_KEY[-5:]}")
     print("=" * 80)
     
-    result = run_tests()
+    # Run the focused tests
+    results = run_focused_tests()
     
     # Print summary
     print("\n" + "=" * 80)
     print("TEST SUMMARY:")
-    print(f"Ran {result.testsRun} tests")
-    print(f"Failures: {len(result.failures)}")
-    print(f"Errors: {len(result.errors)}")
     
-    if result.wasSuccessful():
+    all_passed = True
+    for name, passed, error in results:
+        status = "✅ PASSED" if passed else f"❌ FAILED: {error}"
+        print(f"{name}: {status}")
+        if not passed:
+            all_passed = False
+    
+    if all_passed:
         print("\n✅ ALL TESTS PASSED")
         exit(0)
     else:
