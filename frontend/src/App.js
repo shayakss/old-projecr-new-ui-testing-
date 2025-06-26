@@ -1009,15 +1009,8 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                             </span>
                           </div>
                           <div className="message-content leading-relaxed">
-                            {/* Check if content contains markdown syntax */}
-                            {message.content && (
-                              message.content.includes('**') || 
-                              message.content.includes('*') || 
-                              message.content.includes('#') ||
-                              message.content.includes('-') ||
-                              message.content.includes('1.') ||
-                              message.content.includes('\n\n')
-                            ) ? (
+                            {/* Use improved markdown detection */}
+                            {containsMarkdown(message.content) ? (
                               <MarkdownRenderer 
                                 content={message.content} 
                                 messageType={message.role}
