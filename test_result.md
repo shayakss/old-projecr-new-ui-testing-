@@ -153,6 +153,9 @@ backend:
       - working: true
         agent: "testing"
         comment: "Fixed by installing missing dependencies (aiohttp, openai, tiktoken, tokenizers, jinja2, pillow). Auto Q&A Generation endpoint now works correctly and generates comprehensive question-answer pairs from PDF content."
+      - working: true
+        agent: "testing"
+        comment: "Successfully tested Auto Q&A Generation feature. The /api/generate-qa endpoint is working correctly. It properly accepts a session_id with a PDF and generates comprehensive question-answer pairs based on the PDF content. Fixed by installing additional missing dependencies (multidict, attrs, yarl, aiohappyeyeballs, aiosignal, regex, markupsafe)."
 
   - task: "Research & Summary Features"
     implemented: true
