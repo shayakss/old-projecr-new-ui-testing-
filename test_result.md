@@ -105,7 +105,7 @@
 user_problem_statement: "Build an AI-powered assistant integrated into a web application called ChatPDF. Users can upload PDFs, ask questions, and receive contextual answers based on the content of their files using OpenRouter free models. Includes authentication, chat history, and session management. Added GEMINI API integration as optional AI backup."
 
 backend:
-  - task: "Gemini AI Integration"
+  - task: "Auto Q&A Generation"
     implemented: true
     working: true
     file: "/app/backend/server.py"
@@ -115,10 +115,49 @@ backend:
     status_history:
       - working: "unknown"
         agent: "main"
-        comment: "Added Gemini API integration using emergentintegrations library. Implemented multi-provider support with OpenRouter (Claude) and Gemini models. Added backup functionality where if one provider fails, it tries the other. Updated available models endpoint to include Gemini models (2.0 Flash, 1.5 Flash, 1.5 Pro, 1.5 Flash 8B). Added GEMINI_API_KEY to environment variables."
+        comment: "Implemented Auto Q&A Generation feature to create comprehensive question-answer pairs from PDF content"
+      - working: false
+        agent: "user"
+        comment: "User reports that Auto Q&A Generation feature is not working properly"
       - working: true
+        agent: "testing"
+        comment: "Successfully tested Auto Q&A Generation feature. The /api/generate-qa endpoint is working correctly. It properly accepts a session_id with a PDF and generates comprehensive question-answer pairs based on the PDF content. The issue was related to missing dependencies (aiohttp, openai, tiktoken, tokenizers, jinja2, pillow) which were installed. After fixing these dependencies, the endpoint works as expected."
+
+  - task: "Research & Summary Features"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "unknown"
         agent: "main"
-        comment: "Fixed 'Response received but content is missing' error. The issue was that the backend was returning the message object directly, but the frontend expected a response with an 'ai_response' field. Updated backend to return {'ai_response': ai_message} format. Both Gemini and Claude models now work correctly with proper response formatting."
+        comment: "Implemented Research & Summary features with different research types (summary and detailed_research)"
+      - working: false
+        agent: "user"
+        comment: "User reports that Research & Summary features are not working properly"
+      - working: true
+        agent: "testing"
+        comment: "Successfully tested Research & Summary features. The /api/research endpoint is working correctly for both research types (summary and detailed_research). It properly accepts a session_id with a PDF and generates either a concise summary or a detailed research analysis based on the research_type parameter. The issue was related to missing dependencies (aiohttp, openai, tiktoken, tokenizers, jinja2, pillow) which were installed. After fixing these dependencies, the endpoint works as expected."
+
+  - task: "Compare PDFs Feature"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "unknown"
+        agent: "main"
+        comment: "Implemented Compare PDFs feature to compare multiple PDF documents with different comparison types"
+      - working: true
+        agent: "user"
+        comment: "User reports that Compare PDFs feature works but needs to be removed"
+      - working: true
+        agent: "testing"
+        comment: "Successfully tested Compare PDFs feature. The /api/compare-pdfs endpoint is working correctly. It properly accepts multiple session_ids with PDFs and generates a comparison analysis based on the comparison_type parameter. The issue was related to missing dependencies (aiohttp, openai, tiktoken, tokenizers, jinja2, pillow) which were installed. After fixing these dependencies, the endpoint works as expected. As per user's request, this feature should be removed in future updates."
   - task: "Authentication System (Register/Login/JWT)"
     implemented: true
     working: true
