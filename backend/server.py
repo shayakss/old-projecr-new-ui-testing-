@@ -403,26 +403,60 @@ async def get_messages(session_id: str, feature_type: Optional[str] = Query(None
 
 @api_router.get("/models")
 async def get_available_models():
-    models = [
-        {
-            "id": "claude-3-opus-20240229",
-            "name": "Claude 3 Opus",
-            "provider": "OpenRouter",
-            "free": False
-        },
-        {
-            "id": "claude-3-sonnet-20240229",
-            "name": "Claude 3 Sonnet",
-            "provider": "OpenRouter",
-            "free": False
-        },
-        {
-            "id": "claude-3-haiku-20240307",
-            "name": "Claude 3 Haiku",
-            "provider": "OpenRouter",
-            "free": False
-        }
-    ]
+    models = []
+    
+    # Add OpenRouter models (Claude) if API key is configured
+    if OPENROUTER_API_KEY:
+        models.extend([
+            {
+                "id": "claude-3-opus-20240229",
+                "name": "Claude 3 Opus",
+                "provider": "OpenRouter",
+                "free": False
+            },
+            {
+                "id": "claude-3-sonnet-20240229",
+                "name": "Claude 3 Sonnet",
+                "provider": "OpenRouter",
+                "free": False
+            },
+            {
+                "id": "claude-3-haiku-20240307",
+                "name": "Claude 3 Haiku",
+                "provider": "OpenRouter",
+                "free": False
+            }
+        ])
+    
+    # Add Gemini models if API key is configured
+    if GEMINI_API_KEY:
+        models.extend([
+            {
+                "id": "gemini-2.0-flash",
+                "name": "Gemini 2.0 Flash",
+                "provider": "Google",
+                "free": True
+            },
+            {
+                "id": "gemini-1.5-flash",
+                "name": "Gemini 1.5 Flash",
+                "provider": "Google",
+                "free": True
+            },
+            {
+                "id": "gemini-1.5-pro",
+                "name": "Gemini 1.5 Pro",
+                "provider": "Google",
+                "free": True
+            },
+            {
+                "id": "gemini-1.5-flash-8b",
+                "name": "Gemini 1.5 Flash 8B",
+                "provider": "Google",
+                "free": True
+            }
+        ])
+    
     return {"models": models}
 
 @api_router.post("/compare-pdfs")
