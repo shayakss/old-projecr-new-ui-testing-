@@ -626,11 +626,11 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
               {/* Title Row */}
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="heading-primary">{getFeatureTitle()}</h2>
+                  <h2 className="font-heading-md text-primary">{getFeatureTitle()}</h2>
                   {currentSession.pdf_filename && (
-                    <div className="text-sm text-gray-400 mt-1 flex items-center">
+                    <div className="font-body-sm text-quaternary mt-1 flex items-center">
                       <span className="status-badge status-badge-info mr-2">PDF</span>
-                      <span className="text-gray-300">{currentSession.pdf_filename}</span>
+                      <span className="text-secondary font-medium">{currentSession.pdf_filename}</span>
                     </div>
                   )}
                 </div>
@@ -639,7 +639,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                   <select
                     value={selectedModel}
                     onChange={(e) => setSelectedModel(e.target.value)}
-                    className="bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-sm text-white hover:bg-gray-600 focus:ring-2 focus:ring-purple-500 transition-all"
+                    className="bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 font-ui text-primary hover:bg-gray-600 focus:ring-2 focus:ring-purple-500 transition-all"
                   >
                     {models.map(model => (
                       <option key={model.id} value={model.id}>
@@ -670,7 +670,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                     <button
                       onClick={() => fileInputRef.current?.click()}
                       disabled={uploading}
-                      className="flex-1 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-4 py-2 rounded-lg text-sm font-medium disabled:opacity-50 transition-all duration-200 transform hover:scale-105 shadow-lg"
+                      className="flex-1 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-4 py-2 rounded-lg btn-text disabled:opacity-50 transition-all duration-200 transform hover:scale-105 shadow-lg"
                     >
                       {uploading ? (
                         <span className="flex items-center justify-center">
@@ -693,7 +693,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                   <div className="flex space-x-2">
                     <button
                       onClick={() => setShowSearch(!showSearch)}
-                      className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 transform hover:scale-105 shadow-lg"
+                      className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-4 py-2 rounded-lg btn-text transition-all duration-200 transform hover:scale-105 shadow-lg"
                     >
                       🔍 Search
                     </button>
@@ -709,7 +709,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                       <button
                         onClick={generateQA}
                         disabled={generatingQA || !currentSession.pdf_filename}
-                        className="bg-gradient-to-r from-cyan-600 to-cyan-700 hover:from-cyan-700 hover:to-cyan-800 text-white px-6 py-2 rounded-lg text-sm font-medium disabled:opacity-50 transition-all duration-200 transform hover:scale-105 shadow-lg"
+                        className="bg-gradient-to-r from-cyan-600 to-cyan-700 hover:from-cyan-700 hover:to-cyan-800 text-white px-6 py-2 rounded-lg btn-text disabled:opacity-50 transition-all duration-200 transform hover:scale-105 shadow-lg"
                       >
                         {generatingQA ? (
                           <span className="flex items-center">
@@ -730,14 +730,14 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                         <button
                           onClick={() => conductResearch('summary')}
                           disabled={researching || !currentSession.pdf_filename}
-                          className="bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white px-6 py-2 rounded-lg text-sm font-medium disabled:opacity-50 transition-all duration-200 transform hover:scale-105 shadow-lg"
+                          className="bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white px-6 py-2 rounded-lg btn-text disabled:opacity-50 transition-all duration-200 transform hover:scale-105 shadow-lg"
                         >
                           {researching ? 'Processing...' : '📋 Summarize'}
                         </button>
                         <button
                           onClick={() => conductResearch('detailed_research')}
                           disabled={researching || !currentSession.pdf_filename}
-                          className="bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white px-6 py-2 rounded-lg text-sm font-medium disabled:opacity-50 transition-all duration-200 transform hover:scale-105 shadow-lg"
+                          className="bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white px-6 py-2 rounded-lg btn-text disabled:opacity-50 transition-all duration-200 transform hover:scale-105 shadow-lg"
                         >
                           {researching ? 'Processing...' : '🔬 Detailed Research'}
                         </button>
