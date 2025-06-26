@@ -459,59 +459,7 @@ async def get_available_models():
     
     return {"models": models}
 
-@api_router.post("/compare-pdfs")
-async def compare_pdfs(request: ComparePDFsRequest):
-    # Verify all sessions exist and have PDFs
-    sessions_data = []
-    for session_id in request.session_ids:
-        session = await db.chat_sessions.find_one({"id": session_id})
-        if not session:
-            raise HTTPException(status_code=404, detail=f"Session {session_id} not found")
-        if not session.get("pdf_content"):
-            raise HTTPException(status_code=400, detail=f"Session {session_id} has no PDF uploaded")
-        sessions_data.append(session)
-    
-    if len(sessions_data) < 2:
-        raise HTTPException(status_code=400, detail="At least 2 sessions with PDFs are required for comparison")
-    
-    # Prepare comparison prompt based on type
-    comparison_prompts = {
-        "content": "Compare the content and key information in these PDF documents. Highlight similarities, differences, and unique aspects of each document.",
-        "structure": "Analyze and compare the structure, organization, and format of these PDF documents. Focus on how information is presented and organized.",
-        "summary": "Provide a comparative summary of these PDF documents, highlighting the main themes, conclusions, and key takeaways from each."
-    }
-    
-    prompt = comparison_prompts.get(request.comparison_type, comparison_prompts["content"])
-    
-    # Combine PDF contents for comparison
-    combined_content = f"{prompt}\n\n"
-    for i, session in enumerate(sessions_data, 1):
-        pdf_filename = session.get("pdf_filename", f"Document {i}")
-        pdf_content = session["pdf_content"][:2000]  # Limit content length
-        combined_content += f"Document {i} ({pdf_filename}):\n{pdf_content}\n\n"
-    
-    ai_messages = [
-        {"role": "system", "content": "You are an AI assistant specialized in document analysis and comparison."},
-        {"role": "user", "content": combined_content}
-    ]
-    
-    # Get AI comparison
-    comparison_result = await get_ai_response(ai_messages, request.model)
-    
-    # Save comparison as message in first session
-    comparison_message = ChatMessage(
-        session_id=request.session_ids[0],
-        content=f"PDF Comparison ({request.comparison_type}):\n{comparison_result}",
-        role="assistant",
-        feature_type="comparison"
-    )
-    await db.chat_messages.insert_one(comparison_message.dict())
-    
-    return {
-        "comparison_type": request.comparison_type,
-        "sessions_compared": len(sessions_data),
-        "result": comparison_result
-    }
+
 
 @api_router.post("/generate-qa")
 async def generate_qa(request: GenerateQARequest):
