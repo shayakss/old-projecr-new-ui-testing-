@@ -89,16 +89,6 @@ const HomePage = ({ setCurrentView }) => {
                 description="Detailed document analysis with insights and comprehensive summaries"
               />
               <FeatureCardEnhanced
-                icon="🎨"
-                title="Smart Annotations"
-                description="Highlight key sections and add intelligent annotations to your documents"
-              />
-              <FeatureCardEnhanced
-                icon="🔄"
-                title="Document Comparison"
-                description="Compare multiple PDFs side-by-side with AI-powered analysis"
-              />
-              <FeatureCardEnhanced
                 icon="🎤"
                 title="Voice Input"
                 description="Ask questions using natural voice commands with speech recognition"
