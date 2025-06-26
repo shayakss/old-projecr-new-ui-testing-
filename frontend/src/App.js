@@ -990,18 +990,22 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                               {message.timestamp ? new Date(message.timestamp).toLocaleTimeString() : ''}
                             </span>
                           </div>
-                          <div className="message-content leading-relaxed whitespace-pre-wrap">
+                          <div className="message-content leading-relaxed">
                             {/* Check if content contains markdown syntax */}
                             {message.content && (
                               message.content.includes('**') || 
                               message.content.includes('*') || 
                               message.content.includes('#') ||
                               message.content.includes('-') ||
-                              message.content.includes('1.')
+                              message.content.includes('1.') ||
+                              message.content.includes('\n\n')
                             ) ? (
-                              <MarkdownRenderer content={message.content} />
+                              <MarkdownRenderer 
+                                content={message.content} 
+                                messageType={message.role}
+                              />
                             ) : (
-                              <span className="font-['Inter','system-ui',sans-serif] text-white">
+                              <span className="font-['Inter','system-ui',sans-serif] text-white whitespace-pre-wrap">
                                 {message.content || ''}
                               </span>
                             )}
