@@ -991,11 +991,11 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
               ) : (
                 messages.map((message, index) => (
                   <div key={message.id || index} className="message-bubble">
-                    <div className={`flex ${message.role === 'user' ? 'justify-start' : 'justify-end'}`}>
-                      <div className={`max-w-4xl ${message.role === 'user' ? 'text-left' : 'text-right'}`}>
+                    <div className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                      <div className={`max-w-4xl ${message.role === 'user' ? 'text-right' : 'text-left'}`}>
                         {/* Message Header */}
-                        <div className={`flex items-center mb-2 ${message.role === 'user' ? 'justify-start' : 'justify-end'}`}>
-                          <div className={`flex items-center space-x-2 ${message.role === 'user' ? '' : 'flex-row-reverse space-x-reverse'}`}>
+                        <div className={`flex items-center mb-2 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                          <div className={`flex items-center space-x-2 ${message.role === 'user' ? 'flex-row-reverse space-x-reverse' : ''}`}>
                             <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${
                               message.role === 'user' 
                                 ? 'bg-green-400/20 text-green-400' 
