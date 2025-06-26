@@ -40,7 +40,7 @@ const HomePage = ({ setCurrentView }) => {
               alt="Baloch AI chat PdF & GPT Logo" 
               className="w-12 h-12 rounded-lg object-cover"
             />
-            <h1 className="text-4xl font-bold text-white">Baloch AI chat PdF & GPT</h1>
+            <h1 className="font-display text-primary">Baloch AI chat PdF & GPT</h1>
           </div>
         </div>
       </header>
@@ -48,16 +48,16 @@ const HomePage = ({ setCurrentView }) => {
       {/* Hero Section */}
       <main className="flex-1 flex flex-col items-center justify-center px-6 text-center relative z-10">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-5xl md:text-6xl font-bold text-white mb-8 leading-tight">
+          <h2 className="font-display text-primary mb-8 leading-tight">
             Transform Your PDFs into 
             <span className="text-purple-300 block mt-2"> Interactive Conversations</span>
           </h2>
           
           <div className="content-spacing">
-            <p className="text-xl text-purple-100 mb-4 leading-relaxed max-w-3xl">
+            <p className="font-body-lg text-secondary mb-4 leading-relaxed max-w-3xl">
               Upload any PDF document and unlock the power of AI-driven conversations.
             </p>
-            <ul className="bullet-list max-w-2xl text-lg text-purple-200">
+            <ul className="bullet-list max-w-2xl font-body text-secondary">
               <li>Ask intelligent questions about your documents</li>
               <li>Generate comprehensive Q&As automatically</li>
               <li>Get detailed summaries and research insights</li>
@@ -104,7 +104,7 @@ const HomePage = ({ setCurrentView }) => {
           {/* CTA Button */}
           <button
             onClick={() => setCurrentView('app')}
-            className="bg-white text-purple-900 px-12 py-4 rounded-full text-xl font-semibold hover:bg-purple-100 transform hover:scale-105 transition-all duration-300 shadow-2xl relative z-10"
+            className="bg-white text-purple-900 px-12 py-4 rounded-full btn-text-xl hover:bg-purple-100 transform hover:scale-105 transition-all duration-300 shadow-2xl relative z-10"
           >
             Start Chatting with Your PDFs
           </button>
@@ -112,23 +112,23 @@ const HomePage = ({ setCurrentView }) => {
           {/* Stats */}
           <div className="grid grid-cols-3 gap-8 mt-16 text-center relative z-10">
             <div>
-              <div className="text-3xl font-bold text-white">8</div>
-              <div className="text-purple-200">AI Features Available</div>
+              <div className="font-heading-lg text-primary">8</div>
+              <div className="font-body-sm text-secondary">AI Features Available</div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-white">100%</div>
-              <div className="text-purple-200">Free to Use</div>
+              <div className="font-heading-lg text-primary">100%</div>
+              <div className="font-body-sm text-secondary">Free to Use</div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-white">∞</div>
-              <div className="text-purple-200">PDF Uploads</div>
+              <div className="font-heading-lg text-primary">∞</div>
+              <div className="font-body-sm text-secondary">PDF Uploads</div>
             </div>
           </div>
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="p-6 text-center text-purple-200 relative z-10">
+      <footer className="p-6 text-center font-body-sm text-secondary relative z-10">
         <p>This project is developed BY SHAYAK SIRAJ & AHMED ❤️</p>
       </footer>
     </div>
