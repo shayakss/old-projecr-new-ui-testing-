@@ -528,7 +528,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
           <div className="flex items-center justify-between">
             <button
               onClick={() => setCurrentView('home')}
-              className={`${sidebarOpen ? 'block' : 'hidden'} text-lg font-bold text-purple-300 hover:text-white transition-colors`}
+              className={`${sidebarOpen ? 'block' : 'hidden'} font-heading-sm text-purple-300 hover:text-white transition-colors`}
             >
               ← Baloch AI chat PdF & GPT
             </button>
@@ -542,7 +542,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
           {sidebarOpen && (
             <button
               onClick={createNewSession}
-              className="w-full mt-4 bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded transition-colors"
+              className="w-full mt-4 bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded btn-text transition-colors"
             >
               + New Chat
             </button>
