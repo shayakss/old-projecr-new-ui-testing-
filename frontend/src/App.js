@@ -951,7 +951,20 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                             </span>
                           </div>
                           <div className="message-content leading-relaxed whitespace-pre-wrap">
-                            {message.content || ''}
+                            {/* Check if content contains markdown syntax */}
+                            {message.content && (
+                              message.content.includes('**') || 
+                              message.content.includes('*') || 
+                              message.content.includes('#') ||
+                              message.content.includes('-') ||
+                              message.content.includes('1.')
+                            ) ? (
+                              <MarkdownRenderer content={message.content} />
+                            ) : (
+                              <span className="font-['Inter','system-ui',sans-serif] text-white">
+                                {message.content || ''}
+                              </span>
+                            )}
                           </div>
                         </div>
                       </div>
