@@ -209,10 +209,6 @@ class ResearchRequest(BaseModel):
     research_type: str = "summary"  # 'summary' or 'detailed_research'
     model: str = "claude-3-opus-20240229"
 
-class ComparePDFsRequest(BaseModel):
-    session_ids: List[str]
-    comparison_type: str = "content"  # 'content', 'structure', 'summary'
-    model: str = "claude-3-opus-20240229"
 
 class TranslateRequest(BaseModel):
     session_id: str
