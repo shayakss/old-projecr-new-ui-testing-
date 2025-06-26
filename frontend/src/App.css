@@ -787,32 +787,39 @@ body {
   margin: 2rem 0;
 }
 
-/* Enhanced UI text */
+/* Professional UI Text and Labels */
 .ui-label {
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
   font-size: 0.75rem;
-  font-weight: 500;
+  font-weight: 600;
   color: #9ca3af;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 0.5rem;
+  line-height: 1.25;
 }
 
 .ui-value {
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
   font-size: 0.875rem;
   font-weight: 600;
   color: #ffffff;
+  letter-spacing: 0;
+  line-height: 1.25;
 }
 
-/* Status badges with better typography */
+/* Professional Status Badges */
 .status-badge {
   display: inline-flex;
   align-items: center;
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.025em;
+  line-height: 1.25;
 }
 
 .status-badge-success {
@@ -833,29 +840,41 @@ body {
   border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
-/* Enhanced form elements typography */
+/* Professional Form Elements */
 .form-label {
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
   font-size: 0.875rem;
   font-weight: 600;
   color: #e5e7eb;
   margin-bottom: 0.5rem;
   display: block;
+  letter-spacing: 0;
+  line-height: 1.25;
 }
 
 .form-input {
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
   font-size: 0.875rem;
+  font-weight: 400;
   color: #ffffff;
   background: rgba(55, 65, 81, 0.8);
   border: 1px solid rgba(107, 114, 128, 0.5);
   border-radius: 0.5rem;
   padding: 0.75rem;
   transition: all 0.2s ease;
+  letter-spacing: 0;
+  line-height: 1.25;
 }
 
 .form-input:focus {
   border-color: #8b5cf6;
   box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
   outline: none;
+}
+
+.form-input::placeholder {
+  color: #6b7280;
+  font-weight: 400;
 }
 
 /* Content sections with visual hierarchy */
