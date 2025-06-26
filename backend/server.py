@@ -23,6 +23,24 @@ MONGO_URL = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
 DB_NAME = os.environ.get('DB_NAME', 'chatpdf_database')
 OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY', '')
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
+ENVIRONMENT = os.environ.get('ENVIRONMENT', 'development')
+
+# Configure allowed origins based on environment
+if ENVIRONMENT == 'production':
+    ALLOWED_ORIGINS = [
+        "https://*.netlify.app",
+        "https://*.vercel.app", 
+        "https://*.railway.app",
+        os.environ.get('FRONTEND_URL', '')
+    ]
+    # Remove empty strings
+    ALLOWED_ORIGINS = [origin for origin in ALLOWED_ORIGINS if origin]
+else:
+    ALLOWED_ORIGINS = [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:3001"
+    ]
 
 # Validate that we have at least one AI provider configured
 if not OPENROUTER_API_KEY and not GEMINI_API_KEY:
