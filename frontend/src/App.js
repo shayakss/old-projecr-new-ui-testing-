@@ -975,10 +975,10 @@ const FeatureTab = ({ isActive, onClick, icon, name }) => {
   return (
     <button
       onClick={onClick}
-      className={`w-full text-left px-3 py-2 rounded transition-colors ${
+      className={`w-full text-left px-3 py-2 rounded transition-colors font-ui ${
         isActive 
-          ? 'bg-purple-600 text-white' 
-          : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+          ? 'bg-purple-600 text-primary' 
+          : 'text-secondary hover:bg-gray-700 hover:text-primary'
       }`}
     >
       <span className="mr-2">{icon}</span>
