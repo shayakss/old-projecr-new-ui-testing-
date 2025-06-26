@@ -566,7 +566,9 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Backend Connection and CORS Configuration"
+    - "Auto Q&A Generation"
+    - "Research & Summary Features"
+    - "Compare PDFs Feature"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
