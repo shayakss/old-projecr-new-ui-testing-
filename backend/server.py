@@ -153,6 +153,7 @@ async def startup_event():
     logger.info(f"📊 MongoDB URL: {MONGO_URL}")
     logger.info(f"🗄️  Database: {DB_NAME}")
     logger.info(f"🔑 OpenRouter API Key: {'✅ Configured' if OPENROUTER_API_KEY else '❌ Missing'}")
+    logger.info(f"🤖 Gemini API Key: {'✅ Configured' if GEMINI_API_KEY else '❌ Missing'}")
     logger.info("✅ Baloch AI chat PdF & GPT Backend ready!")
 
 @app.on_event("shutdown")
