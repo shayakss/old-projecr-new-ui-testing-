@@ -18,15 +18,22 @@ if not BACKEND_URL:
 API_URL = f"{BACKEND_URL}/api"
 print(f"Testing backend at: {API_URL}")
 
-# Load OpenRouter API key from backend .env file for verification
+# Load API keys from backend .env file for verification
 load_dotenv('/app/backend/.env')
 OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY')
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
+
 if OPENROUTER_API_KEY:
     masked_key = f"{OPENROUTER_API_KEY[:10]}...{OPENROUTER_API_KEY[-5:]}"
     print(f"Using OpenRouter API Key: {masked_key}")
-    print(f"Testing new OpenRouter API key: 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")
 else:
     print("WARNING: OpenRouter API Key not found in environment variables")
+
+if GEMINI_API_KEY:
+    masked_key = f"{GEMINI_API_KEY[:10]}...{GEMINI_API_KEY[-5:]}"
+    print(f"Using Gemini API Key: {masked_key}")
+else:
+    print("WARNING: Gemini API Key not found in environment variables")
 
 class ChatPDFBackendTest(unittest.TestCase):
     def setUp(self):
