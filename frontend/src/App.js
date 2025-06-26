@@ -472,31 +472,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
 
 
 
-  const comparePDFs = async () => {
-    if (selectedSessions.length < 2) {
-      alert('Please select at least 2 sessions with PDFs to compare');
-      return;
-    }
 
-    setComparing(true);
-    try {
-      const response = await apiClient.post('/compare-pdfs', {
-        session_ids: selectedSessions,
-        comparison_type: 'content',
-        model: selectedModel
-      });
-
-      setMessages(prev => [...prev, createMessage(
-        'assistant',
-        `📊 PDF Comparison Results:\n\n${response.data.comparison_result}`,
-        'comparison'
-      )]);
-    } catch (error) {
-      alert('Error comparing PDFs: ' + (error.response?.data?.detail || error.message));
-    } finally {
-      setComparing(false);
-    }
-  };
 
   const searchContent = async () => {
     if (!searchQuery.trim()) return;
