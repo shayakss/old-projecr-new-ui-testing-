@@ -15,7 +15,7 @@ const App = () => {
   const [currentFeature, setCurrentFeature] = useState('chat');
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900">
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-green-900">
       {currentView === 'home' && <HomePage setCurrentView={setCurrentView} />}
       {currentView === 'app' && (
         <ChatInterface 
@@ -30,16 +30,14 @@ const App = () => {
 
 const HomePage = ({ setCurrentView }) => {
   return (
-    <div className="min-h-screen flex flex-col grid-background">
+    <div className="min-h-screen flex flex-col grid-background" style={{background: 'linear-gradient(135deg, #000000 0%, #0a0a0a 25%, #1a1a1a 50%, #003d20 100%)'}}>
       {/* Header */}
       <header className="p-6 relative z-10">
         <div className="flex items-center justify-center">
           <div className="flex items-center space-x-3">
-            <img 
-              src="https://images.unsplash.com/photo-1679403766665-67ed6cd2df30" 
-              alt="Baloch AI chat PdF & GPT Logo" 
-              className="w-12 h-12 rounded-lg object-cover"
-            />
+            <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-green-400 to-green-600 flex items-center justify-center">
+              <span className="text-2xl font-bold text-black">🤖</span>
+            </div>
             <h1 className="font-display text-primary">Baloch AI chat PdF & GPT</h1>
           </div>
         </div>
@@ -50,7 +48,7 @@ const HomePage = ({ setCurrentView }) => {
         <div className="max-w-4xl mx-auto">
           <h2 className="font-display text-primary mb-8 leading-tight">
             Transform Your PDFs into 
-            <span className="text-purple-300 block mt-2"> Interactive Conversations</span>
+            <span className="text-green-300 block mt-2"> Interactive Conversations</span>
           </h2>
           
           <div className="content-spacing">
@@ -104,7 +102,7 @@ const HomePage = ({ setCurrentView }) => {
           {/* CTA Button */}
           <button
             onClick={() => setCurrentView('app')}
-            className="bg-white text-purple-900 px-12 py-4 rounded-full btn-text-xl hover:bg-purple-100 transform hover:scale-105 transition-all duration-300 shadow-2xl relative z-10"
+            className="bg-gradient-to-r from-green-400 to-green-600 text-black px-12 py-4 rounded-full btn-text-xl hover:from-green-300 hover:to-green-500 transform hover:scale-105 transition-all duration-300 shadow-2xl relative z-10 font-bold"
           >
             Start Chatting with Your PDFs
           </button>
@@ -137,10 +135,10 @@ const HomePage = ({ setCurrentView }) => {
 
 const FeatureCard = ({ icon, title, description }) => {
   return (
-    <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-white hover:bg-white/20 transition-all duration-300 border border-white/20">
+    <div className="bg-black/80 backdrop-blur-sm rounded-xl p-6 text-white hover:bg-black/90 transition-all duration-300 border border-green-400/30">
       <div className="text-4xl mb-4">{icon}</div>
       <h3 className="text-xl font-semibold mb-2">{title}</h3>
-      <p className="text-purple-100 text-sm">{description}</p>
+      <p className="text-green-100 text-sm">{description}</p>
     </div>
   );
 };
@@ -149,12 +147,12 @@ const FeatureCardEnhanced = ({ icon, title, description, isNew = false }) => {
   return (
     <div className="feature-card-enhanced rounded-xl text-white group">
       {isNew && (
-        <div className="absolute -top-2 -right-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs px-2 py-1 rounded-full font-medium">
+        <div className="absolute -top-2 -right-2 bg-gradient-to-r from-green-400 to-green-600 text-black text-xs px-2 py-1 rounded-full font-medium">
           NEW
         </div>
       )}
       <div className="feature-card-icon group-hover:scale-110 transition-transform duration-300">{icon}</div>
-      <h3 className="feature-card-title group-hover:text-purple-200 transition-colors duration-300">
+      <h3 className="feature-card-title group-hover:text-green-300 transition-colors duration-300">
         {title}
       </h3>
       <p className="feature-card-description group-hover:opacity-100 transition-opacity duration-300">
@@ -470,10 +468,6 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
     }
   };
 
-
-
-
-
   const searchContent = async () => {
     if (!searchQuery.trim()) return;
 
@@ -521,20 +515,20 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
   };
 
   return (
-    <div className="h-screen flex bg-gray-900">
+    <div className="h-screen flex" style={{background: '#000000'}}>
       {/* Sidebar */}
-      <div className={`${sidebarOpen ? 'w-80' : 'w-16'} bg-gray-800 text-white transition-all duration-300 flex flex-col border-r border-gray-700`}>
-        <div className="p-4 border-b border-gray-700">
+      <div className={`${sidebarOpen ? 'w-80' : 'w-16'} text-white transition-all duration-300 flex flex-col border-r border-green-400/30`} style={{background: 'linear-gradient(180deg, #0a0a0a 0%, #000000 100%)'}}>
+        <div className="p-4 border-b border-green-400/30">
           <div className="flex items-center justify-between">
             <button
               onClick={() => setCurrentView('home')}
-              className={`${sidebarOpen ? 'block' : 'hidden'} font-heading-sm text-purple-300 hover:text-white transition-colors`}
+              className={`${sidebarOpen ? 'block' : 'hidden'} font-heading-sm text-green-400 hover:text-green-300 transition-colors`}
             >
               ← Baloch AI chat PdF & GPT
             </button>
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="p-2 hover:bg-gray-700 rounded"
+              className="p-2 hover:bg-green-400/20 rounded text-green-400"
             >
               {sidebarOpen ? '←' : '→'}
             </button>
@@ -542,7 +536,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
           {sidebarOpen && (
             <button
               onClick={createNewSession}
-              className="w-full mt-4 bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded btn-text transition-colors"
+              className="w-full mt-4 bg-gradient-to-r from-green-400 to-green-600 hover:from-green-300 hover:to-green-500 text-black py-2 px-4 rounded btn-text transition-colors font-semibold"
             >
               + New Chat
             </button>
@@ -552,7 +546,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
         {sidebarOpen && (
           <>
             {/* Feature Tabs */}
-            <div className="p-4 border-b border-gray-700">
+            <div className="p-4 border-b border-green-400/30">
               <div className="space-y-2">
                 <FeatureTab 
                   isActive={currentFeature === 'chat'} 
@@ -587,8 +581,8 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                 {sessions.map(session => (
                   <div
                     key={session.id}
-                    className={`p-3 rounded cursor-pointer group hover:bg-gray-700 transition-colors ${
-                      currentSession?.id === session.id ? 'bg-gray-700' : ''
+                    className={`p-3 rounded cursor-pointer group hover:bg-green-400/20 transition-colors border border-transparent hover:border-green-400/30 ${
+                      currentSession?.id === session.id ? 'bg-green-400/20 border-green-400/30' : ''
                     }`}
                     onClick={() => selectSession(session)}
                   >
@@ -618,11 +612,11 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col bg-gray-900">
+      <div className="flex-1 flex flex-col" style={{background: '#000000'}}>
         {currentSession ? (
           <>
             {/* Chat Header - Enhanced Layout */}
-            <div className="bg-gray-800 border-b border-gray-700 p-4 space-y-4">
+            <div className="border-b border-green-400/30 p-4 space-y-4" style={{background: '#0a0a0a'}}>
               {/* Title Row */}
               <div className="flex items-center justify-between">
                 <div>
@@ -639,10 +633,10 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                   <select
                     value={selectedModel}
                     onChange={(e) => setSelectedModel(e.target.value)}
-                    className="bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 font-ui text-primary hover:bg-gray-600 focus:ring-2 focus:ring-purple-500 transition-all"
+                    className="bg-black border border-green-400/30 rounded-lg px-4 py-2 font-ui text-primary hover:bg-green-400/10 focus:ring-2 focus:ring-green-400 transition-all"
                   >
                     {models.map(model => (
-                      <option key={model.id} value={model.id}>
+                      <option key={model.id} value={model.id} className="bg-black">
                         {model.name} ({model.provider})
                       </option>
                     ))}
@@ -670,11 +664,11 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                     <button
                       onClick={() => fileInputRef.current?.click()}
                       disabled={uploading}
-                      className="flex-1 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-4 py-2 rounded-lg btn-text disabled:opacity-50 transition-all duration-200 transform hover:scale-105 shadow-lg"
+                      className="flex-1 bg-gradient-to-r from-green-400 to-green-600 hover:from-green-300 hover:to-green-500 text-black px-4 py-2 rounded-lg btn-text disabled:opacity-50 transition-all duration-200 transform hover:scale-105 shadow-lg font-semibold"
                     >
                       {uploading ? (
                         <span className="flex items-center justify-center">
-                          <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                           </svg>
@@ -693,7 +687,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                   <div className="flex space-x-2">
                     <button
                       onClick={() => setShowSearch(!showSearch)}
-                      className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-4 py-2 rounded-lg btn-text transition-all duration-200 transform hover:scale-105 shadow-lg"
+                      className="flex-1 bg-gradient-to-r from-green-500 to-green-700 hover:from-green-400 hover:to-green-600 text-black px-4 py-2 rounded-lg btn-text transition-all duration-200 transform hover:scale-105 shadow-lg font-semibold"
                     >
                       🔍 Search
                     </button>
@@ -703,17 +697,17 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
 
               {/* Feature-Specific Actions */}
               {(currentFeature === 'qa_generation' || currentFeature === 'research') && (
-                <div className="border-t border-gray-700 pt-4">
+                <div className="border-t border-green-400/30 pt-4">
                   <div className="flex flex-wrap gap-3">
                     {currentFeature === 'qa_generation' && (
                       <button
                         onClick={generateQA}
                         disabled={generatingQA || !currentSession.pdf_filename}
-                        className="bg-gradient-to-r from-cyan-600 to-cyan-700 hover:from-cyan-700 hover:to-cyan-800 text-white px-6 py-2 rounded-lg btn-text disabled:opacity-50 transition-all duration-200 transform hover:scale-105 shadow-lg"
+                        className="bg-gradient-to-r from-green-400 to-green-600 hover:from-green-300 hover:to-green-500 text-black px-6 py-2 rounded-lg btn-text disabled:opacity-50 transition-all duration-200 transform hover:scale-105 shadow-lg font-semibold"
                       >
                         {generatingQA ? (
                           <span className="flex items-center">
-                            <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>
@@ -730,14 +724,14 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                         <button
                           onClick={() => conductResearch('summary')}
                           disabled={researching || !currentSession.pdf_filename}
-                          className="bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white px-6 py-2 rounded-lg btn-text disabled:opacity-50 transition-all duration-200 transform hover:scale-105 shadow-lg"
+                          className="bg-gradient-to-r from-green-400 to-green-600 hover:from-green-300 hover:to-green-500 text-black px-6 py-2 rounded-lg btn-text disabled:opacity-50 transition-all duration-200 transform hover:scale-105 shadow-lg font-semibold"
                         >
                           {researching ? 'Processing...' : '📋 Summarize'}
                         </button>
                         <button
                           onClick={() => conductResearch('detailed_research')}
                           disabled={researching || !currentSession.pdf_filename}
-                          className="bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white px-6 py-2 rounded-lg btn-text disabled:opacity-50 transition-all duration-200 transform hover:scale-105 shadow-lg"
+                          className="bg-gradient-to-r from-green-500 to-green-700 hover:from-green-400 hover:to-green-600 text-black px-6 py-2 rounded-lg btn-text disabled:opacity-50 transition-all duration-200 transform hover:scale-105 shadow-lg font-semibold"
                         >
                           {researching ? 'Processing...' : '🔬 Detailed Research'}
                         </button>
@@ -750,11 +744,11 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
 
             {/* Enhanced Search Interface */}
             {showSearch && (
-              <div className="mt-4 bg-gradient-to-r from-gray-800 to-gray-700 rounded-xl p-6 border border-gray-600 shadow-xl">
+              <div className="mt-4 bg-gradient-to-r from-black to-green-900/20 rounded-xl p-6 border border-green-400/30 shadow-xl">
                 <div className="flex items-center space-x-3 mb-4">
                   <div className="flex-1 relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                      <svg className="h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
                       </svg>
                     </div>
@@ -763,19 +757,19 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder="Search across all PDFs and conversations..."
-                      className="w-full pl-10 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-primary placeholder-quaternary focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all font-body"
+                      className="w-full pl-10 pr-4 py-3 bg-black border border-green-400/30 rounded-lg text-primary placeholder-quaternary focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all font-body"
                       onKeyPress={(e) => e.key === 'Enter' && searchContent()}
                     />
                   </div>
                   <button
                     onClick={searchContent}
-                    className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-6 py-3 rounded-lg btn-text transition-all duration-200 transform hover:scale-105 shadow-lg"
+                    className="bg-gradient-to-r from-green-400 to-green-600 hover:from-green-300 hover:to-green-500 text-black px-6 py-3 rounded-lg btn-text transition-all duration-200 transform hover:scale-105 shadow-lg font-semibold"
                   >
                     Search
                   </button>
                   <button
                     onClick={() => setShowSearch(false)}
-                    className="text-gray-400 hover:text-white p-2"
+                    className="text-green-400 hover:text-green-300 p-2"
                   >
                     ✕
                   </button>
@@ -784,12 +778,12 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                 {searchResults.length > 0 && (
                   <div className="space-y-3 max-h-60 overflow-y-auto">
                     {searchResults.map((result, index) => (
-                      <div key={index} className="bg-gray-800 rounded-lg p-4 border border-gray-600">
+                      <div key={index} className="bg-black rounded-lg p-4 border border-green-400/30">
                         <div className="flex items-start justify-between mb-2">
                           <span className={`px-2 py-1 rounded-full font-ui-sm ${
                             result.type === 'pdf' 
-                              ? 'bg-blue-600 text-white' 
-                              : 'bg-green-600 text-white'
+                              ? 'bg-green-400 text-black' 
+                              : 'bg-green-500 text-black'
                           }`}>
                             {result.type === 'pdf' ? '📄 PDF' : '💬 Chat'}
                           </span>
@@ -841,24 +835,24 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                   <div key={message.id || index} className="message-bubble">
                     <div className={`p-4 rounded-lg shadow-lg max-w-4xl ${
                       message.role === 'user' 
-                        ? 'ml-auto bg-gradient-to-r from-purple-600 to-purple-700 text-white message-user'
+                        ? 'ml-auto bg-gradient-to-r from-green-400 to-green-600 text-black message-user'
                         : message.role === 'system'
-                        ? 'mr-auto bg-gradient-to-r from-green-600 to-green-700 text-white message-system'
-                        : 'bg-gray-700 text-white border border-gray-600 message-assistant'
+                        ? 'mr-auto bg-gradient-to-r from-green-500 to-green-700 text-black message-system'
+                        : 'bg-black text-white border border-green-400/30 message-assistant'
                     }`}>
                       <div className="flex items-start space-x-3">
                         <div className="flex-shrink-0">
                           {message.role === 'user' ? (
-                            <div className="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-                              <span className="text-sm font-bold">You</span>
+                            <div className="w-8 h-8 bg-black bg-opacity-20 rounded-full flex items-center justify-center">
+                              <span className="text-sm font-bold text-green-400">You</span>
                             </div>
                           ) : message.role === 'system' ? (
-                            <div className="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                            <div className="w-8 h-8 bg-black bg-opacity-20 rounded-full flex items-center justify-center">
                               <span className="text-sm">🔧</span>
                             </div>
                           ) : (
-                            <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
-                              <span className="text-sm">🤖</span>
+                            <div className="w-8 h-8 bg-green-400 rounded-full flex items-center justify-center">
+                              <span className="text-sm text-black">🤖</span>
                             </div>
                           )}
                         </div>
@@ -868,7 +862,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                               {message.role === 'user' ? 'You' : message.role === 'system' ? 'System' : 'AI Assistant'}
                             </span>
                             {message.feature_type && message.feature_type !== 'chat' && (
-                              <span className="bg-white bg-opacity-20 px-2 py-1 rounded-full font-ui-sm">
+                              <span className="bg-green-400 bg-opacity-20 px-2 py-1 rounded-full font-ui-sm text-green-400">
                                 {message.feature_type.replace('_', ' ').toUpperCase()}
                               </span>
                             )}
@@ -887,15 +881,15 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
               )}
               {loading && (
                 <div className="flex justify-start message-bubble">
-                  <div className="bg-gray-700 text-white border border-gray-600 rounded-lg p-4 shadow-lg max-w-xs">
+                  <div className="bg-black text-white border border-green-400/30 rounded-lg p-4 shadow-lg max-w-xs">
                     <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
-                        <span className="text-sm">🤖</span>
+                      <div className="w-8 h-8 bg-green-400 rounded-full flex items-center justify-center">
+                        <span className="text-sm text-black">🤖</span>
                       </div>
                       <div className="flex space-x-1">
-                        <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"></div>
-                        <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                        <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                        <div className="w-2 h-2 bg-green-400 rounded-full animate-bounce"></div>
+                        <div className="w-2 h-2 bg-green-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                        <div className="w-2 h-2 bg-green-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
                       </div>
                     </div>
                   </div>
@@ -905,7 +899,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
             </div>
 
             {/* Message Input Area */}
-            <div className="border-t border-gray-700 p-4 bg-gray-800">
+            <div className="border-t border-green-400/30 p-4" style={{background: '#0a0a0a'}}>
               <div className="flex space-x-4">
                 <div className="flex-1 relative">
                   <textarea
@@ -914,7 +908,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                     onKeyPress={handleKeyPress}
                     placeholder={getPlaceholder()}
                     disabled={loading || (currentFeature !== 'general_ai' && !currentSession?.pdf_filename)}
-                    className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-primary placeholder-quaternary resize-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent disabled:opacity-50 transition-all font-body"
+                    className="w-full bg-black border border-green-400/30 rounded-lg px-4 py-3 text-primary placeholder-quaternary resize-none focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent disabled:opacity-50 transition-all font-body"
                     rows={inputMessage.split('\n').length || 1}
                     style={{minHeight: '52px', maxHeight: '120px'}}
                   />
@@ -924,7 +918,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                       className={`absolute right-3 top-3 p-2 rounded-lg transition-all font-ui-sm ${
                         isListening 
                           ? 'bg-red-600 hover:bg-red-700 text-white' 
-                          : 'bg-gray-600 hover:bg-gray-500 text-gray-300'
+                          : 'bg-green-400/20 hover:bg-green-400/30 text-green-400'
                       }`}
                       disabled={loading}
                     >
@@ -935,11 +929,11 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                 <button
                   onClick={sendMessage}
                   disabled={!inputMessage.trim() || loading || (currentFeature !== 'general_ai' && !currentSession?.pdf_filename)}
-                  className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-6 py-3 rounded-lg btn-text disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105 shadow-lg flex items-center space-x-2"
+                  className="bg-gradient-to-r from-green-400 to-green-600 hover:from-green-300 hover:to-green-500 text-black px-6 py-3 rounded-lg btn-text disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105 shadow-lg flex items-center space-x-2 font-semibold"
                 >
                   {loading ? (
                     <>
-                      <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <svg className="animate-spin h-4 w-4 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                       </svg>
@@ -959,14 +953,12 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
         ) : (
           <div className="flex-1 flex items-center justify-center text-gray-400">
             <div className="text-center">
-              <h3 className="text-xl font-medium mb-2">No chat selected</h3>
-              <p>Create a new chat or select an existing one to get started.</p>
+              <h3 className="text-xl font-medium mb-2 text-green-400">No chat selected</h3>
+              <p className="text-secondary">Create a new chat or select an existing one to get started.</p>
             </div>
           </div>
         )}
       </div>
-      
-
     </div>
   );
 };
@@ -977,8 +969,8 @@ const FeatureTab = ({ isActive, onClick, icon, name }) => {
       onClick={onClick}
       className={`w-full text-left px-3 py-2 rounded transition-colors font-ui ${
         isActive 
-          ? 'bg-purple-600 text-primary' 
-          : 'text-secondary hover:bg-gray-700 hover:text-primary'
+          ? 'bg-gradient-to-r from-green-400 to-green-600 text-black font-semibold' 
+          : 'text-secondary hover:bg-green-400/20 hover:text-primary'
       }`}
     >
       <span className="mr-2">{icon}</span>
