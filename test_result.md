@@ -142,11 +142,11 @@ backend:
         comment: "Successfully tested Research & Summary features. The /api/research endpoint is working correctly for both research types (summary and detailed_research). It properly accepts a session_id with a PDF and generates either a concise summary or a detailed research analysis based on the research_type parameter. The issue was related to missing dependencies (aiohttp, openai, tiktoken, tokenizers, jinja2, pillow) which were installed. After fixing these dependencies, the endpoint works as expected."
 
   - task: "Compare PDFs Feature"
-    implemented: true
-    working: true
+    implemented: false
+    working: false
     file: "/app/backend/server.py"
     stuck_count: 0
-    priority: "high"
+    priority: "low"
     needs_retesting: false
     status_history:
       - working: "unknown"
@@ -158,6 +158,9 @@ backend:
       - working: true
         agent: "testing"
         comment: "Successfully tested Compare PDFs feature. The /api/compare-pdfs endpoint is working correctly. It properly accepts multiple session_ids with PDFs and generates a comparison analysis based on the comparison_type parameter. The issue was related to missing dependencies (aiohttp, openai, tiktoken, tokenizers, jinja2, pillow) which were installed. After fixing these dependencies, the endpoint works as expected. As per user's request, this feature should be removed in future updates."
+      - working: false
+        agent: "main"
+        comment: "REMOVED: Compare PDFs feature has been removed from backend (/api/compare-pdfs endpoint) and frontend (Compare PDFs tab) as requested by user. The ComparePDFsRequest model and compare_pdfs function have been deleted from server.py. Frontend tabs and related functionality have been removed from App.js."
   - task: "Authentication System (Register/Login/JWT)"
     implemented: true
     working: true
