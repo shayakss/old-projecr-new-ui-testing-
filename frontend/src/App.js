@@ -11,7 +11,25 @@ const apiClient = axios.create({
   baseURL: API,
 });
 
-// Markdown renderer component with custom styling for dark theme
+// Function to detect if content contains markdown syntax
+const containsMarkdown = (content) => {
+  if (!content) return false;
+  
+  // Check for various markdown patterns
+  const markdownPatterns = [
+    /\*\*.*?\*\*/,  // Bold text
+    /\*.*?\*/,      // Italic text (not inside bold)
+    /^#{1,6}\s/m,   // Headers
+    /^[-*+]\s/m,    // Unordered lists
+    /^\d+\.\s/m,    // Ordered lists
+    /```[\s\S]*?```/, // Code blocks
+    /`.*?`/,        // Inline code
+    /^\>/m,         // Blockquotes
+    /\n\n/,         // Multiple line breaks (paragraph separation)
+  ];
+  
+  return markdownPatterns.some(pattern => pattern.test(content));
+};
 const MarkdownRenderer = ({ content, messageType = 'assistant' }) => {
   const isDark = messageType === 'assistant';
   
