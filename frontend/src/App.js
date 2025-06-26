@@ -914,14 +914,14 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                     onKeyPress={handleKeyPress}
                     placeholder={getPlaceholder()}
                     disabled={loading || (currentFeature !== 'general_ai' && !currentSession?.pdf_filename)}
-                    className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent disabled:opacity-50 transition-all"
+                    className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-primary placeholder-quaternary resize-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent disabled:opacity-50 transition-all font-body"
                     rows={inputMessage.split('\n').length || 1}
                     style={{minHeight: '52px', maxHeight: '120px'}}
                   />
                   {recognitionRef.current && (currentFeature === 'chat' || currentFeature === 'general_ai') && (
                     <button
                       onClick={isListening ? stopListening : startListening}
-                      className={`absolute right-3 top-3 p-2 rounded-lg transition-all ${
+                      className={`absolute right-3 top-3 p-2 rounded-lg transition-all font-ui-sm ${
                         isListening 
                           ? 'bg-red-600 hover:bg-red-700 text-white' 
                           : 'bg-gray-600 hover:bg-gray-500 text-gray-300'
@@ -935,7 +935,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                 <button
                   onClick={sendMessage}
                   disabled={!inputMessage.trim() || loading || (currentFeature !== 'general_ai' && !currentSession?.pdf_filename)}
-                  className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-6 py-3 rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105 shadow-lg flex items-center space-x-2"
+                  className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-6 py-3 rounded-lg btn-text disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105 shadow-lg flex items-center space-x-2"
                 >
                   {loading ? (
                     <>
