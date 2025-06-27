@@ -1639,7 +1639,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                 </div>
                 <button
                   onClick={sendMessage}
-                  disabled={!inputMessage.trim() || loading || (currentFeature !== 'general_ai' && !currentSession?.pdf_filename)}
+                  disabled={!inputMessage.trim() || loading || (currentFeature !== 'general_ai' && currentFeature !== 'system_health' && !currentSession?.pdf_filename) || currentFeature === 'system_health'}
                   className="flex items-center space-x-2 px-6 py-3 bg-green-400/10 hover:bg-green-400/20 border border-green-400/30 hover:border-green-400/50 text-green-400 rounded-xl font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loading ? (
