@@ -534,6 +534,151 @@ async def translate_pdf(request: TranslateRequest):
         "translation": translation_result
     }
 
+@api_router.post("/generate-questions")
+async def generate_questions(request: GenerateQuestionsRequest):
+    # Verify session exists and has PDF
+    session = await db.chat_sessions.find_one({"id": request.session_id})
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    
+    if not session.get("pdf_content"):
+        raise HTTPException(status_code=400, detail="No PDF uploaded in this session")
+    
+    pdf_content = session["pdf_content"]
+    
+    # Handle chapter segmentation if specified
+    if request.chapter_segment:
+        # Simple chapter detection - could be enhanced
+        content_lines = pdf_content.split('\n')
+        chapter_content = []
+        in_chapter = False
+        
+        for line in content_lines:
+            if request.chapter_segment.lower() in line.lower():
+                in_chapter = True
+            elif any(keyword in line.lower() for keyword in ['chapter', 'section']) and in_chapter:
+                break
+            
+            if in_chapter:
+                chapter_content.append(line)
+        
+        pdf_content = '\n'.join(chapter_content)[:4000] if chapter_content else pdf_content[:4000]
+    else:
+        pdf_content = pdf_content[:4000]
+    
+    # Question generation prompts based on type
+    question_prompts = {
+        "faq": "Generate 8-10 frequently asked questions (FAQs) with detailed answers based on this document content.",
+        "mcq": "Generate 10 multiple choice questions (A, B, C, D) with correct answers marked, based on this document content.",
+        "true_false": "Generate 10 true/false questions with explanations for each answer, based on this document content.",
+        "mixed": "Generate a mix of question types: 3 FAQs, 4 multiple choice questions, and 3 true/false questions based on this document content."
+    }
+    
+    prompt = question_prompts.get(request.question_type, question_prompts["mixed"])
+    
+    ai_messages = [
+        {
+            "role": "system", 
+            "content": "You are an AI assistant specialized in creating educational questions from document content. Generate clear, relevant questions that test comprehension and knowledge retention."
+        },
+        {
+            "role": "user", 
+            "content": f"""{prompt}
+
+Document Content:
+{pdf_content}
+
+Format your response clearly with question numbers, and for MCQs include all options (A, B, C, D) with the correct answer marked."""
+        }
+    ]
+    
+    questions_result = await get_ai_response(ai_messages, request.model)
+    
+    # Save questions as message
+    questions_message = ChatMessage(
+        session_id=request.session_id,
+        content=f"Generated Questions ({request.question_type}):\n{questions_result}",
+        role="assistant",
+        feature_type="question_generation"
+    )
+    await db.chat_messages.insert_one(questions_message.dict())
+    
+    return {
+        "session_id": request.session_id,
+        "question_type": request.question_type,
+        "chapter_segment": request.chapter_segment,
+        "questions": questions_result
+    }
+
+@api_router.post("/generate-quiz")
+async def generate_quiz(request: GenerateQuizRequest):
+    # Verify session exists and has PDF
+    session = await db.chat_sessions.find_one({"id": request.session_id})
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    
+    if not session.get("pdf_content"):
+        raise HTTPException(status_code=400, detail="No PDF uploaded in this session")
+    
+    pdf_content = session["pdf_content"][:4000]  # Limit content length
+    
+    # Difficulty level instructions
+    difficulty_instructions = {
+        "easy": "Create basic comprehension questions that test understanding of main concepts.",
+        "medium": "Create questions that require analysis and application of the content.",
+        "hard": "Create challenging questions that require deep understanding, critical thinking, and synthesis of multiple concepts."
+    }
+    
+    difficulty_instruction = difficulty_instructions.get(request.difficulty, difficulty_instructions["medium"])
+    
+    # Quiz type specific instructions
+    if request.quiz_type == "daily":
+        quiz_instruction = f"Generate a daily revision quiz with {request.question_count} questions. Focus on key concepts for daily review."
+    else:
+        quiz_instruction = f"Generate a comprehensive quiz with {request.question_count} questions covering the document content."
+    
+    ai_messages = [
+        {
+            "role": "system", 
+            "content": f"You are an AI quiz generator specialized in creating educational quizzes. {difficulty_instruction} Make questions clear and provide correct answers."
+        },
+        {
+            "role": "user", 
+            "content": f"""{quiz_instruction}
+
+Document Content:
+{pdf_content}
+
+Create {request.question_count} questions in mixed format (multiple choice, true/false, short answer). 
+For each question, provide:
+1. The question
+2. Answer options (if applicable)
+3. Correct answer
+4. Brief explanation
+
+Format the quiz clearly with question numbers."""
+        }
+    ]
+    
+    quiz_result = await get_ai_response(ai_messages, request.model)
+    
+    # Save quiz as message
+    quiz_message = ChatMessage(
+        session_id=request.session_id,
+        content=f"Generated Quiz ({request.quiz_type} - {request.difficulty}):\n{quiz_result}",
+        role="assistant",
+        feature_type="quiz_generation"
+    )
+    await db.chat_messages.insert_one(quiz_message.dict())
+    
+    return {
+        "session_id": request.session_id,
+        "quiz_type": request.quiz_type,
+        "difficulty": request.difficulty,
+        "question_count": request.question_count,
+        "quiz": quiz_result
+    }
+
 @api_router.post("/search")
 async def advanced_search(request: SearchRequest):
     results = []
