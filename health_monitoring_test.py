@@ -5,6 +5,7 @@ import os
 import time
 import uuid
 import unittest
+import traceback
 from dotenv import load_dotenv
 
 # Load environment variables from frontend .env file
@@ -21,6 +22,9 @@ API_URL = INTERNAL_API_URL
 
 print(f"Testing backend health monitoring at: {API_URL}")
 print(f"External backend URL: {BACKEND_URL}/api")
+
+# Enable detailed error output for tests
+unittest.TestCase.maxDiff = None
 
 class HealthMonitoringTest(unittest.TestCase):
     """Test suite for the health monitoring endpoints"""
