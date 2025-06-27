@@ -971,6 +971,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
       case 'question_generation': return 'Question Generator';
       case 'quiz_generation': return 'Quiz Generator';
       case 'general_ai': return 'General AI Assistant';
+      case 'system_health': return 'System Health Monitor';
       default: return 'Chat';
     }
   };
