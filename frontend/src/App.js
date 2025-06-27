@@ -788,7 +788,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
     }
   };
 
-  const generateQA = async () => {
+  const generateQuestions = async (questionType = 'mixed', chapterSegment = null) => {
     if (!currentSession || !currentSession.pdf_filename) {
       alert('Please upload a PDF first');
       return;
@@ -796,22 +796,24 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
 
     setGeneratingQA(true);
     try {
-      const response = await apiClient.post(`/sessions/${currentSession.id}/generate-qa`, {
+      const response = await apiClient.post('/generate-questions', {
         session_id: currentSession.id,
+        question_type: questionType,
+        chapter_segment: chapterSegment,
         model: selectedModel
       });
 
-      // Switch to Q&A view and load messages
-      setCurrentFeature('qa_generation');
-      setTimeout(() => loadMessages(currentSession.id, 'qa_generation'), 500);
+      // Switch to questions view and load messages
+      setCurrentFeature('question_generation');
+      setTimeout(() => loadMessages(currentSession.id, 'question_generation'), 500);
     } catch (error) {
-      alert('Error generating Q&A: ' + (error.response?.data?.detail || error.message));
+      alert('Error generating questions: ' + (error.response?.data?.detail || error.message));
     } finally {
       setGeneratingQA(false);
     }
   };
 
-  const conductResearch = async (researchType) => {
+  const generateQuiz = async (quizType = 'manual', difficulty = 'medium', questionCount = 10) => {
     if (!currentSession || !currentSession.pdf_filename) {
       alert('Please upload a PDF first');
       return;
@@ -819,17 +821,19 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
 
     setResearching(true);
     try {
-      const response = await apiClient.post(`/sessions/${currentSession.id}/research`, {
+      const response = await apiClient.post('/generate-quiz', {
         session_id: currentSession.id,
-        research_type: researchType,
+        quiz_type: quizType,
+        difficulty: difficulty,
+        question_count: questionCount,
         model: selectedModel
       });
 
-      // Switch to research view and load messages
-      setCurrentFeature('research');
-      setTimeout(() => loadMessages(currentSession.id, 'research'), 500);
+      // Switch to quiz view and load messages
+      setCurrentFeature('quiz_generation');
+      setTimeout(() => loadMessages(currentSession.id, 'quiz_generation'), 500);
     } catch (error) {
-      alert('Error conducting research: ' + (error.response?.data?.detail || error.message));
+      alert('Error generating quiz: ' + (error.response?.data?.detail || error.message));
     } finally {
       setResearching(false);
     }
