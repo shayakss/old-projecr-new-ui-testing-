@@ -288,8 +288,47 @@ class HealthMonitoringTest(unittest.TestCase):
 
 def run_all_tests():
     """Run all health monitoring tests"""
-    suite = unittest.TestLoader().loadTestsFromTestCase(HealthMonitoringTest)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    test_cases = [
+        HealthMonitoringTest('test_01_basic_health_check'),
+        HealthMonitoringTest('test_02_comprehensive_system_health'),
+        HealthMonitoringTest('test_03_health_metrics'),
+        HealthMonitoringTest('test_04_auto_fix_without_confirmation'),
+        HealthMonitoringTest('test_05_auto_fix_with_confirmation'),
+        HealthMonitoringTest('test_06_auto_fix_invalid_issue'),
+        HealthMonitoringTest('test_07_error_handling')
+    ]
+    
+    results = []
+    for test_case in test_cases:
+        test_name = test_case._testMethodName
+        print(f"\n{'='*40}\nRunning {test_name}\n{'='*40}")
+        try:
+            test_case.setUp()
+            getattr(test_case, test_name)()
+            results.append((test_name, True, None))
+            print(f"✅ {test_name} PASSED")
+        except Exception as e:
+            results.append((test_name, False, str(e)))
+            print(f"❌ {test_name} FAILED: {str(e)}")
+            traceback.print_exc()
+    
+    # Print summary
+    print("\n" + "=" * 80)
+    print("TEST SUMMARY:")
+    
+    all_passed = True
+    for name, passed, error in results:
+        status = "✅ PASSED" if passed else f"❌ FAILED: {error}"
+        print(f"{name}: {status}")
+        if not passed:
+            all_passed = False
+    
+    if all_passed:
+        print("\n✅ ALL TESTS PASSED")
+        return 0
+    else:
+        print("\n❌ SOME TESTS FAILED")
+        return 1
 
 if __name__ == "__main__":
     print("=" * 80)
