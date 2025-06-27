@@ -477,56 +477,7 @@ async def get_available_models():
 
 # Removed generate-qa endpoint - replaced with generate-questions
 
-@api_router.post("/research")
-async def research_pdf(request: ResearchRequest):
-    # Verify session exists and has PDF
-    session = await db.chat_sessions.find_one({"id": request.session_id})
-    if not session:
-        raise HTTPException(status_code=404, detail="Session not found")
-    
-    if not session.get("pdf_content"):
-        raise HTTPException(status_code=400, detail="No PDF uploaded in this session")
-    
-    pdf_content = session["pdf_content"][:4000]  # Limit content length
-    
-    # Different research prompts based on type
-    research_prompts = {
-        "summary": "Provide a comprehensive summary of this document, highlighting key points, main arguments, and important conclusions.",
-        "detailed_research": "Conduct a detailed research analysis of this document. Include key themes, methodologies (if applicable), findings, implications, and potential areas for further investigation."
-    }
-    
-    prompt = research_prompts.get(request.research_type, research_prompts["summary"])
-    
-    ai_messages = [
-        {
-            "role": "system", 
-            "content": "You are an AI research assistant specialized in document analysis. Provide thorough, academic-quality research insights."
-        },
-        {
-            "role": "user", 
-            "content": f"""{prompt}
-
-PDF Content:
-{pdf_content}"""
-        }
-    ]
-    
-    research_result = await get_ai_response(ai_messages, request.model)
-    
-    # Save research as message
-    research_message = ChatMessage(
-        session_id=request.session_id,
-        content=f"Research Analysis ({request.research_type}):\n{research_result}",
-        role="assistant",
-        feature_type="research"
-    )
-    await db.chat_messages.insert_one(research_message.dict())
-    
-    return {
-        "session_id": request.session_id,
-        "research_type": request.research_type,
-        "analysis": research_result
-    }
+# Removed research endpoint - replaced with new features
 
 @api_router.post("/translate")
 async def translate_pdf(request: TranslateRequest):
