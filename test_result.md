@@ -645,9 +645,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Auto Q&A Generation"
-    - "Research & Summary Features"
-    - "Compare PDFs Feature"
+    - "System Health Monitoring"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
