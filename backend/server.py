@@ -14,6 +14,14 @@ import PyPDF2
 import httpx
 import json
 from emergentintegrations.llm.chat import LlmChat, UserMessage
+import psutil
+import subprocess
+import sys
+import pkg_resources
+from typing import Union
+import asyncio
+import time
+import threading
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
