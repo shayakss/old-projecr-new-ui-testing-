@@ -674,6 +674,106 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
     }
   };
 
+  // System Health Functions
+  const loadSystemHealth = async () => {
+    setHealthLoading(true);
+    try {
+      const response = await apiClient.get('/system-health');
+      setHealthData(response.data);
+    } catch (error) {
+      console.error('Error loading system health:', error);
+      setHealthData({
+        overall_status: 'critical',
+        backend_status: 'unhealthy',
+        frontend_status: 'unhealthy',
+        database_status: 'unknown',
+        api_status: 'unknown',
+        metrics: {
+          cpu_usage: 0,
+          memory_usage: 0,
+          disk_usage: 0,
+          response_time: 0,
+          active_sessions: 0,
+          total_api_calls: 0,
+          error_rate: 100
+        },
+        issues: [{
+          id: 'frontend-error',
+          issue_type: 'critical',
+          category: 'frontend',
+          title: 'Frontend Connection Failed',
+          description: 'Cannot connect to backend health endpoint',
+          suggested_fix: 'Check backend service status',
+          auto_fixable: false,
+          severity: 5
+        }],
+        uptime: 0
+      });
+    } finally {
+      setHealthLoading(false);
+    }
+  };
+
+  const loadHealthMetrics = async () => {
+    try {
+      const response = await apiClient.get('/system-health/metrics');
+      setHealthMetrics(response.data);
+    } catch (error) {
+      console.error('Error loading health metrics:', error);
+    }
+  };
+
+  const fixSystemIssue = async (issueId) => {
+    setFixingIssue(true);
+    try {
+      const response = await apiClient.post('/system-health/fix', {
+        issue_id: issueId,
+        confirm_fix: true
+      });
+
+      if (response.data.success) {
+        // Refresh health data
+        await loadSystemHealth();
+        setShowFixConfirmation(null);
+        alert(`Fix applied successfully: ${response.data.message}`);
+      } else {
+        alert(`Fix failed: ${response.data.error}`);
+      }
+    } catch (error) {
+      console.error('Error fixing issue:', error);
+      alert('Error applying fix: ' + (error.response?.data?.detail || error.message));
+    } finally {
+      setFixingIssue(false);
+    }
+  };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'healthy': return 'text-green-400';
+      case 'warning': return 'text-yellow-400';
+      case 'critical': return 'text-red-400';
+      case 'unhealthy': return 'text-red-400';
+      default: return 'text-gray-400';
+    }
+  };
+
+  const getStatusBgColor = (status) => {
+    switch (status) {
+      case 'healthy': return 'bg-green-400/10 border-green-400/30';
+      case 'warning': return 'bg-yellow-400/10 border-yellow-400/30';
+      case 'critical': return 'bg-red-400/10 border-red-400/30';
+      case 'unhealthy': return 'bg-red-400/10 border-red-400/30';
+      default: return 'bg-gray-400/10 border-gray-400/30';
+    }
+  };
+
+  const getSeverityColor = (severity) => {
+    if (severity >= 4) return 'text-red-400';
+    if (severity >= 3) return 'text-orange-400';
+    if (severity >= 2) return 'text-yellow-400';
+    return 'text-blue-400';
+  };
+
   const createNewSession = async () => {
     try {
       const response = await apiClient.post('/sessions', { title: 'New Chat' });
