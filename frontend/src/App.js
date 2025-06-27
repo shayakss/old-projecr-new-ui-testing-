@@ -1094,7 +1094,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                 {/* Feature-Specific Actions */}
                 {currentFeature === 'qa_generation' && (
                   <button
-                    onClick={generateQA}
+                    onClick={() => generateQuestions('mixed')}
                     disabled={generatingQA || !currentSession?.pdf_filename}
                     className="flex items-center space-x-2 px-4 py-2 bg-purple-400/10 hover:bg-purple-400/20 border border-purple-400/30 hover:border-purple-400/50 text-purple-400 rounded-lg text-sm font-medium transition-all duration-200 disabled:opacity-50"
                   >
