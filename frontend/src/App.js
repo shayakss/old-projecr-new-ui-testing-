@@ -1663,6 +1663,52 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
           </div>
         )}
       </div>
+
+      {/* Fix Confirmation Dialog */}
+      {showFixConfirmation && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-gray-800 rounded-xl border border-gray-600 p-6 max-w-md w-full mx-4">
+            <h3 className="text-lg font-semibold text-white mb-4">Confirm Auto-Fix</h3>
+            <div className="mb-4">
+              <p className="text-gray-300 mb-2">
+                <strong>Issue:</strong> {showFixConfirmation.title}
+              </p>
+              <p className="text-gray-300 mb-2">
+                <strong>Description:</strong> {showFixConfirmation.description}
+              </p>
+              <p className="text-blue-400 mb-4">
+                <strong>Suggested Fix:</strong> {showFixConfirmation.suggested_fix}
+              </p>
+              <p className="text-yellow-400 text-sm">
+                ⚠️ This action will attempt to automatically fix the issue. Are you sure you want to proceed?
+              </p>
+            </div>
+            <div className="flex space-x-3">
+              <button
+                onClick={() => fixSystemIssue(showFixConfirmation.id)}
+                disabled={fixingIssue}
+                className="flex-1 px-4 py-2 bg-blue-400/10 hover:bg-blue-400/20 border border-blue-400/30 hover:border-blue-400/50 text-blue-400 rounded-lg font-medium transition-all duration-200 disabled:opacity-50"
+              >
+                {fixingIssue ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-blue-400/30 border-t-blue-400 rounded-full animate-spin inline mr-2"></div>
+                    Applying Fix...
+                  </>
+                ) : (
+                  'Apply Fix'
+                )}
+              </button>
+              <button
+                onClick={() => setShowFixConfirmation(null)}
+                disabled={fixingIssue}
+                className="flex-1 px-4 py-2 bg-gray-600/20 hover:bg-gray-600/30 border border-gray-600/30 hover:border-gray-600/50 text-gray-300 rounded-lg font-medium transition-all duration-200 disabled:opacity-50"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
