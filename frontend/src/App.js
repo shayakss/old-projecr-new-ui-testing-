@@ -365,7 +365,7 @@ const HomePage = ({ setCurrentView }) => {
                   <div className="p-6">
                     <div className="text-emerald-400 text-sm font-medium mb-2">Development • 5 min read</div>
                     <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:bg-clip-text group-hover:from-purple-400 group-hover:to-emerald-400 transition-all duration-300">
-                      Building ChatPDF: From Concept to Reality
+                      Building Baloch AI PDF: From Concept to Reality
                     </h3>
                     <p className="text-gray-400 leading-relaxed mb-4">
                       Our journey developing an AI-powered PDF assistant that can understand, analyze, and interact with any document in natural language.
