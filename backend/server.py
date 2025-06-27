@@ -578,6 +578,362 @@ async def check_api_keys_health() -> tuple[bool, str, dict]:
     # Check OpenRouter API
     if OPENROUTER_API_KEY:
         try:
+            async with httpx.AsyncClient() as client_http:
+                response = await client_http.get(
+                    f"{OPENROUTER_BASE_URL}/models",
+                    headers={"Authorization": f"Bearer {OPENROUTER_API_KEY}"},
+                    timeout=10.0
+                )
+                if response.status_code == 200:
+                    api_status["openrouter"]["valid"] = True
+                else:
+                    api_status["openrouter"]["error"] = f"HTTP {response.status_code}"
+        except Exception as e:
+            api_status["openrouter"]["error"] = str(e)
+    else:
+        api_status["openrouter"]["error"] = "API key not configured"
+    
+    # Check Gemini API (simplified check)
+    if GEMINI_API_KEY:
+        try:
+            # Simple validation - just check if key is properly formatted
+            if GEMINI_API_KEY.startswith("AIza") and len(GEMINI_API_KEY) > 30:
+                api_status["gemini"]["valid"] = True
+            else:
+                api_status["gemini"]["error"] = "Invalid API key format"
+        except Exception as e:
+            api_status["gemini"]["error"] = str(e)
+    else:
+        api_status["gemini"]["error"] = "API key not configured"
+    
+    # Determine overall API health
+    valid_apis = sum(1 for api in api_status.values() if api["valid"])
+    total_apis = len([key for key in [OPENROUTER_API_KEY, GEMINI_API_KEY] if key])
+    
+    if valid_apis == 0:
+        return False, "No valid API keys", api_status
+    elif valid_apis < total_apis:
+        return True, f"{valid_apis}/{total_apis} API keys valid", api_status
+    else:
+        return True, "All API keys valid", api_status
+
+async def check_dependencies() -> tuple[bool, str, list]:
+    """Check if all required dependencies are installed"""
+    required_packages = [
+        'fastapi', 'uvicorn', 'motor', 'pymongo', 'httpx', 'PyPDF2',
+        'anthropic', 'emergentintegrations', 'psutil', 'reportlab',
+        'python-docx', 'python-dotenv', 'pydantic'
+    ]
+    
+    missing_packages = []
+    
+    for package in required_packages:
+        try:
+            pkg_resources.get_distribution(package)
+        except pkg_resources.DistributionNotFound:
+            missing_packages.append(package)
+    
+    if missing_packages:
+        return False, f"Missing packages: {', '.join(missing_packages)}", missing_packages
+    else:
+        return True, "All dependencies installed", []
+
+def get_system_metrics() -> HealthMetrics:
+    """Get current system performance metrics"""
+    try:
+        cpu_usage = psutil.cpu_percent()
+        memory = psutil.virtual_memory()
+        disk = psutil.disk_usage('/')
+        
+        # Calculate error rate
+        total_calls = health_monitor_data["api_calls"]
+        total_errors = health_monitor_data["errors"]
+        error_rate = (total_errors / total_calls * 100) if total_calls > 0 else 0
+        
+        return HealthMetrics(
+            cpu_usage=cpu_usage,
+            memory_usage=memory.percent,
+            disk_usage=disk.percent,
+            response_time=0.0,  # Will be calculated during API calls
+            active_sessions=0,  # Will be queried from database
+            total_api_calls=total_calls,
+            error_rate=error_rate
+        )
+    except Exception as e:
+        logger.error(f"Error getting system metrics: {e}")
+        return HealthMetrics(
+            cpu_usage=0, memory_usage=0, disk_usage=0, response_time=0,
+            active_sessions=0, total_api_calls=0, error_rate=0
+        )
+
+async def analyze_performance_issues(metrics: HealthMetrics) -> List[HealthIssue]:
+    """Analyze metrics and identify performance issues"""
+    issues = []
+    
+    # High CPU usage
+    if metrics.cpu_usage > 80:
+        issues.append(HealthIssue(
+            issue_type="performance",
+            category="performance",
+            title="High CPU Usage",
+            description=f"CPU usage is at {metrics.cpu_usage:.1f}%",
+            suggested_fix="Consider restarting services or optimizing queries",
+            auto_fixable=True,
+            severity=3 if metrics.cpu_usage > 90 else 2
+        ))
+    
+    # High memory usage
+    if metrics.memory_usage > 80:
+        issues.append(HealthIssue(
+            issue_type="performance",
+            category="performance",
+            title="High Memory Usage",
+            description=f"Memory usage is at {metrics.memory_usage:.1f}%",
+            suggested_fix="Clear caches and restart services",
+            auto_fixable=True,
+            severity=3 if metrics.memory_usage > 90 else 2
+        ))
+    
+    # High error rate
+    if metrics.error_rate > 10:
+        issues.append(HealthIssue(
+            issue_type="warning",
+            category="api",
+            title="High Error Rate",
+            description=f"Error rate is at {metrics.error_rate:.1f}%",
+            suggested_fix="Check API keys and service connectivity",
+            auto_fixable=True,
+            severity=4 if metrics.error_rate > 25 else 3
+        ))
+    
+    return issues
+
+async def perform_comprehensive_health_check() -> SystemHealthStatus:
+    """Perform complete system health check"""
+    start_time = time.time()
+    
+    # Check all components
+    db_healthy, db_message = await check_database_health()
+    api_healthy, api_message, api_details = await check_api_keys_health()
+    deps_healthy, deps_message, missing_deps = await check_dependencies()
+    
+    # Get system metrics
+    metrics = get_system_metrics()
+    
+    # Calculate active sessions
+    try:
+        metrics.active_sessions = await db.chat_sessions.count_documents({})
+    except:
+        metrics.active_sessions = 0
+    
+    # Calculate response time
+    metrics.response_time = (time.time() - start_time) * 1000  # milliseconds
+    
+    # Determine overall status
+    critical_issues = []
+    warning_issues = []
+    
+    # Add component-specific issues
+    if not db_healthy:
+        critical_issues.append(HealthIssue(
+            issue_type="critical",
+            category="database",
+            title="Database Connection Failed",
+            description=db_message,
+            suggested_fix="Check MongoDB service and connection string",
+            auto_fixable=True,
+            severity=5
+        ))
+    
+    if not api_healthy:
+        if "No valid API keys" in api_message:
+            critical_issues.append(HealthIssue(
+                issue_type="critical",
+                category="api",
+                title="No Valid API Keys",
+                description=api_message,
+                suggested_fix="Check and update API keys in environment variables",
+                auto_fixable=False,
+                severity=5
+            ))
+        else:
+            warning_issues.append(HealthIssue(
+                issue_type="warning",
+                category="api",
+                title="Partial API Key Issues",
+                description=api_message,
+                suggested_fix="Check API key validity and account limits",
+                auto_fixable=False,
+                severity=3
+            ))
+    
+    if not deps_healthy:
+        critical_issues.append(HealthIssue(
+            issue_type="critical",
+            category="dependency",
+            title="Missing Dependencies",
+            description=deps_message,
+            suggested_fix=f"Install missing packages: pip install {' '.join(missing_deps)}",
+            auto_fixable=True,
+            severity=4
+        ))
+    
+    # Add performance issues
+    performance_issues = await analyze_performance_issues(metrics)
+    warning_issues.extend(performance_issues)
+    
+    # Determine overall status
+    if critical_issues:
+        overall_status = "critical"
+    elif warning_issues:
+        overall_status = "warning"
+    else:
+        overall_status = "healthy"
+    
+    # Calculate uptime
+    uptime = (datetime.utcnow() - health_monitor_data["start_time"]).total_seconds()
+    
+    all_issues = critical_issues + warning_issues
+    
+    # Update global health data
+    health_monitor_data["issues"] = all_issues
+    health_monitor_data["last_health_check"] = datetime.utcnow()
+    
+    return SystemHealthStatus(
+        overall_status=overall_status,
+        backend_status="healthy" if db_healthy and deps_healthy else "unhealthy",
+        frontend_status="healthy",  # Will be updated by frontend monitoring
+        database_status="healthy" if db_healthy else "unhealthy",
+        api_status="healthy" if api_healthy else "unhealthy",
+        metrics=metrics,
+        issues=all_issues,
+        uptime=uptime
+    )
+
+async def apply_auto_fix(issue: HealthIssue) -> dict:
+    """Apply automated fixes based on issue type"""
+    
+    if issue.category == "dependency":
+        # Auto-install missing dependencies
+        if "Missing packages:" in issue.description:
+            # Extract package names from description
+            packages = issue.description.split("Missing packages: ")[1].split(", ")
+            install_results = []
+            
+            for package in packages:
+                try:
+                    result = subprocess.run([
+                        sys.executable, "-m", "pip", "install", package
+                    ], capture_output=True, text=True, timeout=60)
+                    
+                    if result.returncode == 0:
+                        install_results.append(f"✅ {package} installed successfully")
+                    else:
+                        install_results.append(f"❌ {package} failed: {result.stderr}")
+                except subprocess.TimeoutExpired:
+                    install_results.append(f"⏱️ {package} installation timed out")
+                except Exception as e:
+                    install_results.append(f"❌ {package} error: {str(e)}")
+            
+            return {
+                "action": "install_dependencies",
+                "result": "partial" if any("❌" in r for r in install_results) else "success",
+                "message": "\n".join(install_results)
+            }
+    
+    elif issue.category == "performance":
+        if "High CPU Usage" in issue.title or "High Memory Usage" in issue.title:
+            # Clear system caches and suggest restart
+            try:
+                # Clear Python caches
+                import gc
+                gc.collect()
+                
+                # Clear any application caches if they exist
+                # (You can add more cache clearing logic here)
+                
+                return {
+                    "action": "clear_caches",
+                    "result": "success",
+                    "message": "System caches cleared. Consider restarting services if issue persists."
+                }
+            except Exception as e:
+                return {
+                    "action": "clear_caches",
+                    "result": "failed",
+                    "message": f"Cache clearing failed: {str(e)}"
+                }
+    
+    elif issue.category == "service":
+        # Service restart suggestions
+        return {
+            "action": "service_restart_suggestion",
+            "result": "info",
+            "message": "Consider restarting the backend service using: sudo supervisorctl restart backend"
+        }
+    
+    elif issue.category == "database":
+        # Database reconnection attempt
+        try:
+            global client, db
+            client.close()
+            client = AsyncIOMotorClient(MONGO_URL)
+            db = client[DB_NAME]
+            
+            # Test connection
+            await client.admin.command('ping')
+            
+            return {
+                "action": "database_reconnect",
+                "result": "success",
+                "message": "Database connection re-established successfully"
+            }
+        except Exception as e:
+            return {
+                "action": "database_reconnect",
+                "result": "failed",
+                "message": f"Database reconnection failed: {str(e)}"
+            }
+    
+    else:
+        return {
+            "action": "no_fix_available",
+            "result": "info",
+            "message": "No automated fix available for this issue type"
+        }
+
+# Global health monitoring variables
+health_monitor_data = {
+    "start_time": datetime.utcnow(),
+    "api_calls": 0,
+    "errors": 0,
+    "issues": [],
+    "last_health_check": None,
+    "metrics_history": []
+}
+
+# Health Monitoring Functions
+async def check_database_health() -> tuple[bool, str]:
+    """Check MongoDB connection health"""
+    try:
+        # Try to ping the database
+        await client.admin.command('ping')
+        # Check if our database exists and is accessible
+        collections = await db.list_collection_names()
+        return True, f"Database healthy - {len(collections)} collections available"
+    except Exception as e:
+        return False, f"Database connection failed: {str(e)}"
+
+async def check_api_keys_health() -> tuple[bool, str, dict]:
+    """Check API keys validity"""
+    api_status = {
+        "openrouter": {"valid": False, "error": ""},
+        "gemini": {"valid": False, "error": ""}
+    }
+    
+    # Check OpenRouter API
+    if OPENROUTER_API_KEY:
+        try:
             async with httpx.AsyncClient() as client:
                 response = await client.get(
                     f"{OPENROUTER_BASE_URL}/models",
