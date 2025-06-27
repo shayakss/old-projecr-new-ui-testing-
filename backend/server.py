@@ -475,56 +475,7 @@ async def get_available_models():
 
 
 
-@api_router.post("/generate-qa")
-async def generate_qa(request: GenerateQARequest):
-    # Verify session exists and has PDF
-    session = await db.chat_sessions.find_one({"id": request.session_id})
-    if not session:
-        raise HTTPException(status_code=404, detail="Session not found")
-    
-    if not session.get("pdf_content"):
-        raise HTTPException(status_code=400, detail="No PDF uploaded in this session")
-    
-    pdf_content = session["pdf_content"][:4000]  # Limit content length
-    
-    ai_messages = [
-        {
-            "role": "system", 
-            "content": "You are an AI assistant that generates comprehensive question-answer pairs based on document content. Create relevant, thoughtful questions and provide detailed answers."
-        },
-        {
-            "role": "user", 
-            "content": f"""Based on the following PDF content, generate 5-7 comprehensive question-answer pairs that cover the main topics and important details:
-
-PDF Content:
-{pdf_content}
-
-Format your response as:
-Q1: [Question]
-A1: [Detailed Answer]
-
-Q2: [Question]
-A2: [Detailed Answer]
-
-etc."""
-        }
-    ]
-    
-    qa_result = await get_ai_response(ai_messages, request.model)
-    
-    # Save Q&A as message
-    qa_message = ChatMessage(
-        session_id=request.session_id,
-        content=f"Generated Q&A:\n{qa_result}",
-        role="assistant",
-        feature_type="qa_generation"
-    )
-    await db.chat_messages.insert_one(qa_message.dict())
-    
-    return {
-        "session_id": request.session_id,
-        "qa_pairs": qa_result
-    }
+# Removed generate-qa endpoint - replaced with generate-questions
 
 @api_router.post("/research")
 async def research_pdf(request: ResearchRequest):
