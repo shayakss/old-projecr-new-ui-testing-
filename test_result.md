@@ -156,6 +156,9 @@ backend:
       - working: true
         agent: "testing"
         comment: "Successfully tested Auto Q&A Generation feature. The /api/generate-qa endpoint is working correctly. It properly accepts a session_id with a PDF and generates comprehensive question-answer pairs based on the PDF content. Fixed by installing additional missing dependencies (multidict, attrs, yarl, aiohappyeyeballs, aiosignal, regex, markupsafe)."
+      - working: true
+        agent: "testing"
+        comment: "Successfully tested the Auto Q&A feature (renamed to Question Generator). The /api/generate-questions endpoint is working correctly with all question types (faq, mcq, true_false, mixed). It properly accepts a session_id with a PDF and model parameter, and generates well-formatted questions based on the PDF content. The questions are correctly saved to the session as messages. All tests passed successfully."
 
   - task: "Research & Summary Features"
     implemented: true
