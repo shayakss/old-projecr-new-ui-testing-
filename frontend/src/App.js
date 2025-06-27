@@ -1112,10 +1112,10 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                   </button>
                 )}
 
-                {currentFeature === 'research' && (
+                {currentFeature === 'quiz_generation' && (
                   <>
                     <button
-                      onClick={() => conductResearch('summary')}
+                      onClick={() => generateQuiz('manual', 'easy')}
                       disabled={researching || !currentSession?.pdf_filename}
                       className="flex items-center space-x-2 px-4 py-2 bg-orange-400/10 hover:bg-orange-400/20 border border-orange-400/30 hover:border-orange-400/50 text-orange-400 rounded-lg text-sm font-medium transition-all duration-200 disabled:opacity-50"
                     >
@@ -1127,12 +1127,12 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                       ) : (
                         <>
                           <span>📋</span>
-                          <span>Summarize</span>
+                          <span>Easy Quiz</span>
                         </>
                       )}
                     </button>
                     <button
-                      onClick={() => conductResearch('detailed_research')}
+                      onClick={() => generateQuiz('manual', 'hard')}
                       disabled={researching || !currentSession?.pdf_filename}
                       className="flex items-center space-x-2 px-4 py-2 bg-red-400/10 hover:bg-red-400/20 border border-red-400/30 hover:border-red-400/50 text-red-400 rounded-lg text-sm font-medium transition-all duration-200 disabled:opacity-50"
                     >
@@ -1144,7 +1144,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                       ) : (
                         <>
                           <span>🔬</span>
-                          <span>Research</span>
+                          <span>Hard Quiz</span>
                         </>
                       )}
                     </button>
