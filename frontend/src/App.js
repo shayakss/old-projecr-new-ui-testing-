@@ -227,9 +227,6 @@ const HomePage = ({ setCurrentView }) => {
                 </svg>
                 <span>Start Chatting Now</span>
               </button>
-              <button className="border border-white/30 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-white/10 transition-all duration-300 backdrop-blur-sm">
-                Watch Demo
-              </button>
             </div>
 
             {/* Trust Indicators */}
