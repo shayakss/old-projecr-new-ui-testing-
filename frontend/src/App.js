@@ -1127,14 +1127,18 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                 <div className="flex items-center space-x-3">
                   <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
                     currentFeature === 'chat' ? 'bg-blue-500/20 text-blue-400' :
-                    currentFeature === 'qa_generation' ? 'bg-purple-500/20 text-purple-400' :
+                    currentFeature === 'question_generation' ? 'bg-purple-500/20 text-purple-400' :
+                    currentFeature === 'quiz_generation' ? 'bg-orange-500/20 text-orange-400' :
                     currentFeature === 'general_ai' ? 'bg-green-500/20 text-green-400' :
-                    'bg-orange-500/20 text-orange-400'
+                    currentFeature === 'system_health' ? 'bg-red-500/20 text-red-400' :
+                    'bg-gray-500/20 text-gray-400'
                   }`}>
                     <span className="text-lg">
                       {currentFeature === 'chat' ? '💬' :
-                       currentFeature === 'qa_generation' ? '❓' :
-                       currentFeature === 'general_ai' ? '🤖' : '📊'}
+                       currentFeature === 'question_generation' ? '❓' :
+                       currentFeature === 'quiz_generation' ? '📝' :
+                       currentFeature === 'general_ai' ? '🤖' : 
+                       currentFeature === 'system_health' ? '🏥' : '📊'}
                     </span>
                   </div>
                   <div>
