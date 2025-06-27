@@ -218,13 +218,17 @@ class SendMessageRequest(BaseModel):
 class CreateSessionRequest(BaseModel):
     title: str = "New Chat"
 
-class GenerateQARequest(BaseModel):
+class GenerateQuestionsRequest(BaseModel):
     session_id: str
+    question_type: str = "mixed"  # 'faq', 'mcq', 'true_false', 'mixed'
+    chapter_segment: Optional[str] = None  # For chapter-specific questions
     model: str = "claude-3-opus-20240229"
 
-class ResearchRequest(BaseModel):
+class GenerateQuizRequest(BaseModel):
     session_id: str
-    research_type: str = "summary"  # 'summary' or 'detailed_research'
+    quiz_type: str = "daily"  # 'daily', 'manual'
+    difficulty: str = "medium"  # 'easy', 'medium', 'hard'
+    question_count: int = 10
     model: str = "claude-3-opus-20240229"
 
 
