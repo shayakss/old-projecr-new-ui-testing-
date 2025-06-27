@@ -188,10 +188,261 @@ async def shutdown_db_client():
     client.close()
     logger.info("✅ Database connection closed")
 
+# Health check models
+class HealthMetrics(BaseModel):
+    cpu_usage: float
+    memory_usage: float
+    disk_usage: float
+    response_time: float
+    active_sessions: int
+    total_api_calls: int
+    error_rate: float
+
+class HealthIssue(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    issue_type: str  # 'critical', 'warning', 'performance'
+    category: str  # 'service', 'api', 'database', 'dependency', 'performance'
+    title: str
+    description: str
+    suggested_fix: str
+    auto_fixable: bool
+    severity: int  # 1-5 (5 being most critical)
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    resolved: bool = False
+    resolution_time: Optional[datetime] = None
+
+class SystemHealthStatus(BaseModel):
+    overall_status: str  # 'healthy', 'warning', 'critical'
+    backend_status: str
+    frontend_status: str
+    database_status: str
+    api_status: str
+    last_check: datetime = Field(default_factory=datetime.utcnow)
+    metrics: HealthMetrics
+    issues: List[HealthIssue] = []
+    uptime: float  # seconds since last restart
+
+class FixRequest(BaseModel):
+    issue_id: str
+    confirm_fix: bool = False
+
 # Health check endpoint
 @api_router.get("/health")
 async def health_check():
     return {"status": "healthy", "timestamp": datetime.utcnow()}
+
+# Comprehensive system health endpoint
+@api_router.get("/system-health")
+async def get_system_health():
+    """Get comprehensive system health status"""
+    try:
+        health_status = await perform_comprehensive_health_check()
+        return health_status
+    except Exception as e:
+        logger.error(f"Error performing health check: {e}")
+        return SystemHealthStatus(
+            overall_status="critical",
+            backend_status="unhealthy",
+            frontend_status="unknown",
+            database_status="unknown",
+            api_status="unknown",
+            metrics=HealthMetrics(
+                cpu_usage=0, memory_usage=0, disk_usage=0, response_time=0,
+                active_sessions=0, total_api_calls=0, error_rate=100
+            ),
+            issues=[HealthIssue(
+                issue_type="critical",
+                category="service",
+                title="Health Check Failed",
+                description=str(e),
+                suggested_fix="Investigate server logs and restart services",
+                auto_fixable=True,
+                severity=5
+            )],
+            uptime=0
+        )
+
+# Auto-fix endpoint with confirmation
+@api_router.post("/system-health/fix")
+async def fix_system_issue(request: FixRequest):
+    """Apply auto-fix for system issues with user confirmation"""
+    if not request.confirm_fix:
+        return {"error": "Fix confirmation required", "confirmed": False}
+    
+    # Find the issue
+    issue = None
+    for health_issue in health_monitor_data["issues"]:
+        if health_issue.id == request.issue_id:
+            issue = health_issue
+            break
+    
+    if not issue:
+        raise HTTPException(status_code=404, detail="Issue not found")
+    
+    if not issue.auto_fixable:
+        raise HTTPException(status_code=400, detail="Issue is not auto-fixable")
+    
+    try:
+        fix_result = await apply_auto_fix(issue)
+        
+        # Mark issue as resolved
+        issue.resolved = True
+        issue.resolution_time = datetime.utcnow()
+        
+        return {
+            "success": True,
+            "issue_id": request.issue_id,
+            "fix_applied": fix_result["action"],
+            "result": fix_result["result"],
+            "message": fix_result["message"]
+        }
+    
+    except Exception as e:
+        logger.error(f"Error applying auto-fix: {e}")
+        return {
+            "success": False,
+            "issue_id": request.issue_id,
+            "error": str(e)
+        }
+
+async def apply_auto_fix(issue: HealthIssue) -> dict:
+    """Apply automated fixes based on issue type"""
+    
+    if issue.category == "dependency":
+        # Auto-install missing dependencies
+        if "Missing packages:" in issue.description:
+            # Extract package names from description
+            packages = issue.description.split("Missing packages: ")[1].split(", ")
+            install_results = []
+            
+            for package in packages:
+                try:
+                    result = subprocess.run([
+                        sys.executable, "-m", "pip", "install", package
+                    ], capture_output=True, text=True, timeout=60)
+                    
+                    if result.returncode == 0:
+                        install_results.append(f"✅ {package} installed successfully")
+                    else:
+                        install_results.append(f"❌ {package} failed: {result.stderr}")
+                except subprocess.TimeoutExpired:
+                    install_results.append(f"⏱️ {package} installation timed out")
+                except Exception as e:
+                    install_results.append(f"❌ {package} error: {str(e)}")
+            
+            return {
+                "action": "install_dependencies",
+                "result": "partial" if any("❌" in r for r in install_results) else "success",
+                "message": "\n".join(install_results)
+            }
+    
+    elif issue.category == "performance":
+        if "High CPU Usage" in issue.title or "High Memory Usage" in issue.title:
+            # Clear system caches and suggest restart
+            try:
+                # Clear Python caches
+                import gc
+                gc.collect()
+                
+                # Clear any application caches if they exist
+                # (You can add more cache clearing logic here)
+                
+                return {
+                    "action": "clear_caches",
+                    "result": "success",
+                    "message": "System caches cleared. Consider restarting services if issue persists."
+                }
+            except Exception as e:
+                return {
+                    "action": "clear_caches",
+                    "result": "failed",
+                    "message": f"Cache clearing failed: {str(e)}"
+                }
+    
+    elif issue.category == "service":
+        # Service restart suggestions
+        return {
+            "action": "service_restart_suggestion",
+            "result": "info",
+            "message": "Consider restarting the backend service using: sudo supervisorctl restart backend"
+        }
+    
+    elif issue.category == "database":
+        # Database reconnection attempt
+        try:
+            global client, db
+            client.close()
+            client = AsyncIOMotorClient(MONGO_URL)
+            db = client[DB_NAME]
+            
+            # Test connection
+            await client.admin.command('ping')
+            
+            return {
+                "action": "database_reconnect",
+                "result": "success",
+                "message": "Database connection re-established successfully"
+            }
+        except Exception as e:
+            return {
+                "action": "database_reconnect",
+                "result": "failed",
+                "message": f"Database reconnection failed: {str(e)}"
+            }
+    
+    else:
+        return {
+            "action": "no_fix_available",
+            "result": "info",
+            "message": "No automated fix available for this issue type"
+        }
+
+# Get health metrics history
+@api_router.get("/system-health/metrics")
+async def get_health_metrics():
+    """Get historical health metrics"""
+    return {
+        "current_metrics": get_system_metrics(),
+        "history": health_monitor_data.get("metrics_history", [])[-50:],  # Last 50 data points
+        "uptime": (datetime.utcnow() - health_monitor_data["start_time"]).total_seconds()
+    }
+
+# Middleware to track API calls and response times
+@app.middleware("http")
+async def track_api_metrics(request, call_next):
+    start_time = time.time()
+    
+    try:
+        response = await call_next(request)
+        
+        # Track successful API call
+        health_monitor_data["api_calls"] += 1
+        
+        # Track response time
+        response_time = (time.time() - start_time) * 1000  # milliseconds
+        
+        # Store metrics history (keep last 100 entries)
+        metrics_entry = {
+            "timestamp": datetime.utcnow().isoformat(),
+            "response_time": response_time,
+            "status_code": response.status_code,
+            "endpoint": str(request.url.path)
+        }
+        
+        health_monitor_data["metrics_history"].append(metrics_entry)
+        if len(health_monitor_data["metrics_history"]) > 100:
+            health_monitor_data["metrics_history"].pop(0)
+        
+        return response
+        
+    except Exception as e:
+        # Track error
+        health_monitor_data["errors"] += 1
+        
+        # Log the error
+        logger.error(f"API Error: {str(e)} for {request.url.path}")
+        
+        raise e
 
 # Pydantic Models
 class ChatMessage(BaseModel):
