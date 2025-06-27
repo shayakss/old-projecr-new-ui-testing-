@@ -1618,7 +1618,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                     onChange={(e) => setInputMessage(e.target.value)}
                     onKeyPress={handleKeyPress}
                     placeholder={getPlaceholder()}
-                    disabled={loading || (currentFeature !== 'general_ai' && !currentSession?.pdf_filename)}
+                    disabled={loading || (currentFeature !== 'general_ai' && currentFeature !== 'system_health' && !currentSession?.pdf_filename)}
                     className="w-full bg-gray-800/50 border border-gray-600/50 rounded-xl px-4 py-3 text-white placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-green-400/50 focus:border-transparent disabled:opacity-50 transition-all"
                     rows={inputMessage.split('\n').length || 1}
                     style={{minHeight: '48px', maxHeight: '120px'}}
