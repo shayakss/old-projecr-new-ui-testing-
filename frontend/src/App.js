@@ -419,7 +419,7 @@ const HomePage = ({ setCurrentView }) => {
                   <div className="p-6">
                     <div className="text-orange-400 text-sm font-medium mb-2">Project Management • 6 min read</div>
                     <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:bg-clip-text group-hover:from-emerald-400 group-hover:to-orange-400 transition-all duration-300">
-                      Leading AI Innovation: Lessons from ChatPDF
+                      Leading AI Innovation: Lessons from Baloch AI PDF
                     </h3>
                     <p className="text-gray-400 leading-relaxed mb-4">
                       Strategic insights on managing AI-powered projects, balancing innovation with user needs, and building scalable document intelligence solutions.
