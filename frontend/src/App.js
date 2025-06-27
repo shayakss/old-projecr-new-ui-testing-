@@ -530,7 +530,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
   const [models, setModels] = useState([]);
-  const [selectedModel, setSelectedModel] = useState('meta-llama/llama-3.1-8b-instruct:free');
+  const [selectedModel, setSelectedModel] = useState('claude-3-opus-20240229');
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -541,6 +541,13 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
   const [searchResults, setSearchResults] = useState([]);
   const [showSearch, setShowSearch] = useState(false);
   const [voiceLanguage, setVoiceLanguage] = useState('ur-PK'); // Default to Urdu
+
+  // System Health States
+  const [healthData, setHealthData] = useState(null);
+  const [healthLoading, setHealthLoading] = useState(false);
+  const [showFixConfirmation, setShowFixConfirmation] = useState(null);
+  const [fixingIssue, setFixingIssue] = useState(false);
+  const [healthMetrics, setHealthMetrics] = useState(null);
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
