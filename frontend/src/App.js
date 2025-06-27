@@ -175,7 +175,7 @@ const HomePage = ({ setCurrentView }) => {
               </svg>
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-white">ChatPDF</h1>
+              <h1 className="text-2xl font-bold text-white">Baloch AI PDF</h1>
               <p className="text-sm text-gray-400">AI-Powered Document Assistant</p>
             </div>
           </div>
