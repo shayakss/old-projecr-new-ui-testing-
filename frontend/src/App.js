@@ -464,7 +464,7 @@ const HomePage = ({ setCurrentView }) => {
                 Built with ❤️ by <span className="text-white font-medium">Shayak Siraj & Ahmed</span>
               </p>
               <p className="text-gray-500 text-xs">
-                Powered by OpenRouter, Gemini, and Anthropic Claude
+                AI-Powered Document Assistant
               </p>
             </div>
           </div>
