@@ -257,6 +257,44 @@ class ExportRequest(BaseModel):
     include_messages: bool = True
     feature_type: Optional[str] = None
 
+# System Health Models
+class HealthMetrics(BaseModel):
+    cpu_usage: float
+    memory_usage: float
+    disk_usage: float
+    response_time: float
+    active_sessions: int
+    total_api_calls: int
+    error_rate: float
+
+class HealthIssue(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    issue_type: str  # 'critical', 'warning', 'performance'
+    category: str  # 'service', 'api', 'database', 'dependency', 'performance'
+    title: str
+    description: str
+    suggested_fix: str
+    auto_fixable: bool
+    severity: int  # 1-5 (5 being most critical)
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    resolved: bool = False
+    resolution_time: Optional[datetime] = None
+
+class SystemHealthStatus(BaseModel):
+    overall_status: str  # 'healthy', 'warning', 'critical'
+    backend_status: str
+    frontend_status: str
+    database_status: str
+    api_status: str
+    last_check: datetime = Field(default_factory=datetime.utcnow)
+    metrics: HealthMetrics
+    issues: List[HealthIssue] = []
+    uptime: float  # seconds since last restart
+
+class FixRequest(BaseModel):
+    issue_id: str
+    confirm_fix: bool = False
+
 # PDF Processing Functions
 async def extract_text_from_pdf(file_content: bytes) -> str:
     try:
