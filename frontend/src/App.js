@@ -358,7 +358,7 @@ const HomePage = ({ setCurrentView }) => {
                   <div className="aspect-w-16 aspect-h-9 bg-gray-800">
                     <img 
                       src="https://images.pexels.com/photos/574071/pexels-photo-574071.jpeg" 
-                      alt="Developer working on ChatPDF"
+                      alt="Developer working on Baloch AI PDF"
                       className="w-full h-48 object-cover"
                     />
                   </div>
