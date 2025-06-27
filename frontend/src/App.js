@@ -346,7 +346,7 @@ const HomePage = ({ setCurrentView }) => {
                 </span>
               </h2>
               <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-                Insights, updates, and stories from the ChatPDF team about AI, document processing, and the future of intelligent document interaction.
+                Insights, updates, and stories from the Baloch AI PDF team about AI, document processing, and the future of intelligent document interaction.
               </p>
             </div>
 
