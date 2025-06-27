@@ -456,7 +456,7 @@ const HomePage = ({ setCurrentView }) => {
                   <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 0v12h8V4H6z" clipRule="evenodd" />
                 </svg>
               </div>
-              <span className="text-white font-semibold">ChatPDF</span>
+              <span className="text-white font-semibold">Baloch AI PDF</span>
             </div>
             
             <div className="text-center md:text-right">
