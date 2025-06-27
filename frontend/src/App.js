@@ -862,9 +862,9 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
   const getFeatureTitle = () => {
     switch (currentFeature) {
       case 'chat': return 'PDF Chat';
-      case 'qa_generation': return 'Auto Q&A Generation';
+      case 'question_generation': return 'Question Generator';
+      case 'quiz_generation': return 'Quiz Generator';
       case 'general_ai': return 'General AI Assistant';
-      case 'research': return 'Research & Summary';
       default: return 'Chat';
     }
   };
