@@ -155,104 +155,217 @@ const App = () => {
 
 const HomePage = ({ setCurrentView }) => {
   return (
-    <div className="min-h-screen flex flex-col grid-background" style={{background: 'linear-gradient(135deg, #000000 0%, #0a0a0a 25%, #1a1a1a 50%, #003d20 100%)'}}>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 bg-grid-white/[0.02] bg-[length:50px_50px]"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-purple-500/5 to-transparent"></div>
+      
+      {/* Floating orbs */}
+      <div className="absolute top-20 left-20 w-72 h-72 bg-purple-500/20 rounded-full blur-3xl animate-pulse"></div>
+      <div className="absolute bottom-20 right-20 w-96 h-96 bg-blue-500/15 rounded-full blur-3xl animate-pulse delay-1000"></div>
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl animate-pulse delay-500"></div>
+
       {/* Header */}
-      <header className="p-6 relative z-10">
-        <div className="flex items-center justify-center">
-          <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-green-400 to-green-600 flex items-center justify-center">
-              <span className="text-2xl font-bold text-black">🤖</span>
+      <header className="relative z-10 px-6 py-8">
+        <nav className="flex items-center justify-between max-w-7xl mx-auto">
+          <div className="flex items-center space-x-4">
+            <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg">
+              <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 0v12h8V4H6z" clipRule="evenodd" />
+              </svg>
             </div>
-            <h1 className="font-display text-primary">Baloch AI chat PdF & GPT</h1>
+            <div>
+              <h1 className="text-2xl font-bold text-white">ChatPDF</h1>
+              <p className="text-sm text-gray-400">AI-Powered Document Assistant</p>
+            </div>
           </div>
-        </div>
+          
+          <div className="hidden md:flex items-center space-x-6">
+            <a href="#features" className="text-gray-300 hover:text-white transition-colors">Features</a>
+            <a href="#how-it-works" className="text-gray-300 hover:text-white transition-colors">How it Works</a>
+            <a href="#pricing" className="text-gray-300 hover:text-white transition-colors">Pricing</a>
+            <button
+              onClick={() => setCurrentView('app')}
+              className="bg-gradient-to-r from-purple-500 to-emerald-500 text-white px-6 py-2 rounded-full hover:from-purple-600 hover:to-emerald-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+            >
+              Get Started
+            </button>
+          </div>
+        </nav>
       </header>
 
       {/* Hero Section */}
-      <main className="flex-1 flex flex-col items-center justify-center px-6 text-center relative z-10">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="font-display text-primary mb-8 leading-tight">
-            Transform Your PDFs into 
-            <span className="text-green-300 block mt-2"> Interactive Conversations</span>
-          </h2>
-          
-          <div className="content-spacing">
-            <p className="font-body-lg text-secondary mb-4 leading-relaxed max-w-3xl">
-              Upload any PDF document and unlock the power of AI-driven conversations.
+      <main className="relative z-10 px-6 pt-16 pb-32">
+        <div className="max-w-7xl mx-auto text-center">
+          {/* Hero Content */}
+          <div className="max-w-4xl mx-auto mb-16">
+            <div className="inline-flex items-center bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-6 py-2 mb-8">
+              <div className="w-2 h-2 bg-emerald-400 rounded-full mr-3 animate-pulse"></div>
+              <span className="text-sm text-gray-300">Powered by Advanced AI Models</span>
+            </div>
+            
+            <h2 className="text-5xl md:text-7xl font-bold text-white mb-8 leading-tight">
+              Transform Your
+              <span className="bg-gradient-to-r from-purple-400 via-emerald-400 to-purple-400 bg-clip-text text-transparent block">
+                PDFs into Conversations
+              </span>
+            </h2>
+            
+            <p className="text-xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
+              Upload any PDF document and engage in intelligent conversations with your content. 
+              Get instant answers, generate summaries, and unlock insights with the power of AI.
             </p>
-            <ul className="bullet-list max-w-2xl font-body text-secondary">
-              <li>Ask intelligent questions about your documents</li>
-              <li>Generate comprehensive Q&As automatically</li>
-              <li>Get detailed summaries and research insights</li>
-              <li>All powered by advanced AI models</li>
-            </ul>
-          </div>
 
-          {/* Feature Cards with Enhanced Styling */}
-          <div className="feature-cards-container mb-12 p-6">
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <FeatureCardEnhanced
-                icon="💬"
-                title="AI Chat"
-                description="Interactive conversations with your PDF documents using advanced AI models"
-              />
-              <FeatureCardEnhanced
-                icon="❓"
-                title="Auto Q&A"
-                description="Generate comprehensive question-answer pairs automatically from any document"
-              />
-              <FeatureCardEnhanced
-                icon="🤖"
-                title="General AI"
-                description="Access powerful AI assistance beyond your documents for any query"
-              />
-              <FeatureCardEnhanced
-                icon="📊"
-                title="Research & Analysis"
-                description="Detailed document analysis with insights and comprehensive summaries"
-              />
-              <FeatureCardEnhanced
-                icon="🎤"
-                title="Voice Input"
-                description="Ask questions using natural voice commands with speech recognition"
-              />
-              <FeatureCardEnhanced
-                icon="🔍"
-                title="Advanced Search"
-                description="Search across all documents and conversations with intelligent results"
-              />
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+              <button
+                onClick={() => setCurrentView('app')}
+                className="bg-gradient-to-r from-purple-500 to-emerald-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:from-purple-600 hover:to-emerald-600 transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:scale-105 flex items-center space-x-2"
+              >
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                </svg>
+                <span>Start Chatting Now</span>
+              </button>
+              <button className="border border-white/30 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-white/10 transition-all duration-300 backdrop-blur-sm">
+                Watch Demo
+              </button>
+            </div>
+
+            {/* Trust Indicators */}
+            <div className="flex items-center justify-center space-x-8 text-sm text-gray-400">
+              <div className="flex items-center space-x-2">
+                <svg className="w-5 h-5 text-emerald-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                <span>Free to Use</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <svg className="w-5 h-5 text-emerald-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                </svg>
+                <span>Secure & Private</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <svg className="w-5 h-5 text-emerald-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+                <span>Unlimited PDFs</span>
+              </div>
             </div>
           </div>
 
-          {/* CTA Button */}
-          <button
-            onClick={() => setCurrentView('app')}
-            className="bg-gradient-to-r from-green-400 to-green-600 text-black px-12 py-4 rounded-full btn-text-xl hover:from-green-300 hover:to-green-500 transform hover:scale-105 transition-all duration-300 shadow-2xl relative z-10 font-bold"
-          >
-            Start Chatting with Your PDFs
-          </button>
+          {/* Feature Cards Grid */}
+          <div id="features" className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto mb-20">
+            <FeatureCard
+              icon={
+                <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clipRule="evenodd" />
+                </svg>
+              }
+              title="AI Chat"
+              description="Have natural conversations with your PDF documents. Ask questions and get instant, contextual answers."
+              gradient="from-purple-500 to-pink-500"
+            />
+            <FeatureCard
+              icon={
+                <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 3a1 1 0 00-1.447-.894L8.763 6H5a3 3 0 000 6h.28l1.771 5.316A1 1 0 008 18h1a1 1 0 001-1v-4.382l6.553 3.276A1 1 0 0018 15V3z" clipRule="evenodd" />
+                </svg>
+              }
+              title="Auto Q&A Generation"
+              description="Automatically generate comprehensive question-answer pairs from your documents for quick reference."
+              gradient="from-emerald-500 to-cyan-500"
+            />
+            <FeatureCard
+              icon={
+                <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                </svg>
+              }
+              title="Research & Analysis"
+              description="Get detailed summaries, key insights, and comprehensive research analysis from any document."
+              gradient="from-blue-500 to-indigo-500"
+            />
+            <FeatureCard
+              icon={
+                <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clipRule="evenodd" />
+                </svg>
+              }
+              title="Voice Input"
+              description="Use natural voice commands to ask questions about your documents with speech recognition."
+              gradient="from-orange-500 to-red-500"
+            />
+            <FeatureCard
+              icon={
+                <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
+                </svg>
+              }
+              title="Advanced Search"
+              description="Search across all your documents and conversations with intelligent, context-aware results."
+              gradient="from-teal-500 to-green-500"
+            />
+            <FeatureCard
+              icon={
+                <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z" />
+                </svg>
+              }
+              title="Multi-Language Support"
+              description="Translate your PDFs and interact with content in multiple languages powered by AI."
+              gradient="from-violet-500 to-purple-500"
+            />
+          </div>
 
-          {/* Stats */}
-          <div className="grid grid-cols-3 gap-8 mt-16 text-center relative z-10">
-            <div>
-              <div className="font-heading-lg text-primary">8</div>
-              <div className="font-body-sm text-secondary">AI Features Available</div>
-            </div>
-            <div>
-              <div className="font-heading-lg text-primary">100%</div>
-              <div className="font-body-sm text-secondary">Free to Use</div>
-            </div>
-            <div>
-              <div className="font-heading-lg text-primary">∞</div>
-              <div className="font-body-sm text-secondary">PDF Uploads</div>
+          {/* Stats Section */}
+          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 max-w-4xl mx-auto">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+              <div className="text-center">
+                <div className="text-3xl font-bold text-white mb-2">7+</div>
+                <div className="text-sm text-gray-400">AI Models</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-white mb-2">100%</div>
+                <div className="text-sm text-gray-400">Free to Use</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-white mb-2">∞</div>
+                <div className="text-sm text-gray-400">PDF Uploads</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-white mb-2">24/7</div>
+                <div className="text-sm text-gray-400">Available</div>
+              </div>
             </div>
           </div>
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="p-6 text-center font-body-sm text-secondary relative z-10">
-        <p>This project is developed BY SHAYAK SIRAJ & AHMED ❤️</p>
+      <footer className="relative z-10 border-t border-white/10 bg-black/20 backdrop-blur-sm">
+        <div className="max-w-7xl mx-auto px-6 py-8">
+          <div className="flex flex-col md:flex-row items-center justify-between">
+            <div className="flex items-center space-x-4 mb-4 md:mb-0">
+              <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-emerald-500 rounded-lg flex items-center justify-center">
+                <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 0v12h8V4H6z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <span className="text-white font-semibold">ChatPDF</span>
+            </div>
+            
+            <div className="text-center md:text-right">
+              <p className="text-gray-400 text-sm mb-2">
+                Built with ❤️ by <span className="text-white font-medium">Shayak Siraj & Ahmed</span>
+              </p>
+              <p className="text-gray-500 text-xs">
+                Powered by OpenRouter, Gemini, and Anthropic Claude
+              </p>
+            </div>
+          </div>
+        </div>
       </footer>
     </div>
   );
