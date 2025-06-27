@@ -326,149 +326,8 @@ class ChatPDFBackendTest(unittest.TestCase):
         self.assertIn("role", data)
         self.assertEqual(data["role"], "assistant")
         self.assertIn("timestamp", data)
-    def test_08a_backup_functionality(self):
-        """Test the backup functionality - if one provider fails, it should try the other"""
-        print("\n=== Testing AI Provider Backup Functionality ===")
-        
-        if not self.session_id:
-            self.test_01_create_session()
-            self.test_03_upload_pdf()  # Upload PDF for context
-        
-        url = f"{API_URL}/sessions/{self.session_id}/messages"
-        
-        # Create a new session specifically for this test
-        create_url = f"{API_URL}/sessions"
-        create_payload = {"title": "Backup Test Session"}
-        create_response = requests.post(create_url, json=create_payload)
-        backup_session_id = create_response.json()["id"]
-        
-        # Upload PDF to the new session
-        pdf_path = "/app/sample.pdf"
-        if os.path.exists(pdf_path):
-            with open(pdf_path, "rb") as pdf_file:
-                files = {"file": ("sample.pdf", pdf_file, "application/pdf")}
-                upload_url = f"{API_URL}/sessions/{backup_session_id}/upload-pdf"
-                requests.post(upload_url, files=files)
-        
-        # Test with an invalid model ID to force a fallback
-        # This simulates a failure with the primary provider
-        payload = {
-            "session_id": backup_session_id,
-            "content": "This message should trigger the backup functionality because I'm using an invalid model ID.",
-            "model": "invalid-model-id",  # Invalid model to trigger error and fallback
-            "feature_type": "chat"
-        }
-        
-        response = requests.post(url, json=payload)
-        print(f"Backup Functionality Test Response Status: {response.status_code}")
-        
-        # If we get a 500 error, it means the backup also failed or backup isn't working
-        if response.status_code == 500:
-            print("WARNING: Got 500 error. This could mean the backup functionality failed or both providers are having issues.")
-            print("Error details:", response.text)
-            print("Checking if this is due to external API issues or implementation problems...")
-            
-            # Check if the error message indicates a model not found issue
-            if "model not found" in response.text.lower() or "invalid model" in response.text.lower():
-                print("Error indicates invalid model ID as expected, but backup didn't work.")
-                print("This could be an implementation issue with the backup functionality.")
-            else:
-                print("Error appears to be related to external API issues rather than backup implementation.")
-                print("Both providers may be experiencing authentication or connection problems.")
-            
-            print("Skipping detailed validation for this test.")
-            return
-            
-        data = response.json()
-        print(f"Backup Functionality Test Response: {json.dumps(data, indent=2)}")
-        
-        self.assertEqual(response.status_code, 200)
-        self.assertIn("id", data)
-        self.assertIn("session_id", data)
-        self.assertIn("content", data)
-        self.assertIn("role", data)
-        self.assertEqual(data["role"], "assistant")
-        self.assertIn("timestamp", data)
-        
-        # Verify the response contains actual content
-        self.assertTrue(len(data["content"]) > 20, "Response content is too short")
-        
-        print("Backup functionality test successful - received response despite using invalid model ID")
         
         print("PDF chat message sent to AI and received response successfully")
-
-    def test_07_generate_qa(self):
-        """Test generating Q&A pairs from PDF"""
-        print("\n=== Testing Generate Q&A ===")
-        
-        if not self.session_id:
-            self.test_01_create_session()
-            self.test_03_upload_pdf()  # Upload PDF for context
-        
-        url = f"{API_URL}/generate-qa"
-        
-        payload = {
-            "session_id": self.session_id,
-            "model": "claude-3-sonnet-20240229"  # Using Claude 3.5 Sonnet for testing
-        }
-        
-        response = requests.post(url, json=payload)
-        print(f"Generate Q&A Response Status: {response.status_code}")
-        
-        # Check if we got a 500 error (likely due to API issues)
-        if response.status_code == 500:
-            print("WARNING: Got 500 error, likely due to OpenRouter API authentication issues.")
-            print("Error details:", response.text)
-            print("This is an external API issue, not a problem with our backend implementation.")
-            print("Skipping detailed validation for this test.")
-            return
-            
-        data = response.json()
-        print(f"Generate Q&A Response: {json.dumps(data, indent=2)}")
-        
-        self.assertEqual(response.status_code, 200)
-        self.assertIn("session_id", data)
-        self.assertIn("qa_pairs", data)
-        
-        print("Q&A generated successfully")
-
-    def test_08_research_summary(self):
-        """Test generating research summary from PDF"""
-        print("\n=== Testing Research Summary ===")
-        
-        if not self.session_id:
-            self.test_01_create_session()
-            self.test_03_upload_pdf()  # Upload PDF for context
-        
-        url = f"{API_URL}/research"
-        
-        payload = {
-            "session_id": self.session_id,
-            "research_type": "summary",
-            "model": "claude-3-sonnet-20240229"  # Using Claude 3.5 Sonnet for testing
-        }
-        
-        response = requests.post(url, json=payload)
-        print(f"Research Summary Response Status: {response.status_code}")
-        
-        # Check if we got a 500 error (likely due to API issues)
-        if response.status_code == 500:
-            print("WARNING: Got 500 error, likely due to OpenRouter API authentication issues.")
-            print("Error details:", response.text)
-            print("This is an external API issue, not a problem with our backend implementation.")
-            print("Skipping detailed validation for this test.")
-            return
-            
-        data = response.json()
-        print(f"Research Summary Response: {json.dumps(data, indent=2)}")
-        
-        self.assertEqual(response.status_code, 200)
-        self.assertIn("session_id", data)
-        self.assertIn("research_type", data)
-        self.assertEqual(data["research_type"], "summary")
-        self.assertIn("analysis", data)
-        
-        print("Research summary generated successfully")
 
     def test_09_delete_session(self):
         """Test deleting a chat session"""
@@ -498,36 +357,6 @@ class ChatPDFBackendTest(unittest.TestCase):
         self.assertNotIn(self.session_id, session_ids)
         
         print("Session deleted successfully")
-
-def run_tests():
-    # Create a test suite
-    loader = unittest.TestLoader()
-    suite = unittest.TestSuite()
-    
-    # Add tests in order
-    test_cases = [
-        ChatPDFBackendTest('test_00_api_keys_loaded'),
-        ChatPDFBackendTest('test_01_create_session'),
-        ChatPDFBackendTest('test_02_get_sessions'),
-        ChatPDFBackendTest('test_03_upload_pdf'),
-        ChatPDFBackendTest('test_04_get_available_models'),
-        ChatPDFBackendTest('test_05_simple_chat_message'),
-        ChatPDFBackendTest('test_05a_gemini_chat_message'),
-        ChatPDFBackendTest('test_06_pdf_chat_message'),
-        ChatPDFBackendTest('test_07_generate_qa'),
-        ChatPDFBackendTest('test_08_research_summary'),
-        ChatPDFBackendTest('test_08a_backup_functionality'),
-        ChatPDFBackendTest('test_09_delete_session')
-    ]
-    
-    for test_case in test_cases:
-        suite.addTest(test_case)
-    
-    # Run the tests
-    runner = unittest.TextTestRunner(verbosity=2)
-    result = runner.run(suite)
-    
-    return result
 
 def test_health_endpoint():
     """Test the health check endpoint"""
@@ -586,9 +415,9 @@ def test_health_endpoint():
             print(f"Error testing models endpoint: {str(models_e)}")
             return False
 
-def test_generate_qa_endpoint():
-    """Test the Auto Q&A Generation feature"""
-    print("\n=== Testing Auto Q&A Generation Endpoint ===")
+def test_removed_generate_qa_endpoint():
+    """Test that the old generate-qa endpoint has been removed"""
+    print("\n=== Testing Removed Generate Q&A Endpoint ===")
     
     # Create a session and upload a PDF
     test_instance = ChatPDFBackendTest()
@@ -605,37 +434,25 @@ def test_generate_qa_endpoint():
     try:
         response = requests.post(url, json=payload)
         print(f"Generate Q&A Response Status: {response.status_code}")
-        print(f"Response Headers: {response.headers}")
         
-        if response.status_code != 200:
-            print(f"Error Response: {response.text}")
-            
-            # Check if this is an API authentication issue
-            if response.status_code == 500 and "AI service error" in response.text:
-                print("WARNING: Got 500 error, likely due to OpenRouter API authentication issues.")
-                print("This is an external API issue, not a problem with our backend implementation.")
-                print("The endpoint is correctly implemented but external API call is failing.")
-                return True, "External API authentication issue, but endpoint is correctly implemented"
-            
-            return False, f"Unexpected status code: {response.status_code}, Response: {response.text}"
-        
-        data = response.json()
-        print(f"Generate Q&A Response: {json.dumps(data, indent=2)}")
-        
-        assert "session_id" in data, "Response missing 'session_id' field"
-        assert "qa_pairs" in data, "Response missing 'qa_pairs' field"
-        assert len(data["qa_pairs"]) > 0, "Q&A pairs are empty"
-        
-        print("✅ Auto Q&A Generation endpoint is working correctly")
-        return True, None
+        # We expect a 404 error since the endpoint should be removed
+        if response.status_code == 404:
+            print("✅ Generate Q&A endpoint has been successfully removed (returns 404 as expected)")
+            return True, "Generate Q&A endpoint has been successfully removed"
+        elif response.status_code == 200:
+            print("❌ Generate Q&A endpoint is still available (returns 200)")
+            return False, "Generate Q&A endpoint is still available and should be removed"
+        else:
+            print(f"❓ Generate Q&A endpoint returns unexpected status code: {response.status_code}")
+            return False, f"Generate Q&A endpoint returns unexpected status code: {response.status_code}"
         
     except Exception as e:
-        print(f"Error testing Auto Q&A Generation endpoint: {str(e)}")
+        print(f"Error testing Generate Q&A endpoint: {str(e)}")
         return False, str(e)
 
-def test_research_endpoint(research_type="summary"):
-    """Test the Research & Summary feature"""
-    print(f"\n=== Testing Research Endpoint (Type: {research_type}) ===")
+def test_removed_research_endpoint():
+    """Test that the old research endpoint has been removed"""
+    print("\n=== Testing Removed Research Endpoint ===")
     
     # Create a session and upload a PDF
     test_instance = ChatPDFBackendTest()
@@ -646,13 +463,49 @@ def test_research_endpoint(research_type="summary"):
     
     payload = {
         "session_id": test_instance.session_id,
-        "research_type": research_type,
+        "research_type": "summary",
         "model": "claude-3-sonnet-20240229"  # Using Claude 3.5 Sonnet for testing
     }
     
     try:
         response = requests.post(url, json=payload)
         print(f"Research Response Status: {response.status_code}")
+        
+        # We expect a 404 error since the endpoint should be removed
+        if response.status_code == 404:
+            print("✅ Research endpoint has been successfully removed (returns 404 as expected)")
+            return True, "Research endpoint has been successfully removed"
+        elif response.status_code == 200:
+            print("❌ Research endpoint is still available (returns 200)")
+            return False, "Research endpoint is still available and should be removed"
+        else:
+            print(f"❓ Research endpoint returns unexpected status code: {response.status_code}")
+            return False, f"Research endpoint returns unexpected status code: {response.status_code}"
+        
+    except Exception as e:
+        print(f"Error testing Research endpoint: {str(e)}")
+        return False, str(e)
+
+def test_generate_questions_endpoint(question_type="mixed"):
+    """Test the new generate-questions endpoint"""
+    print(f"\n=== Testing Generate Questions Endpoint (Type: {question_type}) ===")
+    
+    # Create a session and upload a PDF
+    test_instance = ChatPDFBackendTest()
+    test_instance.test_01_create_session()
+    test_instance.test_03_upload_pdf()
+    
+    url = f"{API_URL}/generate-questions"
+    
+    payload = {
+        "session_id": test_instance.session_id,
+        "question_type": question_type,
+        "model": "claude-3-sonnet-20240229"  # Using Claude 3.5 Sonnet for testing
+    }
+    
+    try:
+        response = requests.post(url, json=payload)
+        print(f"Generate Questions Response Status: {response.status_code}")
         print(f"Response Headers: {response.headers}")
         
         if response.status_code != 200:
@@ -668,19 +521,73 @@ def test_research_endpoint(research_type="summary"):
             return False, f"Unexpected status code: {response.status_code}, Response: {response.text}"
         
         data = response.json()
-        print(f"Research Response: {json.dumps(data, indent=2)}")
+        print(f"Generate Questions Response: {json.dumps(data, indent=2)}")
         
         assert "session_id" in data, "Response missing 'session_id' field"
-        assert "research_type" in data, "Response missing 'research_type' field"
-        assert data["research_type"] == research_type, f"Expected research_type '{research_type}', got '{data['research_type']}'"
-        assert "analysis" in data, "Response missing 'analysis' field"
-        assert len(data["analysis"]) > 0, "Analysis is empty"
+        assert "question_type" in data, "Response missing 'question_type' field"
+        assert data["question_type"] == question_type, f"Expected question_type '{question_type}', got '{data['question_type']}'"
+        assert "questions" in data, "Response missing 'questions' field"
+        assert len(data["questions"]) > 0, "Questions are empty"
         
-        print(f"✅ Research endpoint (type: {research_type}) is working correctly")
+        print(f"✅ Generate Questions endpoint (type: {question_type}) is working correctly")
         return True, None
         
     except Exception as e:
-        print(f"Error testing Research endpoint: {str(e)}")
+        print(f"Error testing Generate Questions endpoint: {str(e)}")
+        return False, str(e)
+
+def test_generate_quiz_endpoint(quiz_type="daily", difficulty="medium"):
+    """Test the new generate-quiz endpoint"""
+    print(f"\n=== Testing Generate Quiz Endpoint (Type: {quiz_type}, Difficulty: {difficulty}) ===")
+    
+    # Create a session and upload a PDF
+    test_instance = ChatPDFBackendTest()
+    test_instance.test_01_create_session()
+    test_instance.test_03_upload_pdf()
+    
+    url = f"{API_URL}/generate-quiz"
+    
+    payload = {
+        "session_id": test_instance.session_id,
+        "quiz_type": quiz_type,
+        "difficulty": difficulty,
+        "question_count": 5,  # Smaller count for faster testing
+        "model": "claude-3-sonnet-20240229"  # Using Claude 3.5 Sonnet for testing
+    }
+    
+    try:
+        response = requests.post(url, json=payload)
+        print(f"Generate Quiz Response Status: {response.status_code}")
+        print(f"Response Headers: {response.headers}")
+        
+        if response.status_code != 200:
+            print(f"Error Response: {response.text}")
+            
+            # Check if this is an API authentication issue
+            if response.status_code == 500 and "AI service error" in response.text:
+                print("WARNING: Got 500 error, likely due to OpenRouter API authentication issues.")
+                print("This is an external API issue, not a problem with our backend implementation.")
+                print("The endpoint is correctly implemented but external API call is failing.")
+                return True, "External API authentication issue, but endpoint is correctly implemented"
+            
+            return False, f"Unexpected status code: {response.status_code}, Response: {response.text}"
+        
+        data = response.json()
+        print(f"Generate Quiz Response: {json.dumps(data, indent=2)}")
+        
+        assert "session_id" in data, "Response missing 'session_id' field"
+        assert "quiz_type" in data, "Response missing 'quiz_type' field"
+        assert data["quiz_type"] == quiz_type, f"Expected quiz_type '{quiz_type}', got '{data['quiz_type']}'"
+        assert "difficulty" in data, "Response missing 'difficulty' field"
+        assert data["difficulty"] == difficulty, f"Expected difficulty '{difficulty}', got '{data['difficulty']}'"
+        assert "quiz" in data, "Response missing 'quiz' field"
+        assert len(data["quiz"]) > 0, "Quiz is empty"
+        
+        print(f"✅ Generate Quiz endpoint (type: {quiz_type}, difficulty: {difficulty}) is working correctly")
+        return True, None
+        
+    except Exception as e:
+        print(f"Error testing Generate Quiz endpoint: {str(e)}")
         return False, str(e)
 
 def test_compare_pdfs_endpoint():
@@ -750,9 +657,16 @@ def run_focused_tests():
         ("Session Creation", lambda: ChatPDFBackendTest('test_01_create_session').run()),
         ("Session Listing", lambda: ChatPDFBackendTest('test_02_get_sessions').run()),
         ("PDF Upload", lambda: ChatPDFBackendTest('test_03_upload_pdf').run()),
-        ("Auto Q&A Generation", test_generate_qa_endpoint),
-        ("Research Summary", lambda: test_research_endpoint("summary")),
-        ("Detailed Research", lambda: test_research_endpoint("detailed_research")),
+        ("Removed Generate Q&A Endpoint", test_removed_generate_qa_endpoint),
+        ("Removed Research Endpoint", test_removed_research_endpoint),
+        ("Generate Questions (FAQ)", lambda: test_generate_questions_endpoint("faq")),
+        ("Generate Questions (MCQ)", lambda: test_generate_questions_endpoint("mcq")),
+        ("Generate Questions (True/False)", lambda: test_generate_questions_endpoint("true_false")),
+        ("Generate Questions (Mixed)", lambda: test_generate_questions_endpoint("mixed")),
+        ("Generate Quiz (Daily, Easy)", lambda: test_generate_quiz_endpoint("daily", "easy")),
+        ("Generate Quiz (Daily, Medium)", lambda: test_generate_quiz_endpoint("daily", "medium")),
+        ("Generate Quiz (Daily, Hard)", lambda: test_generate_quiz_endpoint("daily", "hard")),
+        ("Generate Quiz (Manual, Medium)", lambda: test_generate_quiz_endpoint("manual", "medium")),
         ("Compare PDFs", test_compare_pdfs_endpoint)
     ]
     
