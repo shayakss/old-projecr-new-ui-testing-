@@ -984,6 +984,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
       case 'general_ai': return "Ask me anything...";
       case 'question_generation': return "Upload a PDF and generate questions...";
       case 'quiz_generation': return "Upload a PDF and create quizzes...";
+      case 'system_health': return "System health monitoring - no input required";
       default: return "Type a message...";
     }
   };
