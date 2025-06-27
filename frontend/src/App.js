@@ -1045,6 +1045,17 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
               name="General AI"
               isCompact={!sidebarOpen}
             />
+            <ModernNavTab 
+              isActive={currentFeature === 'system_health'} 
+              onClick={() => {
+                setCurrentFeature('system_health');
+                loadSystemHealth();
+                loadHealthMetrics();
+              }}
+              icon="🏥"
+              name="System Health"
+              isCompact={!sidebarOpen}
+            />
           </div>
 
           {sidebarOpen && (
