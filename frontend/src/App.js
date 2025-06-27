@@ -1334,7 +1334,196 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
 
             {/* Messages Container */}
             <div className="flex-1 overflow-y-auto p-6 space-y-6" style={{background: '#000000'}}>
-              {messages.length === 0 ? (
+              {currentFeature === 'system_health' ? (
+                // System Health Dashboard
+                <div className="max-w-6xl mx-auto space-y-6">
+                  {/* Header */}
+                  <div className="text-center mb-8">
+                    <h2 className="text-3xl font-bold text-white mb-2">System Health Monitor</h2>
+                    <p className="text-gray-400">Real-time monitoring and automated issue resolution</p>
+                  </div>
+
+                  {/* Refresh Button */}
+                  <div className="flex justify-end">
+                    <button
+                      onClick={() => {
+                        loadSystemHealth();
+                        loadHealthMetrics();
+                      }}
+                      disabled={healthLoading}
+                      className="flex items-center space-x-2 px-4 py-2 bg-green-400/10 hover:bg-green-400/20 border border-green-400/30 hover:border-green-400/50 text-green-400 rounded-lg text-sm font-medium transition-all duration-200 disabled:opacity-50"
+                    >
+                      {healthLoading ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-green-400/30 border-t-green-400 rounded-full animate-spin"></div>
+                          <span>Refreshing...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>🔄</span>
+                          <span>Refresh</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+
+                  {healthLoading ? (
+                    <div className="flex justify-center items-center h-64">
+                      <div className="text-center">
+                        <div className="w-16 h-16 border-4 border-green-400/30 border-t-green-400 rounded-full animate-spin mx-auto mb-4"></div>
+                        <p className="text-gray-400">Loading system health...</p>
+                      </div>
+                    </div>
+                  ) : healthData ? (
+                    <>
+                      {/* Overall Status */}
+                      <div className={`p-6 rounded-xl border ${getStatusBgColor(healthData.overall_status)}`}>
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h3 className="text-xl font-semibold text-white mb-2">Overall System Status</h3>
+                            <p className={`text-lg font-medium ${getStatusColor(healthData.overall_status)}`}>
+                              {healthData.overall_status.toUpperCase()}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-sm text-gray-400">Uptime</p>
+                            <p className="text-lg font-medium text-white">
+                              {Math.floor(healthData.uptime / 3600)}h {Math.floor((healthData.uptime % 3600) / 60)}m
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Component Status */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div className={`p-4 rounded-xl border ${getStatusBgColor(healthData.backend_status)}`}>
+                          <h4 className="font-medium text-white mb-1">Backend</h4>
+                          <p className={`text-sm ${getStatusColor(healthData.backend_status)}`}>
+                            {healthData.backend_status}
+                          </p>
+                        </div>
+                        <div className={`p-4 rounded-xl border ${getStatusBgColor(healthData.database_status)}`}>
+                          <h4 className="font-medium text-white mb-1">Database</h4>
+                          <p className={`text-sm ${getStatusColor(healthData.database_status)}`}>
+                            {healthData.database_status}
+                          </p>
+                        </div>
+                        <div className={`p-4 rounded-xl border ${getStatusBgColor(healthData.api_status)}`}>
+                          <h4 className="font-medium text-white mb-1">API Services</h4>
+                          <p className={`text-sm ${getStatusColor(healthData.api_status)}`}>
+                            {healthData.api_status}
+                          </p>
+                        </div>
+                        <div className={`p-4 rounded-xl border ${getStatusBgColor(healthData.frontend_status)}`}>
+                          <h4 className="font-medium text-white mb-1">Frontend</h4>
+                          <p className={`text-sm ${getStatusColor(healthData.frontend_status)}`}>
+                            {healthData.frontend_status}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* System Metrics */}
+                      <div className="bg-gray-800/30 rounded-xl border border-gray-600/30 p-6">
+                        <h3 className="text-lg font-semibold text-white mb-4">System Metrics</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                          <div className="text-center">
+                            <p className="text-sm text-gray-400">CPU Usage</p>
+                            <p className="text-xl font-bold text-white">{healthData.metrics.cpu_usage.toFixed(1)}%</p>
+                          </div>
+                          <div className="text-center">
+                            <p className="text-sm text-gray-400">Memory</p>
+                            <p className="text-xl font-bold text-white">{healthData.metrics.memory_usage.toFixed(1)}%</p>
+                          </div>
+                          <div className="text-center">
+                            <p className="text-sm text-gray-400">Disk Usage</p>
+                            <p className="text-xl font-bold text-white">{healthData.metrics.disk_usage.toFixed(1)}%</p>
+                          </div>
+                          <div className="text-center">
+                            <p className="text-sm text-gray-400">Response Time</p>
+                            <p className="text-xl font-bold text-white">{healthData.metrics.response_time.toFixed(0)}ms</p>
+                          </div>
+                          <div className="text-center">
+                            <p className="text-sm text-gray-400">API Calls</p>
+                            <p className="text-xl font-bold text-white">{healthData.metrics.total_api_calls}</p>
+                          </div>
+                          <div className="text-center">
+                            <p className="text-sm text-gray-400">Error Rate</p>
+                            <p className="text-xl font-bold text-white">{healthData.metrics.error_rate.toFixed(1)}%</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Issues */}
+                      {healthData.issues && healthData.issues.length > 0 && (
+                        <div className="bg-gray-800/30 rounded-xl border border-gray-600/30 p-6">
+                          <h3 className="text-lg font-semibold text-white mb-4">
+                            System Issues ({healthData.issues.length})
+                          </h3>
+                          <div className="space-y-4">
+                            {healthData.issues.map((issue, index) => (
+                              <div key={issue.id || index} className={`p-4 rounded-lg border ${getStatusBgColor(issue.issue_type)}`}>
+                                <div className="flex items-start justify-between">
+                                  <div className="flex-1">
+                                    <div className="flex items-center space-x-2 mb-2">
+                                      <span className={`text-sm font-medium px-2 py-1 rounded ${getSeverityColor(issue.severity)}`}>
+                                        Severity {issue.severity}
+                                      </span>
+                                      <span className="text-xs text-gray-400 uppercase">
+                                        {issue.category}
+                                      </span>
+                                    </div>
+                                    <h4 className="font-medium text-white mb-1">{issue.title}</h4>
+                                    <p className="text-sm text-gray-300 mb-2">{issue.description}</p>
+                                    <p className="text-sm text-blue-400">💡 {issue.suggested_fix}</p>
+                                  </div>
+                                  {issue.auto_fixable && !issue.resolved && (
+                                    <button
+                                      onClick={() => setShowFixConfirmation(issue)}
+                                      disabled={fixingIssue}
+                                      className="ml-4 px-3 py-1 bg-blue-400/10 hover:bg-blue-400/20 border border-blue-400/30 hover:border-blue-400/50 text-blue-400 rounded text-sm transition-all duration-200 disabled:opacity-50"
+                                    >
+                                      Auto-Fix
+                                    </button>
+                                  )}
+                                  {issue.resolved && (
+                                    <span className="ml-4 px-3 py-1 bg-green-400/10 border border-green-400/30 text-green-400 rounded text-sm">
+                                      ✅ Resolved
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* No Issues */}
+                      {(!healthData.issues || healthData.issues.length === 0) && (
+                        <div className="text-center py-12">
+                          <div className="text-6xl mb-4">✅</div>
+                          <h3 className="text-xl font-semibold text-green-400 mb-2">All Systems Healthy</h3>
+                          <p className="text-gray-400">No issues detected. System is running optimally.</p>
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <div className="text-center py-12">
+                      <div className="text-6xl mb-4">🏥</div>
+                      <h3 className="text-xl font-semibold text-white mb-2">System Health Monitor</h3>
+                      <p className="text-gray-400 mb-4">Click refresh to load system health data</p>
+                      <button
+                        onClick={() => {
+                          loadSystemHealth();
+                          loadHealthMetrics();
+                        }}
+                        className="px-6 py-3 bg-green-400/10 hover:bg-green-400/20 border border-green-400/30 hover:border-green-400/50 text-green-400 rounded-xl font-medium transition-all duration-200"
+                      >
+                        Load Health Data
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : messages.length === 0 ? (
                 <div className="flex items-center justify-center h-full text-quaternary">
                   <div className="text-center">
                     <div className="text-6xl mb-4">🤖</div>
