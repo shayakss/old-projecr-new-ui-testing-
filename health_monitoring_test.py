@@ -336,4 +336,5 @@ if __name__ == "__main__":
     print(f"Backend URL: {API_URL}")
     print("=" * 80)
     
-    run_all_tests()
+    exit_code = run_all_tests()
+    exit(exit_code)
