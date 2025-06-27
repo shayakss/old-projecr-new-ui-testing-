@@ -320,7 +320,7 @@ const HomePage = ({ setCurrentView }) => {
           </div>
 
           {/* Stats Section */}
-          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 max-w-4xl mx-auto">
+          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 max-w-4xl mx-auto mb-20">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
               <div className="text-center">
                 <div className="text-3xl font-bold text-white mb-2">7+</div>
@@ -338,6 +338,114 @@ const HomePage = ({ setCurrentView }) => {
                 <div className="text-3xl font-bold text-white mb-2">24/7</div>
                 <div className="text-sm text-gray-400">Available</div>
               </div>
+            </div>
+          </div>
+
+          {/* Blog Section */}
+          <div id="blog" className="max-w-6xl mx-auto mb-20">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+                Latest from Our
+                <span className="bg-gradient-to-r from-purple-400 via-emerald-400 to-purple-400 bg-clip-text text-transparent block">
+                  Blog
+                </span>
+              </h2>
+              <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+                Insights, updates, and stories from the ChatPDF team about AI, document processing, and the future of intelligent document interaction.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-8">
+              {/* Blog Post 1 - Developer Story */}
+              <div className="group relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
+                <div className="relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden hover:border-white/20 transition-all duration-300 group-hover:transform group-hover:scale-105">
+                  <div className="aspect-w-16 aspect-h-9 bg-gray-800">
+                    <img 
+                      src="https://images.pexels.com/photos/574071/pexels-photo-574071.jpeg" 
+                      alt="Developer working on ChatPDF"
+                      className="w-full h-48 object-cover"
+                    />
+                  </div>
+                  <div className="p-6">
+                    <div className="text-emerald-400 text-sm font-medium mb-2">Development • 5 min read</div>
+                    <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:bg-clip-text group-hover:from-purple-400 group-hover:to-emerald-400 transition-all duration-300">
+                      Building ChatPDF: From Concept to Reality
+                    </h3>
+                    <p className="text-gray-400 leading-relaxed mb-4">
+                      Our journey developing an AI-powered PDF assistant that can understand, analyze, and interact with any document in natural language.
+                    </p>
+                    <div className="flex items-center text-gray-400 text-sm">
+                      <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-emerald-500 rounded-full mr-3"></div>
+                      <span>Ahmed Hassan, Lead Developer</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Blog Post 2 - Another Developer */}
+              <div className="group relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
+                <div className="relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden hover:border-white/20 transition-all duration-300 group-hover:transform group-hover:scale-105">
+                  <div className="aspect-w-16 aspect-h-9 bg-gray-800">
+                    <img 
+                      src="https://images.unsplash.com/photo-1549692520-acc6669e2f0c" 
+                      alt="Software engineer developing AI features"
+                      className="w-full h-48 object-cover"
+                    />
+                  </div>
+                  <div className="p-6">
+                    <div className="text-blue-400 text-sm font-medium mb-2">AI Integration • 7 min read</div>
+                    <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:bg-clip-text group-hover:from-blue-400 group-hover:to-purple-400 transition-all duration-300">
+                      Integrating Multiple AI Models for Better Results
+                    </h3>
+                    <p className="text-gray-400 leading-relaxed mb-4">
+                      How we implemented Claude and Gemini models with intelligent fallback mechanisms to ensure reliable AI responses for document analysis.
+                    </p>
+                    <div className="flex items-center text-gray-400 text-sm">
+                      <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mr-3"></div>
+                      <span>Shayak Siraj, AI Engineer</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Blog Post 3 - Project Mentor */}
+              <div className="group relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-orange-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
+                <div className="relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden hover:border-white/20 transition-all duration-300 group-hover:transform group-hover:scale-105">
+                  <div className="aspect-w-16 aspect-h-9 bg-gray-800">
+                    <img 
+                      src="https://images.pexels.com/photos/1181487/pexels-photo-1181487.jpeg" 
+                      alt="Project mentor guiding ChatPDF development"
+                      className="w-full h-48 object-cover"
+                    />
+                  </div>
+                  <div className="p-6">
+                    <div className="text-orange-400 text-sm font-medium mb-2">Project Management • 6 min read</div>
+                    <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:bg-clip-text group-hover:from-emerald-400 group-hover:to-orange-400 transition-all duration-300">
+                      Leading AI Innovation: Lessons from ChatPDF
+                    </h3>
+                    <p className="text-gray-400 leading-relaxed mb-4">
+                      Strategic insights on managing AI-powered projects, balancing innovation with user needs, and building scalable document intelligence solutions.
+                    </p>
+                    <div className="flex items-center text-gray-400 text-sm">
+                      <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-orange-500 rounded-full mr-3"></div>
+                      <span>Dr. Sarah Mitchell, Project Mentor</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Blog CTA */}
+            <div className="text-center mt-12">
+              <button
+                onClick={() => setCurrentView('app')}
+                className="bg-gradient-to-r from-purple-500 to-emerald-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:from-purple-600 hover:to-emerald-600 transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:scale-105"
+              >
+                Try ChatPDF Now
+              </button>
             </div>
           </div>
         </div>
