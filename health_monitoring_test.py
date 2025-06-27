@@ -20,6 +20,29 @@ if not BACKEND_URL:
 INTERNAL_API_URL = "http://localhost:8001/api"
 API_URL = INTERNAL_API_URL
 
+# Try to verify the backend is accessible
+try:
+    import requests
+    response = requests.get(f"{API_URL}/health")
+    if response.status_code == 200:
+        print(f"✅ Backend is accessible at {API_URL}")
+    else:
+        print(f"⚠️ Backend returned status code {response.status_code}")
+except Exception as e:
+    print(f"⚠️ Could not connect to backend at {API_URL}: {str(e)}")
+    print("Trying with curl...")
+    import subprocess
+    try:
+        result = subprocess.run(["curl", "-s", f"{API_URL}/health"], capture_output=True, text=True)
+        if result.returncode == 0:
+            print(f"✅ Backend is accessible via curl at {API_URL}")
+            print(f"Response: {result.stdout}")
+        else:
+            print(f"⚠️ curl failed with return code {result.returncode}")
+            print(f"Error: {result.stderr}")
+    except Exception as curl_e:
+        print(f"⚠️ Could not run curl: {str(curl_e)}")
+
 print(f"Testing backend health monitoring at: {API_URL}")
 print(f"External backend URL: {BACKEND_URL}/api")
 
