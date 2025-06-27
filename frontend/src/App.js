@@ -875,8 +875,8 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
         ? "Ask a question about your PDF..." 
         : "Upload a PDF to start chatting...";
       case 'general_ai': return "Ask me anything...";
-      case 'qa_generation': return "Click 'Generate Q&A' to create questions from your PDF";
-      case 'research': return "Click 'Summarize' or 'Detailed Research' to analyze your PDF";
+      case 'question_generation': return "Upload a PDF and generate questions...";
+      case 'quiz_generation': return "Upload a PDF and create quizzes...";
       default: return "Type a message...";
     }
   };
