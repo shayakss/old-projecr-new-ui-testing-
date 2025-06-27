@@ -919,10 +919,17 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
               isCompact={!sidebarOpen}
             />
             <ModernNavTab 
-              isActive={currentFeature === 'qa_generation'} 
-              onClick={() => setCurrentFeature('qa_generation')}
+              isActive={currentFeature === 'question_generation'} 
+              onClick={() => setCurrentFeature('question_generation')}
               icon="❓"
-              name="Auto Q&A"
+              name="Questions"
+              isCompact={!sidebarOpen}
+            />
+            <ModernNavTab 
+              isActive={currentFeature === 'quiz_generation'} 
+              onClick={() => setCurrentFeature('quiz_generation')}
+              icon="📝"
+              name="Quiz"
               isCompact={!sidebarOpen}
             />
             <ModernNavTab 
@@ -930,13 +937,6 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
               onClick={() => setCurrentFeature('general_ai')}
               icon="🤖"
               name="General AI"
-              isCompact={!sidebarOpen}
-            />
-            <ModernNavTab 
-              isActive={currentFeature === 'research'} 
-              onClick={() => setCurrentFeature('research')}
-              icon="📊"
-              name="Research"
               isCompact={!sidebarOpen}
             />
           </div>
