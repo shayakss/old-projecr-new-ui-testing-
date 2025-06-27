@@ -135,6 +135,21 @@ backend:
         agent: "main"
         comment: "FIXED: Removed PostHog analytics code from index.html to eliminate CORS errors. The PostHog script was trying to load from external domain which caused CORS policy violations. Analytics functionality has been disabled to resolve the immediate issue and ensure core app functionality works properly."
 
+  - task: "System Health Monitoring"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "Testing the system health monitoring endpoints in the ChatPDF backend. Created and executed comprehensive tests for all health monitoring endpoints."
+      - working: true
+        agent: "testing"
+        comment: "Successfully tested all system health monitoring endpoints. The /api/health endpoint correctly returns status and timestamp. The /api/system-health endpoint provides detailed health status including overall system status, component statuses (backend, frontend, database, API), system metrics (CPU, memory, disk usage, response time, API calls, error rate), list of detected issues with severity levels, and system uptime. The /api/system-health/metrics endpoint returns current system metrics, historical metrics data, and system uptime. The /api/system-health/fix endpoint correctly requires confirmation before applying fixes and properly handles invalid issue IDs. All endpoints return proper responses and handle errors correctly. The health monitoring functionality is working as expected and integrates well with the existing ChatPDF backend."
+
 backend:
   - task: "Auto Q&A Generation"
     implemented: true
