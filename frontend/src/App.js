@@ -439,7 +439,7 @@ const HomePage = ({ setCurrentView }) => {
                 onClick={() => setCurrentView('app')}
                 className="bg-gradient-to-r from-purple-500 to-emerald-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:from-purple-600 hover:to-emerald-600 transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:scale-105"
               >
-                Try ChatPDF Now
+                Try Baloch AI PDF Now
               </button>
             </div>
           </div>
