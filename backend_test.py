@@ -1373,21 +1373,16 @@ def run_focused_tests():
     test_instance = ChatPDFBackendTest()
     
     tests = [
-        ("Health Check Endpoint", test_health_endpoint),
-        ("System Health Monitoring", test_system_health_monitoring),
-        ("Session Creation", test_instance.test_01_create_session),
-        ("Session Listing", lambda: test_instance.test_02_get_sessions()),
+        ("API Key Configuration", test_instance.test_00_api_keys_loaded),
+        ("Models Endpoint", test_instance.test_04_get_available_models),
+        ("Gemini Load Balancing", test_instance.test_05b_gemini_load_balancing),
+        ("Gemini Fallback Logic", test_instance.test_05c_gemini_fallback),
+        ("Cross-Provider Integration", test_cross_provider_integration),
+        ("Health Monitoring", test_system_health_monitoring),
+        ("Basic Chat (Gemini)", lambda: test_instance.test_05a_gemini_chat_message()),
+        ("Basic Chat (Claude)", lambda: test_instance.test_05_simple_chat_message()),
+        ("Session Management", lambda: test_instance.test_02_get_sessions()),
         ("PDF Upload", lambda: test_instance.test_03_upload_pdf()),
-        ("AI Model Listing", test_instance.test_04_get_available_models),
-        ("Chat Functionality (Claude)", lambda: test_instance.test_05_simple_chat_message()),
-        ("Chat Functionality (Gemini)", lambda: test_instance.test_05a_gemini_chat_message()),
-        ("PDF-based Chat", lambda: test_instance.test_06_pdf_chat_message()),
-        ("Auto Q&A Feature (Question Generator)", test_auto_qa_feature),
-        ("Generate Quiz", test_generate_quiz_endpoint),
-        ("PDF Translation", test_translate_pdf),
-        ("Advanced Search", test_advanced_search),
-        ("Export Conversations", test_export_conversations),
-        ("Insights Dashboard", test_insights_dashboard),
     ]
     
     results = []
