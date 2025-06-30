@@ -1458,8 +1458,8 @@ async def get_available_models():
             }
         ])
     
-    # Add Gemini models if API key is configured
-    if GEMINI_API_KEY:
+    # Add Gemini models if API keys are configured
+    if GEMINI_API_KEYS:
         models.extend([
             {
                 "id": "gemini-2.0-flash",
