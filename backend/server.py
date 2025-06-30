@@ -129,36 +129,51 @@ def is_gemini_model(model: str) -> bool:
     return model in gemini_models
 
 async def get_ai_response_gemini(messages: List[Dict], model: str) -> str:
-    """Handle Gemini API requests using emergentintegrations"""
-    try:
-        # Create a unique session ID for this conversation
-        session_id = str(uuid.uuid4())
+    """Handle Gemini API requests using emergentintegrations with load balancing and fallback"""
+    if not GEMINI_API_KEYS:
+        raise HTTPException(status_code=500, detail="No Gemini API keys configured")
+    
+    # Try each API key with fallback logic
+    last_error = None
+    
+    for attempt in range(len(GEMINI_API_KEYS)):
+        # Get next key using round-robin
+        api_key = get_next_gemini_key()
         
-        # Extract system message
-        system_message = next((msg["content"] for msg in messages if msg["role"] == "system"), "You are a helpful assistant.")
-        
-        # Initialize LlmChat with Gemini
-        chat = LlmChat(
-            api_key=GEMINI_API_KEY,
-            session_id=session_id,
-            system_message=system_message
-        ).with_model("gemini", model)
-        
-        # Get the last user message (most recent)
-        user_messages = [msg for msg in messages if msg["role"] == "user"]
-        if not user_messages:
-            raise HTTPException(status_code=400, detail="No user message found")
-        
-        last_user_message = user_messages[-1]["content"]
-        
-        # Create UserMessage and send
-        user_message = UserMessage(text=last_user_message)
-        response = await chat.send_message(user_message)
-        
-        return response
-        
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Gemini AI service error: {str(e)}")
+        try:
+            # Create a unique session ID for this conversation
+            session_id = str(uuid.uuid4())
+            
+            # Extract system message
+            system_message = next((msg["content"] for msg in messages if msg["role"] == "system"), "You are a helpful assistant.")
+            
+            # Initialize LlmChat with Gemini
+            chat = LlmChat(
+                api_key=api_key,
+                session_id=session_id,
+                system_message=system_message
+            ).with_model("gemini", model)
+            
+            # Get the last user message (most recent)
+            user_messages = [msg for msg in messages if msg["role"] == "user"]
+            if not user_messages:
+                raise HTTPException(status_code=400, detail="No user message found")
+            
+            last_user_message = user_messages[-1]["content"]
+            
+            # Create UserMessage and send
+            user_message = UserMessage(text=last_user_message)
+            response = await chat.send_message(user_message)
+            
+            return response
+            
+        except Exception as e:
+            last_error = e
+            logger.warning(f"Gemini API key {api_key[-10:]}... failed (attempt {attempt + 1}/{len(GEMINI_API_KEYS)}): {str(e)}")
+            continue
+    
+    # If all keys failed, raise the last error
+    raise HTTPException(status_code=500, detail=f"All Gemini API keys failed. Last error: {str(last_error)}")
 
 async def get_ai_response_openrouter(messages: List[Dict], model: str) -> str:
     """Handle OpenRouter API requests (Claude models) with load balancing and fallback"""
