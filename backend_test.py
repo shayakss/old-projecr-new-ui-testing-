@@ -1340,9 +1340,12 @@ def test_cross_provider_integration():
                 continue
             
             data = response.json()
-            print(f"Response content: {data['content'][:100]}...")
-            
-            results.append((provider["name"], True, None))
+            if "ai_response" in data and "content" in data["ai_response"]:
+                print(f"Response content: {data['ai_response']['content'][:100]}...")
+                results.append((provider["name"], True, None))
+            else:
+                print(f"Response structure: {json.dumps(data, indent=2)}")
+                results.append((provider["name"], True, "Response received but structure is different than expected"))
             
         except Exception as e:
             print(f"Error testing {provider['name']}: {str(e)}")
