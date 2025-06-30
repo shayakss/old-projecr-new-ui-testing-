@@ -225,8 +225,8 @@ async def get_ai_response(messages: List[Dict], model: str = "claude-3-opus-2024
     """Route AI requests to appropriate provider based on model"""
     try:
         if is_gemini_model(model):
-            if not GEMINI_API_KEY:
-                raise HTTPException(status_code=500, detail="Gemini API key not configured")
+            if not GEMINI_API_KEYS:
+                raise HTTPException(status_code=500, detail="Gemini API keys not configured")
             return await get_ai_response_gemini(messages, model)
         else:
             if not OPENROUTER_API_KEYS:
@@ -238,7 +238,7 @@ async def get_ai_response(messages: List[Dict], model: str = "claude-3-opus-2024
             # If Gemini fails, try with a Claude model as backup
             logger.warning(f"Gemini model {model} failed, trying Claude backup: {str(e)}")
             return await get_ai_response_openrouter(messages, "claude-3-haiku-20240307")
-        elif not is_gemini_model(model) and GEMINI_API_KEY:
+        elif not is_gemini_model(model) and GEMINI_API_KEYS:
             # If Claude fails, try with Gemini as backup
             logger.warning(f"Claude model {model} failed, trying Gemini backup: {str(e)}")
             return await get_ai_response_gemini(messages, "gemini-1.5-flash")
