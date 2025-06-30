@@ -1749,15 +1749,6 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                 </div>
               </div>
             </div>
-                    <>
-                      <span>Send</span>
-                      <span className="text-lg">↗</span>
-                    </>
-                  )}
-                </button>
-              </div>
-            </div>
-
           </>
         ) : (
           <div className="flex-1 flex items-center justify-center text-gray-400">
