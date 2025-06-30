@@ -336,7 +336,7 @@ const HomePage = ({ setCurrentView }) => {
             </div>
           </div>
 
-          {/* Blog Section */}
+          {/* Blog Section - Performance Optimized */}
           <div id="blog" className="max-w-6xl mx-auto mb-20">
             <div className="text-center mb-16">
               <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
@@ -351,20 +351,24 @@ const HomePage = ({ setCurrentView }) => {
             </div>
 
             <div className="grid md:grid-cols-3 gap-8">
-              {/* Blog Post 1 - Developer Story */}
-              <div className="group relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
-                <div className="relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden hover:border-white/20 transition-all duration-300 group-hover:transform group-hover:scale-105">
-                  <div className="aspect-w-16 aspect-h-9 bg-gray-800">
+              {/* Blog Post 1 - Developer Story - Optimized */}
+              <div className="blog-card group relative">
+                <div className="blog-card-overlay"></div>
+                <div className="blog-card-content">
+                  <div className="blog-image-container">
                     <img 
-                      src="https://images.pexels.com/photos/574071/pexels-photo-574071.jpeg" 
-                      alt="Developer working on Baloch AI PDF"
-                      className="w-full h-48 object-cover"
+                      src="https://images.pexels.com/photos/3861976/pexels-photo-3861976.jpeg" 
+                      alt="Developer working on AI code"
+                      className="blog-image"
+                      loading="lazy"
+                      decoding="async"
+                      width="400"
+                      height="192"
                     />
                   </div>
                   <div className="p-6">
                     <div className="text-emerald-400 text-sm font-medium mb-2">Development • 5 min read</div>
-                    <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:bg-clip-text group-hover:from-purple-400 group-hover:to-emerald-400 transition-all duration-300">
+                    <h3 className="blog-title">
                       Building Baloch AI PDF: From Concept to Reality
                     </h3>
                     <p className="text-gray-400 leading-relaxed mb-4">
@@ -378,20 +382,24 @@ const HomePage = ({ setCurrentView }) => {
                 </div>
               </div>
 
-              {/* Blog Post 2 - Another Developer */}
-              <div className="group relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
-                <div className="relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden hover:border-white/20 transition-all duration-300 group-hover:transform group-hover:scale-105">
-                  <div className="aspect-w-16 aspect-h-9 bg-gray-800">
+              {/* Blog Post 2 - Software Engineer - Optimized */}
+              <div className="blog-card group relative">
+                <div className="blog-card-overlay blog-card-overlay-blue"></div>
+                <div className="blog-card-content">
+                  <div className="blog-image-container">
                     <img 
-                      src="https://images.unsplash.com/photo-1549692520-acc6669e2f0c" 
-                      alt="Software engineer developing AI features"
-                      className="w-full h-48 object-cover"
+                      src="https://images.unsplash.com/photo-1580894912989-0bc892f4efd0" 
+                      alt="Software engineer coding"
+                      className="blog-image"
+                      loading="lazy"
+                      decoding="async"
+                      width="400"
+                      height="192"
                     />
                   </div>
                   <div className="p-6">
                     <div className="text-blue-400 text-sm font-medium mb-2">AI Integration • 7 min read</div>
-                    <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:bg-clip-text group-hover:from-blue-400 group-hover:to-purple-400 transition-all duration-300">
+                    <h3 className="blog-title blog-title-blue">
                       Integrating Multiple AI Models for Better Results
                     </h3>
                     <p className="text-gray-400 leading-relaxed mb-4">
@@ -405,20 +413,24 @@ const HomePage = ({ setCurrentView }) => {
                 </div>
               </div>
 
-              {/* Blog Post 3 - Project Mentor */}
-              <div className="group relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-orange-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
-                <div className="relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden hover:border-white/20 transition-all duration-300 group-hover:transform group-hover:scale-105">
-                  <div className="aspect-w-16 aspect-h-9 bg-gray-800">
+              {/* Blog Post 3 - Project Manager - Optimized */}
+              <div className="blog-card group relative">
+                <div className="blog-card-overlay blog-card-overlay-emerald"></div>
+                <div className="blog-card-content">
+                  <div className="blog-image-container">
                     <img 
-                      src="https://images.pexels.com/photos/1181487/pexels-photo-1181487.jpeg" 
-                      alt="Project mentor guiding Baloch AI PDF development"
-                      className="w-full h-48 object-cover"
+                      src="https://images.pexels.com/photos/416405/pexels-photo-416405.jpeg" 
+                      alt="Project management in technology"
+                      className="blog-image"
+                      loading="lazy"
+                      decoding="async"
+                      width="400"
+                      height="192"
                     />
                   </div>
                   <div className="p-6">
                     <div className="text-orange-400 text-sm font-medium mb-2">Project Management • 6 min read</div>
-                    <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:bg-clip-text group-hover:from-emerald-400 group-hover:to-orange-400 transition-all duration-300">
+                    <h3 className="blog-title blog-title-emerald">
                       Leading AI Innovation: Lessons from Baloch AI PDF
                     </h3>
                     <p className="text-gray-400 leading-relaxed mb-4">
@@ -433,11 +445,11 @@ const HomePage = ({ setCurrentView }) => {
               </div>
             </div>
 
-            {/* Blog CTA */}
+            {/* Blog CTA - Optimized */}
             <div className="text-center mt-12">
               <button
                 onClick={() => setCurrentView('app')}
-                className="bg-gradient-to-r from-purple-500 to-emerald-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:from-purple-600 hover:to-emerald-600 transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:scale-105"
+                className="blog-cta-button"
               >
                 Try Baloch AI PDF Now
               </button>
