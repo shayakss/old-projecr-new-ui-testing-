@@ -260,8 +260,11 @@ async def startup_event():
     logger.info(f"🔑 OpenRouter API Keys: {'✅ ' + str(len(OPENROUTER_API_KEYS)) + ' keys configured' if OPENROUTER_API_KEYS else '❌ Missing'}")
     if OPENROUTER_API_KEYS:
         for i, key in enumerate(OPENROUTER_API_KEYS, 1):
-            logger.info(f"   Key {i}: ...{key[-10:]}")
-    logger.info(f"🤖 Gemini API Key: {'✅ Configured' if GEMINI_API_KEY else '❌ Missing'}")
+            logger.info(f"   OpenRouter Key {i}: ...{key[-10:]}")
+    logger.info(f"🤖 Gemini API Keys: {'✅ ' + str(len(GEMINI_API_KEYS)) + ' keys configured' if GEMINI_API_KEYS else '❌ Missing'}")
+    if GEMINI_API_KEYS:
+        for i, key in enumerate(GEMINI_API_KEYS, 1):
+            logger.info(f"   Gemini Key {i}: ...{key[-10:]}")
     logger.info("✅ Baloch AI chat PdF & GPT Backend ready!")
 
 @app.on_event("shutdown")
