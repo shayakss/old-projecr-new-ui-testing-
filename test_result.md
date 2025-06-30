@@ -693,8 +693,24 @@ test_plan:
   test_all: false
   test_priority: "high_first"
 
+  - task: "Blog Section Removal for Performance"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/App.js, /app/frontend/src/App.css"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "user"
+        comment: "User reported that blog section feels very laggy and requested performance optimization"
+      - working: true
+        agent: "main"
+        comment: "COMPLETED: User requested to remove the blog section completely. Removed entire blog section from App.js (lines 339-445) including all 3 blog post cards with complex animations and external images. Removed blog navigation link from header menu. Cleaned up all blog-related CSS classes from App.css. This eliminated performance-heavy backdrop-blur effects, complex gradients, animation classes, and external image loading that was causing the lag. Page now flows directly from statistics section to footer with improved performance."
+
 agent_communication:
   - agent: "main"
+    message: "Fixed critical 502 errors that were preventing frontend from loading data. The backend was failing to start due to missing 'yarl' dependency which caused all API endpoints to be unreachable. After installing yarl and propcache dependencies, backend now runs properly and all API endpoints respond correctly. Also completely removed the laggy blog section as requested by user, eliminating performance issues caused by complex animations and external image loading."
     message: "Successfully added Gemini API integration as optional backup to the ChatPDF application. Installed emergentintegrations library, added GEMINI_API_KEY to environment, modified get_ai_response function to support both OpenRouter (Claude) and Gemini providers with automatic fallback. Updated available models endpoint to include 4 Gemini models. Backend is running successfully with both API keys configured. Need to test the integration to ensure Gemini models work properly and backup functionality works as expected."
   - agent: "main"
     message: "Updated OpenRouter API key to new key: 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. Tested both providers - Claude models now working correctly with the new OpenRouter key, and Gemini models continue to work properly. All 7 AI models (3 Claude + 4 Gemini) are available and functional. Response format issue has been resolved."
