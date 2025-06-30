@@ -140,34 +140,50 @@ async def get_ai_response_gemini(messages: List[Dict], model: str) -> str:
         raise HTTPException(status_code=500, detail=f"Gemini AI service error: {str(e)}")
 
 async def get_ai_response_openrouter(messages: List[Dict], model: str) -> str:
-    """Handle OpenRouter API requests (Claude models)"""
-    try:
-        # Convert chat format to OpenRouter format
-        system_message = next((msg["content"] for msg in messages if msg["role"] == "system"), None)
-        chat_messages = [{"role": msg["role"], "content": msg["content"]} for msg in messages if msg["role"] != "system"]
+    """Handle OpenRouter API requests (Claude models) with load balancing and fallback"""
+    if not OPENROUTER_API_KEYS:
+        raise HTTPException(status_code=500, detail="No OpenRouter API keys configured")
+    
+    # Convert chat format to OpenRouter format
+    system_message = next((msg["content"] for msg in messages if msg["role"] == "system"), None)
+    chat_messages = [{"role": msg["role"], "content": msg["content"]} for msg in messages if msg["role"] != "system"]
+    
+    # Try each API key with fallback logic
+    last_error = None
+    
+    for attempt in range(len(OPENROUTER_API_KEYS)):
+        # Get next key using round-robin
+        api_key = get_next_openrouter_key()
         
-        # Use OpenRouter API
-        async with httpx.AsyncClient() as client:
-            response = await client.post(
-                f"{OPENROUTER_BASE_URL}/chat/completions",
-                headers={
-                    "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-                    "HTTP-Referer": "https://github.com/baloch/chatpdf",
-                    "X-Title": "ChatPDF App"
-                },
-                json={
-                    "model": model,
-                    "messages": chat_messages,
-                    "system": system_message,
-                    "max_tokens": 2000,
-                    "temperature": 0.7
-                }
-            )
-            response.raise_for_status()
-            result = response.json()
-            return result["choices"][0]["message"]["content"]
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"OpenRouter AI service error: {str(e)}")
+        try:
+            # Use OpenRouter API
+            async with httpx.AsyncClient() as client:
+                response = await client.post(
+                    f"{OPENROUTER_BASE_URL}/chat/completions",
+                    headers={
+                        "Authorization": f"Bearer {api_key}",
+                        "HTTP-Referer": "https://github.com/baloch/chatpdf",
+                        "X-Title": "ChatPDF App"
+                    },
+                    json={
+                        "model": model,
+                        "messages": chat_messages,
+                        "system": system_message,
+                        "max_tokens": 2000,
+                        "temperature": 0.7
+                    }
+                )
+                response.raise_for_status()
+                result = response.json()
+                return result["choices"][0]["message"]["content"]
+                
+        except Exception as e:
+            last_error = e
+            logger.warning(f"OpenRouter API key {api_key[-10:]}... failed (attempt {attempt + 1}/{len(OPENROUTER_API_KEYS)}): {str(e)}")
+            continue
+    
+    # If all keys failed, raise the last error
+    raise HTTPException(status_code=500, detail=f"All OpenRouter API keys failed. Last error: {str(last_error)}")
 
 async def get_ai_response(messages: List[Dict], model: str = "claude-3-opus-20240229") -> str:
     """Route AI requests to appropriate provider based on model"""
