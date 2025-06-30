@@ -183,7 +183,6 @@ const HomePage = ({ setCurrentView }) => {
           <div className="hidden md:flex items-center space-x-6">
             <a href="#features" className="text-gray-300 hover:text-white transition-colors">Features</a>
             <a href="#how-it-works" className="text-gray-300 hover:text-white transition-colors">How it Works</a>
-            <a href="#blog" className="text-gray-300 hover:text-white transition-colors">Blog</a>
             <button
               onClick={() => setCurrentView('app')}
               className="bg-gradient-to-r from-purple-500 to-emerald-500 text-white px-6 py-2 rounded-full hover:from-purple-600 hover:to-emerald-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
