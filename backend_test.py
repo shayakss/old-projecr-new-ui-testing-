@@ -1376,6 +1376,9 @@ def run_focused_tests():
     # Create a single test instance to reuse across tests
     test_instance = ChatPDFBackendTest()
     
+    # First create a session that can be used by all tests
+    test_instance.test_01_create_session()
+    
     tests = [
         ("API Key Configuration", test_instance.test_00_api_keys_loaded),
         ("Models Endpoint", test_instance.test_04_get_available_models),
@@ -1383,10 +1386,10 @@ def run_focused_tests():
         ("Gemini Fallback Logic", test_instance.test_05c_gemini_fallback),
         ("Cross-Provider Integration", test_cross_provider_integration),
         ("Health Monitoring", test_system_health_monitoring),
-        ("Basic Chat (Gemini)", lambda: test_instance.test_05a_gemini_chat_message()),
-        ("Basic Chat (Claude)", lambda: test_instance.test_05_simple_chat_message()),
-        ("Session Management", lambda: test_instance.test_02_get_sessions()),
-        ("PDF Upload", lambda: test_instance.test_03_upload_pdf()),
+        ("Basic Chat (Gemini)", test_instance.test_05a_gemini_chat_message),
+        ("Basic Chat (Claude)", test_instance.test_05_simple_chat_message),
+        ("Session Management", test_instance.test_02_get_sessions),
+        ("PDF Upload", test_instance.test_03_upload_pdf),
     ]
     
     results = []
