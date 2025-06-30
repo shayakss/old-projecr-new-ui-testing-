@@ -675,8 +675,14 @@ metadata:
 
 test_plan:
   current_focus:
-    - "System Health Monitoring"
-    - "Multiple OpenRouter API Keys Implementation"
+    - "Enhanced Chat UI"
+    - "Message Bubbles"
+    - "Avatar System"
+    - "Typing Indicator"
+    - "Message Input Area"
+    - "Voice Input"
+    - "Send Button"
+    - "Animations"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
