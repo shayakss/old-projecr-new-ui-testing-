@@ -38,15 +38,24 @@ for i in range(1, 6):  # Load up to 5 keys
     if key_value:
         OPENROUTER_API_KEYS.append(key_value)
 
-# Backward compatibility - set primary key
-OPENROUTER_API_KEY = OPENROUTER_API_KEYS[0] if OPENROUTER_API_KEYS else ''
+# Load multiple Gemini API keys for load balancing and fallback
+GEMINI_API_KEYS = []
+for i in range(1, 5):  # Load up to 4 keys
+    key_name = 'GEMINI_API_KEY' if i == 1 else f'GEMINI_API_KEY_{i}'
+    key_value = os.environ.get(key_name, '')
+    if key_value:
+        GEMINI_API_KEYS.append(key_value)
 
-GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
+# Backward compatibility - set primary keys
+OPENROUTER_API_KEY = OPENROUTER_API_KEYS[0] if OPENROUTER_API_KEYS else ''
+GEMINI_API_KEY = GEMINI_API_KEYS[0] if GEMINI_API_KEYS else ''
+
 ENVIRONMENT = os.environ.get('ENVIRONMENT', 'development')
 
-# Add a counter for round-robin load balancing
+# Add counters for round-robin load balancing
 import threading
 _openrouter_key_counter = threading.local()
+_gemini_key_counter = threading.local()
 
 def get_next_openrouter_key():
     """Get the next OpenRouter API key using round-robin load balancing"""
@@ -58,6 +67,18 @@ def get_next_openrouter_key():
     
     key = OPENROUTER_API_KEYS[_openrouter_key_counter.value % len(OPENROUTER_API_KEYS)]
     _openrouter_key_counter.value += 1
+    return key
+
+def get_next_gemini_key():
+    """Get the next Gemini API key using round-robin load balancing"""
+    if not GEMINI_API_KEYS:
+        return ''
+    
+    if not hasattr(_gemini_key_counter, 'value'):
+        _gemini_key_counter.value = 0
+    
+    key = GEMINI_API_KEYS[_gemini_key_counter.value % len(GEMINI_API_KEYS)]
+    _gemini_key_counter.value += 1
     return key
 
 # Configure allowed origins based on environment
