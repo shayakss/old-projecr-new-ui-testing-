@@ -221,7 +221,10 @@ async def startup_event():
     logger.info("🚀 Baloch AI chat PdF & GPT Backend starting up...")
     logger.info(f"📊 MongoDB URL: {MONGO_URL}")
     logger.info(f"🗄️  Database: {DB_NAME}")
-    logger.info(f"🔑 OpenRouter API Key: {'✅ Configured' if OPENROUTER_API_KEY else '❌ Missing'}")
+    logger.info(f"🔑 OpenRouter API Keys: {'✅ ' + str(len(OPENROUTER_API_KEYS)) + ' keys configured' if OPENROUTER_API_KEYS else '❌ Missing'}")
+    if OPENROUTER_API_KEYS:
+        for i, key in enumerate(OPENROUTER_API_KEYS, 1):
+            logger.info(f"   Key {i}: ...{key[-10:]}")
     logger.info(f"🤖 Gemini API Key: {'✅ Configured' if GEMINI_API_KEY else '❌ Missing'}")
     logger.info("✅ Baloch AI chat PdF & GPT Backend ready!")
 
