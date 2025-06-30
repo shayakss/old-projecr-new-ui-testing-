@@ -617,27 +617,28 @@ async def check_database_health() -> tuple[bool, str]:
 async def check_api_keys_health() -> tuple[bool, str, dict]:
     """Check API keys validity"""
     api_status = {
-        "openrouter": {"valid": False, "error": ""},
+        "openrouter": {"valid": [], "errors": []},
         "gemini": {"valid": False, "error": ""}
     }
     
-    # Check OpenRouter API
-    if OPENROUTER_API_KEY:
-        try:
-            async with httpx.AsyncClient() as client_http:
-                response = await client_http.get(
-                    f"{OPENROUTER_BASE_URL}/models",
-                    headers={"Authorization": f"Bearer {OPENROUTER_API_KEY}"},
-                    timeout=10.0
-                )
-                if response.status_code == 200:
-                    api_status["openrouter"]["valid"] = True
-                else:
-                    api_status["openrouter"]["error"] = f"HTTP {response.status_code}"
-        except Exception as e:
-            api_status["openrouter"]["error"] = str(e)
+    # Check OpenRouter API keys (all of them)
+    if OPENROUTER_API_KEYS:
+        for i, api_key in enumerate(OPENROUTER_API_KEYS, 1):
+            try:
+                async with httpx.AsyncClient() as client_http:
+                    response = await client_http.get(
+                        f"{OPENROUTER_BASE_URL}/models",
+                        headers={"Authorization": f"Bearer {api_key}"},
+                        timeout=10.0
+                    )
+                    if response.status_code == 200:
+                        api_status["openrouter"]["valid"].append(f"Key {i}")
+                    else:
+                        api_status["openrouter"]["errors"].append(f"Key {i}: HTTP {response.status_code}")
+            except Exception as e:
+                api_status["openrouter"]["errors"].append(f"Key {i}: {str(e)}")
     else:
-        api_status["openrouter"]["error"] = "API key not configured"
+        api_status["openrouter"]["errors"].append("No API keys configured")
     
     # Check Gemini API (simplified check)
     if GEMINI_API_KEY:
@@ -653,15 +654,18 @@ async def check_api_keys_health() -> tuple[bool, str, dict]:
         api_status["gemini"]["error"] = "API key not configured"
     
     # Determine overall API health
-    valid_apis = sum(1 for api in api_status.values() if api["valid"])
-    total_apis = len([key for key in [OPENROUTER_API_KEY, GEMINI_API_KEY] if key])
+    valid_openrouter_keys = len(api_status["openrouter"]["valid"])
+    total_openrouter_keys = len(OPENROUTER_API_KEYS)
+    gemini_valid = api_status["gemini"]["valid"]
     
-    if valid_apis == 0:
+    if valid_openrouter_keys == 0 and not gemini_valid:
         return False, "No valid API keys", api_status
-    elif valid_apis < total_apis:
-        return True, f"{valid_apis}/{total_apis} API keys valid", api_status
-    else:
+    elif valid_openrouter_keys < total_openrouter_keys and gemini_valid:
+        return True, f"OpenRouter: {valid_openrouter_keys}/{total_openrouter_keys} keys valid, Gemini: valid", api_status
+    elif valid_openrouter_keys == total_openrouter_keys and gemini_valid:
         return True, "All API keys valid", api_status
+    else:
+        return True, f"OpenRouter: {valid_openrouter_keys}/{total_openrouter_keys} keys valid", api_status
 
 async def check_dependencies() -> tuple[bool, str, list]:
     """Check if all required dependencies are installed"""
