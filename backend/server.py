@@ -1395,8 +1395,8 @@ async def get_messages(session_id: str, feature_type: Optional[str] = Query(None
 async def get_available_models():
     models = []
     
-    # Add OpenRouter models (Claude) if API key is configured
-    if OPENROUTER_API_KEY:
+    # Add OpenRouter models (Claude) if API keys are configured
+    if OPENROUTER_API_KEYS:
         models.extend([
             {
                 "id": "claude-3-opus-20240229",
