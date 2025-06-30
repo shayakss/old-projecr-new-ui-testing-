@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Build an AI-powered assistant integrated into a web application called ChatPDF. Users can upload PDFs, ask questions, and receive contextual answers based on the content of their files using OpenRouter free models. Includes authentication, chat history, and session management. Added GEMINI API integration as optional AI backup."
+user_problem_statement: "Build an AI-powered assistant integrated into a web application called ChatPDF. Users can upload PDFs, ask questions, and receive contextual answers based on the content of their files using OpenRouter free models. Includes authentication, chat history, and session management. Added GEMINI API integration as optional AI backup. Blog section removed due to performance issues."
 
   - task: "Multiple Gemini API Keys with Load Balancing"
     implemented: true
