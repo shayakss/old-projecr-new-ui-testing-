@@ -48,22 +48,43 @@ class ChatPDFBackendTest(unittest.TestCase):
         """Test that both API keys are loaded correctly"""
         print("\n=== Testing API Keys Loaded ===")
         
-        # Verify OpenRouter API key
-        self.assertIsNotNone(OPENROUTER_API_KEY, "OpenRouter API key not loaded")
-        self.assertTrue(len(OPENROUTER_API_KEY) > 20, "OpenRouter API key is too short")
-        self.assertTrue(OPENROUTER_API_KEY.startswith("sk-or-"), "OpenRouter API key has incorrect format")
+        # Load all OpenRouter API keys from backend .env file
+        openrouter_api_keys = []
+        for i in range(1, 6):  # Load up to 5 keys
+            key_name = 'OPENROUTER_API_KEY' if i == 1 else f'OPENROUTER_API_KEY_{i}'
+            key_value = os.environ.get(key_name, '')
+            if key_value:
+                openrouter_api_keys.append(key_value)
         
-        print("OpenRouter API key loaded successfully")
-        masked_key = f"{OPENROUTER_API_KEY[:10]}...{OPENROUTER_API_KEY[-5:]}"
-        print(f"OpenRouter API Key: {masked_key}")
+        # Load all Gemini API keys from backend .env file
+        gemini_api_keys = []
+        for i in range(1, 5):  # Load up to 4 keys
+            key_name = 'GEMINI_API_KEY' if i == 1 else f'GEMINI_API_KEY_{i}'
+            key_value = os.environ.get(key_name, '')
+            if key_value:
+                gemini_api_keys.append(key_value)
         
-        # Verify Gemini API key
-        self.assertIsNotNone(GEMINI_API_KEY, "Gemini API key not loaded")
-        self.assertTrue(len(GEMINI_API_KEY) > 20, "Gemini API key is too short")
+        # Verify OpenRouter API keys
+        self.assertEqual(len(openrouter_api_keys), 5, "Expected 5 OpenRouter API keys")
+        for i, key in enumerate(openrouter_api_keys, 1):
+            self.assertIsNotNone(key, f"OpenRouter API key {i} not loaded")
+            self.assertTrue(len(key) > 20, f"OpenRouter API key {i} is too short")
+            self.assertTrue(key.startswith("sk-or-"), f"OpenRouter API key {i} has incorrect format")
+            masked_key = f"{key[:10]}...{key[-5:]}"
+            print(f"OpenRouter API Key {i}: {masked_key}")
         
-        print("Gemini API key loaded successfully")
-        masked_key = f"{GEMINI_API_KEY[:10]}...{GEMINI_API_KEY[-5:]}"
-        print(f"Gemini API Key: {masked_key}")
+        print(f"All {len(openrouter_api_keys)} OpenRouter API keys loaded successfully")
+        
+        # Verify Gemini API keys
+        self.assertEqual(len(gemini_api_keys), 4, "Expected 4 Gemini API keys")
+        for i, key in enumerate(gemini_api_keys, 1):
+            self.assertIsNotNone(key, f"Gemini API key {i} not loaded")
+            self.assertTrue(len(key) > 20, f"Gemini API key {i} is too short")
+            self.assertTrue(key.startswith("AIzaSy"), f"Gemini API key {i} has incorrect format")
+            masked_key = f"{key[:10]}...{key[-5:]}"
+            print(f"Gemini API Key {i}: {masked_key}")
+        
+        print(f"All {len(gemini_api_keys)} Gemini API keys loaded successfully")
         
     def test_01_create_session(self):
         """Test creating a chat session"""
