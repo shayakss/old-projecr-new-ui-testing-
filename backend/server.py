@@ -99,7 +99,7 @@ else:
     ]
 
 # Validate that we have at least one AI provider configured
-if not OPENROUTER_API_KEYS and not GEMINI_API_KEY:
+if not OPENROUTER_API_KEYS and not GEMINI_API_KEYS:
     raise ValueError("At least one AI provider API key is required (OPENROUTER_API_KEY or GEMINI_API_KEY)")
 
 # MongoDB connection
