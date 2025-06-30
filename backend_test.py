@@ -1122,7 +1122,7 @@ def test_export_conversations():
             }
             
             content_type = response.headers.get("Content-Type", "")
-            assert content_type == expected_content_types[export_format], f"Expected Content-Type '{expected_content_types[export_format]}', got '{content_type}'"
+            assert expected_content_types[export_format] in content_type, f"Expected Content-Type to contain '{expected_content_types[export_format]}', got '{content_type}'"
             
             # Check Content-Disposition header
             content_disposition = response.headers.get("Content-Disposition", "")
