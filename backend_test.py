@@ -1209,16 +1209,19 @@ def run_focused_tests():
     """Run only the tests specified in the review request"""
     print("\n=== Running Focused Tests for Backend API ===")
     
+    # Create a single test instance to reuse across tests
+    test_instance = ChatPDFBackendTest()
+    
     tests = [
         ("Health Check Endpoint", test_health_endpoint),
         ("System Health Monitoring", test_system_health_monitoring),
-        ("Session Creation", lambda: ChatPDFBackendTest().test_01_create_session()),
-        ("Session Listing", lambda: ChatPDFBackendTest().test_02_get_sessions()),
-        ("PDF Upload", lambda: ChatPDFBackendTest().test_03_upload_pdf()),
-        ("AI Model Listing", lambda: ChatPDFBackendTest().test_04_get_available_models()),
-        ("Chat Functionality (Claude)", lambda: ChatPDFBackendTest().test_05_simple_chat_message()),
-        ("Chat Functionality (Gemini)", lambda: ChatPDFBackendTest().test_05a_gemini_chat_message()),
-        ("PDF-based Chat", lambda: ChatPDFBackendTest().test_06_pdf_chat_message()),
+        ("Session Creation", test_instance.test_01_create_session),
+        ("Session Listing", lambda: test_instance.test_02_get_sessions()),
+        ("PDF Upload", lambda: test_instance.test_03_upload_pdf()),
+        ("AI Model Listing", test_instance.test_04_get_available_models),
+        ("Chat Functionality (Claude)", lambda: test_instance.test_05_simple_chat_message()),
+        ("Chat Functionality (Gemini)", lambda: test_instance.test_05a_gemini_chat_message()),
+        ("PDF-based Chat", lambda: test_instance.test_06_pdf_chat_message()),
         ("Auto Q&A Feature (Question Generator)", test_auto_qa_feature),
         ("Generate Quiz", test_generate_quiz_endpoint),
         ("PDF Translation", test_translate_pdf),
