@@ -303,15 +303,21 @@ class ChatPDFBackendTest(unittest.TestCase):
         print(f"Gemini Chat Message Response: {json.dumps(data, indent=2)}")
         
         self.assertEqual(response.status_code, 200)
-        self.assertIn("id", data)
-        self.assertIn("session_id", data)
-        self.assertIn("content", data)
-        self.assertIn("role", data)
-        self.assertEqual(data["role"], "assistant")
-        self.assertIn("timestamp", data)
+        
+        # Check if the response has the expected structure
+        self.assertIn("ai_response", data, "Response missing 'ai_response' field")
+        ai_response = data["ai_response"]
+        
+        # Verify the AI response has the expected fields
+        self.assertIn("id", ai_response, "AI response missing 'id' field")
+        self.assertIn("session_id", ai_response, "AI response missing 'session_id' field")
+        self.assertIn("content", ai_response, "AI response missing 'content' field")
+        self.assertIn("role", ai_response, "AI response missing 'role' field")
+        self.assertEqual(ai_response["role"], "assistant", "AI response role should be 'assistant'")
+        self.assertIn("timestamp", ai_response, "AI response missing 'timestamp' field")
         
         # Verify the response contains a greeting or acknowledgment
-        self.assertTrue(len(data["content"]) > 20, "Response content is too short")
+        self.assertTrue(len(ai_response["content"]) > 20, "Response content is too short")
         
         print("Simple chat message sent to Gemini AI and received response successfully")
         
