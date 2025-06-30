@@ -357,7 +357,10 @@ class ChatPDFBackendTest(unittest.TestCase):
             if response.status_code == 200:
                 success_count += 1
                 data = response.json()
-                print(f"Response content: {data['content'][:100]}...")
+                if "ai_response" in data and "content" in data["ai_response"]:
+                    print(f"Response content: {data['ai_response']['content'][:100]}...")
+                else:
+                    print(f"Response structure: {json.dumps(data, indent=2)}")
         
         print(f"\nSuccessfully received {success_count}/{num_requests} responses")
         
