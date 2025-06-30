@@ -34,6 +34,7 @@ jiter>=0.10.0
 anthropic>=0.40.0
 emergentintegrations>=0.1.0
 multidict
+attrs>=23.0.0
 litellm>=1.73.0
 google-generativeai>=0.3.0
 google-genai
