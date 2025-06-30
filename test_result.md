@@ -120,10 +120,10 @@ user_problem_statement: "Build an AI-powered assistant integrated into a web app
         comment: "Successfully tested the multiple Gemini API keys implementation. Testing confirmed: ✅ API Key Configuration - All 4 Gemini keys properly loaded from environment variables, ✅ Models Endpoint - Gemini models still available via /api/models, ✅ Basic Backend Health - Session management, PDF upload, and health checks working correctly, ✅ Load Balancing - Multiple chat requests verified keys being rotated in round-robin fashion, ✅ Gemini Fallback Logic - Backend correctly handles failed keys and tries next available one, ✅ Cross-Provider Integration - Both OpenRouter (5 keys) and Gemini (4 keys) systems work together with proper routing and fallback between providers. The implementation is robust and provides both load balancing and fallback functionality as requested."
 
 backend:
-  - task: "Backend Dependencies Resolution"
+  - task: "Backend Dependencies Resolution and 502 Error Fix"
     implemented: true
     working: true
-    file: "/app/backend/requirements.txt"
+    file: "/app/backend/requirements.txt, /app/backend/server.py"
     stuck_count: 0
     priority: "high"
     needs_retesting: false
@@ -134,6 +134,12 @@ backend:
       - working: true
         agent: "main"
         comment: "FIXED: Resolved missing backend dependencies issue. The backend was failing to start due to missing 'aiohttp' module and other dependencies (openai, tiktoken, tokenizers, jinja2, pillow). Added missing dependencies to requirements.txt and installed them. Backend is now running successfully on port 8001 with all API endpoints responding correctly. Health check returns 200 OK, models endpoint returns 7 AI models, and sessions endpoint responds properly."
+      - working: false
+        agent: "user"  
+        comment: "User reported new 502 errors: 'Failed to load resource: the server responded with a status of 502 ()' on /api/sessions and /api/models endpoints. Also seeing 'demobackend.emergentagent.com/github/installations' failures and 'Could not establish connection' errors."
+      - working: true
+        agent: "main"
+        comment: "FIXED: Resolved 502 errors by installing missing 'yarl' dependency that was causing backend startup failure. Backend was failing with 'ModuleNotFoundError: No module named yarl'. Added yarl==1.20.1 and propcache==0.3.2 to requirements.txt and installed them. Backend now starts successfully and all API endpoints (/api/health, /api/models, /api/sessions) respond correctly with 200 status. The 'demobackend.emergentagent.com' and 'Could not establish connection' errors appear to be from browser extensions or external sources, not from the application code itself."
 
   - task: "PostHog Analytics CORS Issue"
     implemented: true 
