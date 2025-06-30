@@ -664,6 +664,7 @@ metadata:
 test_plan:
   current_focus:
     - "System Health Monitoring"
+    - "Multiple OpenRouter API Keys Implementation"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
