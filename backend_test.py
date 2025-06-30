@@ -313,7 +313,8 @@ class ChatPDFBackendTest(unittest.TestCase):
         """Test Gemini load balancing by sending multiple requests"""
         print("\n=== Testing Gemini Load Balancing ===")
         
-        if not self.session_id:
+        # Create a session if not already created
+        if not hasattr(self, 'session_id') or not self.session_id:
             self.test_01_create_session()
         
         url = f"{API_URL}/sessions/{self.session_id}/messages"
