@@ -316,6 +316,38 @@ class FixRequest(BaseModel):
 async def health_check():
     return {"status": "healthy", "timestamp": datetime.utcnow()}
 
+# Enhanced health check endpoint with detailed diagnostics
+@api_router.get("/health/detailed")
+async def detailed_health_check():
+    """Detailed health check with comprehensive system diagnostics"""
+    health_status = await perform_comprehensive_health_check()
+    
+    # Add additional checks using existing functions
+    deps_healthy, deps_message, _ = await check_dependencies()
+    metrics = get_system_metrics()
+    
+    additional_checks = {
+        "environment": ENVIRONMENT,
+        "python_version": sys.version,
+        "dependencies_status": {
+            "healthy": deps_healthy,
+            "message": deps_message
+        },
+        "system_metrics": {
+            "cpu_usage": metrics.cpu_usage,
+            "memory_usage": metrics.memory_usage,
+            "disk_usage": metrics.disk_usage,
+            "active_sessions": metrics.active_sessions,
+            "total_api_calls": metrics.total_api_calls,
+            "error_rate": metrics.error_rate
+        }
+    }
+    
+    return {
+        **health_status.dict(),
+        "additional_info": additional_checks
+    }
+
 # Comprehensive system health endpoint
 @api_router.get("/system-health")
 async def get_system_health():
