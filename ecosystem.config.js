@@ -55,6 +55,13 @@ module.exports = {
         BROWSER: 'none',
         CI: 'true'
       },
+      env_development: {
+        NODE_ENV: 'development',
+        HOST: '0.0.0.0',
+        PORT: '3000',
+        BROWSER: 'none',
+        CI: 'true'
+      },
       env_production: {
         NODE_ENV: 'production',
         HOST: '0.0.0.0',
