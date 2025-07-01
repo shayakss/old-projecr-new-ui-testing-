@@ -2,11 +2,11 @@ module.exports = {
   apps: [
     {
       name: 'chatpdf-backend',
-      script: '/root/.venv/bin/uvicorn',
-      args: 'backend.server:app --host 0.0.0.0 --port 8001',
+      script: '/root/.venv/bin/python',
+      args: '-m uvicorn backend.server:app --host 0.0.0.0 --port 8001',
       cwd: '/app',
-      instances: 'max', // Use all CPU cores for clustering
-      exec_mode: 'cluster',
+      instances: 4, // Fixed number of instances for Python
+      exec_mode: 'fork', // Use fork mode for Python
       autorestart: true,
       watch: false,
       max_memory_restart: '1G',
