@@ -574,29 +574,62 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
 
   const loadSessions = async () => {
     try {
-      const response = await apiClient.get('/sessions');
+      const response = await handleErrorWithRetry(
+        () => apiClient.get('/sessions'),
+        2, // 2 retries
+        1000 // 1 second delay
+      );
       setSessions(response.data);
       if (response.data.length === 0) {
-        createNewSession();
+        await createNewSession();
       }
+      NotificationManager.showSuccess('Sessions loaded successfully');
     } catch (error) {
       console.error('Error loading sessions:', error);
+      const errorInfo = classifyError(error);
+      NotificationManager.showError(`Failed to load sessions: ${errorInfo.message}`);
+      // Set empty sessions if loading fails
+      setSessions([]);
     }
   };
 
   const loadModels = async () => {
     try {
-      const response = await apiClient.get('/models');
+      const response = await handleErrorWithRetry(
+        () => apiClient.get('/models'),
+        2,
+        1000
+      );
       setModels(response.data.models);
+      if (response.data.models && response.data.models.length > 0) {
+        // Set default model if not already set
+        if (!selectedModel || !response.data.models.some(model => model.id === selectedModel)) {
+          setSelectedModel(response.data.models[0].id);
+        }
+      }
     } catch (error) {
       console.error('Error loading models:', error);
+      const errorInfo = classifyError(error);
+      NotificationManager.showError(`Failed to load AI models: ${errorInfo.message}`);
+      // Set empty models array if loading fails
+      setModels([]);
     }
   };
 
   const loadMessages = async (sessionId, featureType = null) => {
+    if (!sessionId) {
+      console.warn('Cannot load messages: sessionId is required');
+      setMessages([]);
+      return;
+    }
+
     try {
       const params = featureType && featureType !== 'chat' ? { feature_type: featureType } : {};
-      const response = await apiClient.get(`/sessions/${sessionId}/messages`, { params });
+      const response = await handleErrorWithRetry(
+        () => apiClient.get(`/sessions/${sessionId}/messages`, { params }),
+        2,
+        1000
+      );
       
       // Filter out any invalid messages
       const validMessages = (response.data || []).filter(message => 
@@ -609,6 +642,13 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
       setMessages(validMessages);
     } catch (error) {
       console.error('Error loading messages:', error);
+      const errorInfo = classifyError(error);
+      
+      // Only show error notification if it's not a 404 (session not found)
+      if (error.response?.status !== 404) {
+        NotificationManager.showError(`Failed to load messages: ${errorInfo.message}`);
+      }
+      
       setMessages([]); // Set empty array on error
     }
   };
