@@ -74,8 +74,8 @@ stop_all() {
     pm2 stop all
     pm2 delete all
     
-    print_status "Restarting supervisor services..."
-    sudo supervisorctl start all
+    print_status "Restarting supervisor backend and frontend services..."
+    sudo supervisorctl start backend frontend
     
     print_status "Switched back to supervisor management"
 }
