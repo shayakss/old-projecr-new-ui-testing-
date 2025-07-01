@@ -58,11 +58,11 @@ start_all() {
 start_production() {
     print_status "Starting ChatPDF in production mode..."
     
-    # Stop supervisor services first
-    sudo supervisorctl stop all || true
+    # Stop supervisor backend and frontend services
+    sudo supervisorctl stop backend frontend || true
     
     # Start PM2 ecosystem in production mode
-    pm2 start /app/ecosystem.config.js --env production
+    pm2 start /app/ecosystem.simple.config.js --env production
     
     print_status "Production services started successfully!"
     pm2 status
