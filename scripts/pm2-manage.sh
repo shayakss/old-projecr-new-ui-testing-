@@ -62,7 +62,7 @@ start_production() {
     sudo supervisorctl stop backend frontend || true
     
     # Start PM2 ecosystem in production mode
-    pm2 start /app/ecosystem.simple.config.js --env production
+    pm2 start /app/ecosystem.final.config.js --env production
     
     print_status "Production services started successfully!"
     pm2 status
