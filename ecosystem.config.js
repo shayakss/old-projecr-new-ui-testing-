@@ -3,24 +3,28 @@ module.exports = {
     {
       name: 'chatpdf-backend',
       script: '/root/.venv/bin/uvicorn',
-      args: 'backend.server:app --host 0.0.0.0 --port 8001 --workers 1',
+      args: 'backend.server:app --host 0.0.0.0 --port 8001 --workers 1 --reload',
       cwd: '/app',
-      instances: 'max', // Use all CPU cores for clustering
-      exec_mode: 'cluster',
+      instances: 1, // Single instance for development with auto-reload
+      exec_mode: 'fork',
       autorestart: true,
-      watch: false, // Set to true for development, false for production
+      watch: ['backend/'], // Watch backend directory for changes
+      ignore_watch: ['node_modules', '*.log', '.git', '__pycache__', '*.pyc'],
       max_memory_restart: '1G',
       env: {
         NODE_ENV: 'development',
-        PORT: '8001'
+        PORT: '8001',
+        ENVIRONMENT: 'development'
       },
       env_development: {
         NODE_ENV: 'development',
-        PORT: '8001'
+        PORT: '8001',
+        ENVIRONMENT: 'development'
       },
       env_production: {
         NODE_ENV: 'production',
-        PORT: '8001'
+        PORT: '8001',
+        ENVIRONMENT: 'production'
       },
       error_file: '/var/log/pm2/chatpdf-backend-error.log',
       out_file: '/var/log/pm2/chatpdf-backend-out.log',
@@ -28,15 +32,20 @@ module.exports = {
       time: true,
       log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
       merge_logs: true,
-      // Health monitoring
+      // Enhanced health monitoring
       max_restarts: 10,
       min_uptime: '10s',
+      restart_delay: 4000,
+      exponential_backoff_restart_delay: 100,
       // Graceful shutdown
-      kill_timeout: 3000,
+      kill_timeout: 5000,
       listen_timeout: 3000,
       // Advanced monitoring
       pmx: true,
-      source_map_support: false
+      source_map_support: false,
+      // Memory and CPU monitoring
+      max_memory_restart: '1G',
+      instance_var: 'INSTANCE_ID'
     },
     {
       name: 'chatpdf-frontend',
