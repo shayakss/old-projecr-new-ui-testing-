@@ -69,6 +69,15 @@ for i in range(1, 5):  # Load up to 4 keys
 OPENROUTER_API_KEY = OPENROUTER_API_KEYS[0] if OPENROUTER_API_KEYS else ''
 GEMINI_API_KEY = GEMINI_API_KEYS[0] if GEMINI_API_KEYS else ''
 
+# Log API key configuration
+logger.info(f"OpenRouter API Keys loaded: {len(OPENROUTER_API_KEYS)}")
+for i, key in enumerate(OPENROUTER_API_KEYS):
+    logger.info(f"  Key {i+1}: ...{key[-10:]}")
+
+logger.info(f"Gemini API Keys loaded: {len(GEMINI_API_KEYS)}")
+for i, key in enumerate(GEMINI_API_KEYS):
+    logger.info(f"  Key {i+1}: ...{key[-10:]}")
+
 ENVIRONMENT = os.environ.get('ENVIRONMENT', 'development')
 
 # Configure logging
