@@ -41,16 +41,16 @@ check_pm2() {
 
 # Function to start all services
 start_all() {
-    print_status "Starting all ChatPDF services with PM2..."
+    print_status "Starting ChatPDF services with PM2 (Backend + Frontend only)..."
     
-    # Stop supervisor services first to avoid port conflicts
-    print_status "Stopping supervisor services to avoid conflicts..."
-    sudo supervisorctl stop all || true
+    # Stop supervisor backend and frontend services to avoid port conflicts
+    print_status "Stopping supervisor backend and frontend services to avoid conflicts..."
+    sudo supervisorctl stop backend frontend || true
     
     # Start PM2 ecosystem
-    pm2 start /app/ecosystem.config.js --env development
+    pm2 start /app/ecosystem.simple.config.js --env development
     
-    print_status "All services started successfully!"
+    print_status "Services started successfully!"
     pm2 status
 }
 
