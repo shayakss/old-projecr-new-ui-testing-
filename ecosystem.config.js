@@ -55,27 +55,33 @@ module.exports = {
       instances: 1, // React dev server should run single instance
       exec_mode: 'fork',
       autorestart: true,
-      watch: false,
+      watch: ['src/'], // Watch src directory for auto-reload
+      ignore_watch: ['node_modules', 'build', '*.log', '.git'],
       max_memory_restart: '2G',
       env: {
         NODE_ENV: 'development',
         HOST: '0.0.0.0',
         PORT: '3000',
         BROWSER: 'none',
-        CI: 'true'
+        CI: 'true',
+        GENERATE_SOURCEMAP: 'false', // Faster builds in development
+        FAST_REFRESH: 'true'
       },
       env_development: {
         NODE_ENV: 'development',
         HOST: '0.0.0.0',
         PORT: '3000',
         BROWSER: 'none',
-        CI: 'true'
+        CI: 'true',
+        GENERATE_SOURCEMAP: 'false',
+        FAST_REFRESH: 'true'
       },
       env_production: {
         NODE_ENV: 'production',
         HOST: '0.0.0.0',
         PORT: '3000',
         BROWSER: 'none',
+        GENERATE_SOURCEMAP: 'true'
       },
       error_file: '/var/log/pm2/chatpdf-frontend-error.log',
       out_file: '/var/log/pm2/chatpdf-frontend-out.log',
@@ -83,12 +89,16 @@ module.exports = {
       time: true,
       log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
       merge_logs: true,
-      // Health monitoring
+      // Enhanced health monitoring
       max_restarts: 5,
       min_uptime: '30s',
+      restart_delay: 5000,
+      exponential_backoff_restart_delay: 100,
       // Graceful shutdown
-      kill_timeout: 5000,
+      kill_timeout: 10000,
       listen_timeout: 8000,
+      // Development specific settings
+      instance_var: 'INSTANCE_ID'
     },
     {
       name: 'chatpdf-mongodb',
