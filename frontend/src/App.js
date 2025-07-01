@@ -187,6 +187,9 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-green-900">
+      {/* Global Notification Container */}
+      <NotificationContainer />
+      
       {currentView === 'home' && <HomePage setCurrentView={setCurrentView} />}
       {currentView === 'app' && (
         <ChatInterface 
