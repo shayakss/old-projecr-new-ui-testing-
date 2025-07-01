@@ -71,6 +71,25 @@ GEMINI_API_KEY = GEMINI_API_KEYS[0] if GEMINI_API_KEYS else ''
 
 ENVIRONMENT = os.environ.get('ENVIRONMENT', 'development')
 
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('/var/log/chatpdf-backend.log'),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
+
+# Log startup information
+logger.info("=== ChatPDF Backend Starting ===")
+logger.info(f"Environment: {ENVIRONMENT}")
+logger.info(f"MongoDB URL: {MONGO_URL}")
+logger.info(f"Database: {DB_NAME}")
+logger.info(f"Python version: {sys.version}")
+logger.info("===")
+
 # Add counters for round-robin load balancing
 import threading
 _openrouter_key_counter = threading.local()
