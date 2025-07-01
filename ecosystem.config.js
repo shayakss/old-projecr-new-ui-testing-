@@ -84,7 +84,7 @@ module.exports = {
     {
       name: 'chatpdf-mongodb',
       script: '/usr/bin/mongod',
-      args: '--bind_ip_all --dbpath /data/db --logpath /var/log/pm2/mongodb.log --fork',
+      args: '--bind_ip_all --dbpath /data/db --logpath /var/log/pm2/mongodb.log',
       instances: 1,
       exec_mode: 'fork',
       autorestart: true,
