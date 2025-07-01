@@ -30,6 +30,25 @@ load_dotenv(ROOT_DIR / '.env')
 MONGO_URL = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
 DB_NAME = os.environ.get('DB_NAME', 'chatpdf_database')
 
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('/var/log/chatpdf-backend.log'),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
+
+# Log startup information
+logger.info("=== ChatPDF Backend Starting ===")
+logger.info(f"Environment: {os.environ.get('ENVIRONMENT', 'development')}")
+logger.info(f"MongoDB URL: {MONGO_URL}")
+logger.info(f"Database: {DB_NAME}")
+logger.info(f"Python version: {sys.version}")
+logger.info("===================================")
+
 # Load multiple OpenRouter API keys for load balancing and fallback
 OPENROUTER_API_KEYS = []
 for i in range(1, 6):  # Load up to 5 keys
