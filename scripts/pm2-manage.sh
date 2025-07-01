@@ -48,7 +48,7 @@ start_all() {
     sudo supervisorctl stop backend frontend || true
     
     # Start PM2 ecosystem
-    pm2 start /app/ecosystem.simple.config.js --env development
+    pm2 start /app/ecosystem.final.config.js --env development
     
     print_status "Services started successfully!"
     pm2 status
