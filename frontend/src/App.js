@@ -2,14 +2,60 @@ import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
+import { classifyError, handleErrorWithRetry, NotificationManager, ConnectionChecker } from './utils/errorHandling';
+import NotificationContainer from './components/NotificationContainer';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 const API = `${BACKEND_URL}/api`;
 
-// Create axios instance
+// Enhanced axios instance with error handling
 const apiClient = axios.create({
   baseURL: API,
+  timeout: 30000, // 30 second timeout
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
+
+// Request interceptor
+apiClient.interceptors.request.use(
+  (config) => {
+    // Check if we're online
+    if (!ConnectionChecker.isOnline) {
+      return Promise.reject(new Error('You are offline. Please check your internet connection.'));
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Response interceptor for global error handling
+apiClient.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    const errorInfo = classifyError(error);
+    
+    // Log error for debugging
+    console.error('API Error:', {
+      url: error.config?.url,
+      method: error.config?.method,
+      status: error.response?.status,
+      data: error.response?.data,
+      message: errorInfo.message
+    });
+    
+    // Don't show notifications for certain errors (we'll handle them specifically)
+    if (error.response?.status !== 404 && error.response?.status !== 401) {
+      NotificationManager.showError(errorInfo.message);
+    }
+    
+    return Promise.reject(error);
+  }
+);
 
 // Function to detect if content contains markdown syntax
 const containsMarkdown = (content) => {
