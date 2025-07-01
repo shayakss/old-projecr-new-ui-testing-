@@ -162,9 +162,16 @@ show_help() {
 
 # Function to start web dashboard
 web_dashboard() {
-    print_status "Starting PM2 web dashboard..."
-    print_status "Dashboard will be available at: http://localhost:9615"
-    pm2 web
+    print_status "PM2 web dashboard is not available in this version."
+    print_status "Use the following alternatives for monitoring:"
+    echo ""
+    print_status "1. Terminal monitoring: pm2 monit"
+    print_status "2. Process details: pm2 show chatpdf-backend"
+    print_status "3. Real-time logs: pm2 logs --timestamp"
+    print_status "4. Status overview: pm2 status"
+    echo ""
+    print_status "Starting terminal monitoring..."
+    pm2 monit
 }
 
 # Function to show cluster information
