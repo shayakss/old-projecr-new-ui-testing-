@@ -1385,8 +1385,8 @@ def test_cross_provider_integration():
     return all_passed, results
 
 def run_focused_tests():
-    """Run only the tests specified in the review request"""
-    print("\n=== Running Focused Tests for Backend API ===")
+    """Run comprehensive tests for all backend features"""
+    print("\n=== Running Comprehensive Tests for ChatPDF Backend API ===")
     
     # Create a single test instance to reuse across tests
     test_instance = ChatPDFBackendTest()
@@ -1395,16 +1395,40 @@ def run_focused_tests():
     test_instance.test_01_create_session()
     
     tests = [
+        # Core functionality
         ("API Key Configuration", test_instance.test_00_api_keys_loaded),
+        ("Health Check", test_health_endpoint),
         ("Models Endpoint", test_instance.test_04_get_available_models),
+        ("Session Management", test_instance.test_02_get_sessions),
+        ("PDF Upload", test_instance.test_03_upload_pdf),
+        
+        # AI Chat functionality
+        ("Basic Chat (Claude)", test_instance.test_05_simple_chat_message),
+        ("Basic Chat (Gemini)", test_instance.test_05a_gemini_chat_message),
+        ("PDF-based Chat", test_instance.test_06_pdf_chat_message),
+        
+        # Provider integration
         ("Gemini Load Balancing", test_instance.test_05b_gemini_load_balancing),
         ("Gemini Fallback Logic", test_instance.test_05c_gemini_fallback),
         ("Cross-Provider Integration", test_cross_provider_integration),
-        ("Health Monitoring", test_system_health_monitoring),
-        ("Basic Chat (Gemini)", test_instance.test_05a_gemini_chat_message),
-        ("Basic Chat (Claude)", test_instance.test_05_simple_chat_message),
-        ("Session Management", test_instance.test_02_get_sessions),
-        ("PDF Upload", test_instance.test_03_upload_pdf),
+        
+        # Advanced features
+        ("Auto Q&A Generation", test_auto_qa_feature),
+        ("Generate Questions", lambda: test_generate_questions_endpoint("mixed")),
+        ("Generate Quiz", lambda: test_generate_quiz_endpoint("daily", "medium")),
+        ("PDF Translation", test_translate_pdf),
+        ("Advanced Search", test_advanced_search),
+        ("Export Conversations", test_export_conversations),
+        ("Insights Dashboard", test_insights_dashboard),
+        
+        # System monitoring
+        ("System Health Monitoring", test_system_health_monitoring),
+        
+        # Verify removed features
+        ("Removed Compare PDFs", test_compare_pdfs_endpoint),
+        
+        # Cleanup
+        ("Delete Session", test_instance.test_09_delete_session),
     ]
     
     results = []
