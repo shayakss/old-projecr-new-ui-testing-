@@ -697,16 +697,14 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Enhanced Chat UI"
-    - "Message Bubbles"
-    - "Avatar System"
-    - "Typing Indicator"
-    - "Message Input Area"
-    - "Voice Input"
-    - "Send Button"
-    - "Animations"
+    - "EmergentIntegrations Module Fix"
+    - "Backend API Testing"
+    - "AI Integration Testing"
+    - "PDF Processing Testing"
+    - "Session Management Testing"
+    - "All Feature Endpoints Testing"
   stuck_tasks: []
-  test_all: false
+  test_all: true
   test_priority: "high_first"
 
   - task: "Blog Section Removal for Performance"
