@@ -33,3 +33,5 @@ yarl==1.20.1
 propcache==0.3.2
 frozenlist
 distro
+psutil==6.1.0
+python-dotenv==1.0.0
