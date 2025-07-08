@@ -135,7 +135,11 @@ if ENVIRONMENT == 'production':
         "https://*.netlify.app",
         "https://*.vercel.app", 
         "https://*.railway.app",
-        os.environ.get('FRONTEND_URL', '')
+        # Railway backend URLs for health checks
+        "https://*.up.railway.app",
+        os.environ.get('FRONTEND_URL', ''),
+        # Allow all origins for production testing (remove in production if needed)
+        "*"
     ]
     # Remove empty strings
     ALLOWED_ORIGINS = [origin for origin in ALLOWED_ORIGINS if origin]
