@@ -1,0 +1,38 @@
+[
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "title": "Welcome to ChatPDF",
+    "created_at": {
+      "$date": "2025-01-01T10:00:00.000Z"
+    },
+    "updated_at": {
+      "$date": "2025-01-01T10:00:00.000Z"
+    },
+    "pdf_filename": "sample_document.pdf",
+    "pdf_content": "This is a sample PDF document content. You can upload your own PDF files and interact with them using AI-powered features. The system supports various question types, translation, and research capabilities."
+  },
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440001",
+    "title": "Getting Started Guide",
+    "created_at": {
+      "$date": "2025-01-01T11:00:00.000Z"
+    },
+    "updated_at": {
+      "$date": "2025-01-01T11:00:00.000Z"
+    },
+    "pdf_filename": null,
+    "pdf_content": null
+  },
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440002",
+    "title": "AI Features Demo",
+    "created_at": {
+      "$date": "2025-01-01T12:00:00.000Z"
+    },
+    "updated_at": {
+      "$date": "2025-01-01T12:00:00.000Z"
+    },
+    "pdf_filename": "ai_features_demo.pdf",
+    "pdf_content": "This document demonstrates the AI features of ChatPDF including question generation, translation, research capabilities, and more. You can ask questions about this content and explore different AI models available in the system."
+  }
+]
