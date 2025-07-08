@@ -1,0 +1,17 @@
+[build]
+builder = "nixpacks"
+
+[deploy]
+startCommand = "uvicorn backend.server:app --host 0.0.0.0 --port $PORT"
+healthcheckPath = "/api/health"
+healthcheckTimeout = 300
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3
+
+[variables]
+# Environment will be set to production automatically by Railway
+ENVIRONMENT = "production"
+# Database name for your ChatPDF application
+DB_NAME = "chatpdf_database"
+# JWT secret - you should change this in production
+JWT_SECRET = "your-secret-key-change-in-production-chatpdf-2024"
