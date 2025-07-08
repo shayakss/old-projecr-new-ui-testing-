@@ -26,7 +26,8 @@ import threading
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# Environment configuration with defaults for local development
+# Environment configuration with defaults for local development and Railway production
+# Railway will automatically provide MONGO_URL when MongoDB plugin is added
 MONGO_URL = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
 DB_NAME = os.environ.get('DB_NAME', 'chatpdf_database')
 
