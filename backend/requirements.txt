@@ -1,6 +1,7 @@
 fastapi==0.115.4
 uvicorn==0.32.0
 pymongo==4.8.0
+motor==3.6.0
 python-jwt==4.1.0
 bcrypt==4.2.0
 python-multipart==0.0.10
