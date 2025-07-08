@@ -1,0 +1,20 @@
+[
+  {
+    "id": "750e8400-e29b-41d4-a716-446655440000",
+    "filename": "sample_document.pdf",
+    "content": "This is a sample PDF document content. You can upload your own PDF files and interact with them using AI-powered features. The system supports various question types, translation, and research capabilities.\n\nChatPDF is designed to make document interaction more intelligent and efficient. Users can:\n\n- Ask natural language questions about document content\n- Generate study materials and quizzes\n- Translate documents into multiple languages\n- Perform research analysis on document topics\n- Search across multiple documents simultaneously\n- Export conversations and findings\n\nThe system integrates with multiple AI providers including OpenRouter (Claude models) and Google (Gemini models) to provide the best responses for different types of queries.\n\nKey technical features include:\n- FastAPI backend with MongoDB storage\n- React frontend with modern UI\n- Multi-model AI integration\n- Real-time chat interface\n- Voice input support\n- Advanced search capabilities\n- Export functionality in multiple formats\n\nThis makes ChatPDF a comprehensive solution for document analysis and interaction.",
+    "upload_date": {
+      "$date": "2025-01-01T10:00:00.000Z"
+    },
+    "file_size": 1024000
+  },
+  {
+    "id": "750e8400-e29b-41d4-a716-446655440001",
+    "filename": "ai_features_demo.pdf",
+    "content": "AI Features Demonstration Document\n\nThis document demonstrates the advanced AI features available in ChatPDF:\n\n1. Question Generation:\n   - Automatically create FAQ from document content\n   - Generate multiple choice questions for testing\n   - Create true/false questions for quick assessment\n   - Mix question types for comprehensive quizzes\n\n2. Translation Capabilities:\n   - Translate content to Spanish, French, German\n   - Support for Chinese and Japanese languages\n   - Portuguese translation available\n   - Maintain formatting and context during translation\n\n3. Research Features:\n   - Generate concise summaries of long documents\n   - Perform detailed research analysis\n   - Extract key insights and findings\n   - Create comprehensive reports\n\n4. Advanced Search:\n   - Search across all uploaded documents\n   - Find specific information in conversations\n   - Context-aware search results\n   - Relevance scoring for results\n\n5. Export and Sharing:\n   - Export conversations as TXT files\n   - Generate PDF reports of findings\n   - Create DOCX documents for editing\n   - Share insights with team members\n\nThese features make ChatPDF a powerful tool for document analysis, research, and knowledge extraction.",
+    "upload_date": {
+      "$date": "2025-01-01T12:00:00.000Z"
+    },
+    "file_size": 2048000
+  }
+]
