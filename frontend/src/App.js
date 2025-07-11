@@ -847,9 +847,119 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
     const featureNames = {
       'chat': 'PDF Chat',
       'question_generation': 'Question Generator',
-      'general_ai': 'General AI'
+      'general_ai': 'General AI',
+      'research': 'Research & Summary',
+      'translation': 'Translation',
+      'annotations': 'Annotations'
     };
     return featureNames[feature] || feature;
+  };
+
+  const translateContent = async (language) => {
+    if (!language || !currentSession?.pdf_filename) {
+      if (!language) return;
+      alert('Please upload a PDF first');
+      return;
+    }
+
+    try {
+      setSelectedLanguage(language);
+      const response = await apiClient.post('/translate', {
+        session_id: currentSession.id,
+        target_language: language,
+        content_type: 'full',
+        model: selectedModel
+      });
+
+      setMessages(prev => [...prev, createMessage(
+        'assistant',
+        `Translation to ${language}:\n\n${response.data.translated_content}`,
+        'translation'
+      )]);
+    } catch (error) {
+      console.error('Translation error:', error);
+      alert('Error translating content: ' + (error.response?.data?.detail || error.message));
+    }
+  };
+
+  const exportConversation = async (format) => {
+    if (!format || !currentSession) return;
+
+    try {
+      const response = await apiClient.post('/export', {
+        session_id: currentSession.id,
+        export_format: format,
+        include_messages: true
+      });
+
+      // Create download link
+      const blob = new Blob([response.data.content], { type: response.data.content_type });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = response.data.filename;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error('Export error:', error);
+      alert('Error exporting conversation: ' + (error.response?.data?.detail || error.message));
+    }
+  };
+
+  const performSearch = async (query) => {
+    if (!query.trim()) return;
+
+    try {
+      const response = await apiClient.post('/search', {
+        query: query,
+        search_type: 'all',
+        limit: 20
+      });
+
+      setSearchResults(response.data.results || []);
+    } catch (error) {
+      console.error('Search error:', error);
+      setSearchResults([]);
+    }
+  };
+
+  const loadInsights = async () => {
+    try {
+      const response = await apiClient.get('/insights');
+      setInsights(response.data);
+    } catch (error) {
+      console.error('Insights error:', error);
+      setInsights(null);
+    }
+  };
+
+  const performResearch = async (researchType = 'summary') => {
+    if (!currentSession?.pdf_filename) {
+      alert('Please upload a PDF first');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await apiClient.post('/research', {
+        session_id: currentSession.id,
+        research_type: researchType,
+        model: selectedModel
+      });
+
+      setMessages(prev => [...prev, createMessage(
+        'assistant',
+        response.data.research_content,
+        'research'
+      )]);
+    } catch (error) {
+      console.error('Research error:', error);
+      alert('Error performing research: ' + (error.response?.data?.detail || error.message));
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
