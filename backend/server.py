@@ -1938,7 +1938,39 @@ async def export_conversation(request: ExportRequest):
     else:
         raise HTTPException(status_code=400, detail="Unsupported export format")
 
-@api_router.get("/insights")
+@api_router.post("/research")
+async def research_content(request: ResearchRequest):
+    """Generate research content from PDF"""
+    session = await db.chat_sessions.find_one({"id": request.session_id})
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    
+    if not session.get("pdf_content"):
+        raise HTTPException(status_code=400, detail="No PDF content available")
+    
+    try:
+        # Prepare messages for AI
+        messages = [
+            {"role": "system", "content": "You are a research assistant. Analyze the provided PDF content and generate comprehensive research insights."},
+            {"role": "user", "content": f"PDF Content: {session['pdf_content'][:4000]}...\n\nResearch Type: {request.research_type}\n\nProvide a detailed analysis based on the research type requested."}
+        ]
+        
+        # Get AI response
+        ai_response = await get_ai_response(messages, request.model)
+        
+        # Save as message
+        message = ChatMessage(
+            session_id=request.session_id,
+            content=ai_response,
+            role="assistant",
+            feature_type="research"
+        )
+        await db.chat_messages.insert_one(message.dict())
+        
+        return {"research_content": ai_response}
+    except Exception as e:
+        logger.error(f"Research error: {e}")
+        raise HTTPException(status_code=500, detail=f"Research failed: {str(e)}")
 async def get_insights():
     # Get total sessions
     total_sessions = await db.chat_sessions.count_documents({})
