@@ -185,12 +185,20 @@ const App = () => {
   );
 };
 
-// Enhanced HomePage Component
+// Professional HomePage Component
 const HomePage = ({ setCurrentView }) => {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [activeFeature, setActiveFeature] = useState(0);
 
   useEffect(() => {
     setIsLoaded(true);
+    
+    // Auto-rotate features
+    const interval = setInterval(() => {
+      setActiveFeature(prev => (prev + 1) % 3);
+    }, 3000);
+    
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -200,175 +208,231 @@ const HomePage = ({ setCurrentView }) => {
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat'
     }}>
-      {/* Background Overlay */}
-      <div className="absolute inset-0 bg-slate-900/80"></div>
+      {/* Professional Background Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/70 to-black/80"></div>
       
       {/* Enhanced Background Elements */}
-      <div className="absolute inset-0 bg-grid-white/[0.02] bg-[length:50px_50px]"></div>
-      <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 via-transparent to-blue-500/10"></div>
+      <div className="absolute inset-0 bg-grid opacity-30"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-green-500/5 via-transparent to-blue-500/5"></div>
       
-      {/* Enhanced Header */}
-      <header className={`relative z-10 px-6 py-8 transition-all duration-1000 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10'}`}>
-        <nav className="flex items-center justify-between max-w-7xl mx-auto">
-          <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg">
-              <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 0v12h8V4H6z" clipRule="evenodd" />
-              </svg>
+      {/* Floating Particles */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-4 -right-4 w-72 h-72 bg-primary-500/10 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
+        <div className="absolute -bottom-8 -left-4 w-72 h-72 bg-accent-blue/10 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-1000"></div>
+      </div>
+      
+      {/* Professional Header */}
+      <header className={`relative z-10 transition-all duration-1000 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10'}`}>
+        <div className="container mx-auto">
+          <nav className="flex items-center justify-between py-6">
+            <div className="flex items-center space-x-4">
+              <div className="relative">
+                <div className="w-12 h-12 bg-gradient-primary rounded-2xl flex items-center justify-center shadow-lg">
+                  <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 0v12h8V4H6z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div className="absolute -top-1 -right-1 w-4 h-4 bg-primary-400 rounded-full animate-pulse"></div>
+              </div>
+              <div>
+                <h1 className="text-heading-4 font-bold text-white">ChatPDF</h1>
+                <p className="text-caption text-neutral-400">Next-Gen AI Assistant</p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-heading-2 font-bold text-white">ChatPDF</h1>
-              <p className="text-body-small text-neutral-400">AI-Powered PDF Assistant</p>
+            
+            <div className="hidden md:flex items-center space-x-8">
+              <a href="#features" className="text-body text-neutral-300 hover:text-white transition-colors">Features</a>
+              <a href="#about" className="text-body text-neutral-300 hover:text-white transition-colors">About</a>
+              <button
+                onClick={() => setCurrentView('app')}
+                className="btn btn-primary btn-lg"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                Get Started
+              </button>
             </div>
-          </div>
-          
-          <div className="hidden md:flex items-center space-x-6">
-            <a href="#features" className="text-neutral-300 hover:text-white transition-colors text-body">Features</a>
-            <button
-              onClick={() => setCurrentView('app')}
-              className="btn btn-primary"
-            >
-              Get Started
-            </button>
-          </div>
-        </nav>
+          </nav>
+        </div>
       </header>
 
-      {/* Enhanced Hero Section */}
-      <main className="relative z-10 px-6 pt-16 pb-32">
-        <div className="max-w-7xl mx-auto text-center">
-          <div className={`max-w-4xl mx-auto mb-16 transition-all duration-1000 delay-300 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+      {/* Professional Hero Section */}
+      <main className="relative z-10 section-lg">
+        <div className="container mx-auto text-center">
+          <div className={`max-w-5xl mx-auto mb-16 transition-all duration-1000 delay-300 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+            <div className="mb-8">
+              <span className="inline-block px-4 py-2 bg-primary-500/10 border border-primary-500/20 rounded-full text-primary-400 text-caption mb-6">
+                🚀 Powered by Advanced AI
+              </span>
+            </div>
+            
             <h2 className="text-display mb-8 leading-tight">
               Transform Your
-              <span className="block bg-gradient-to-r from-green-400 via-emerald-400 to-green-400 bg-clip-text text-transparent">
-                PDFs into Conversations
+              <span className="block text-gradient mt-2">
+                PDFs into Intelligence
               </span>
             </h2>
             
             <p className="text-body-large mb-12 max-w-3xl mx-auto leading-relaxed text-neutral-300">
-              Upload any PDF document and engage in intelligent conversations with your content. 
-              Get instant answers, generate summaries, and unlock insights with the power of AI.
+              Experience the future of document interaction. Upload any PDF and engage in natural conversations, 
+              extract insights, generate summaries, and unlock the full potential of your documents with cutting-edge AI.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-16">
               <button
                 onClick={() => setCurrentView('app')}
                 className="btn btn-primary btn-lg group"
               >
-                <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
-                Start Chatting Now
+                Start Free Trial
               </button>
-              <button className="btn btn-secondary btn-lg">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <button className="btn btn-secondary btn-lg group">
+                <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h8m-9-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 Watch Demo
               </button>
             </div>
 
-            <div className="flex items-center justify-center space-x-8 text-body-small text-neutral-400">
-              <div className="flex items-center space-x-2">
-                <svg className="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg>
-                <span>Free to Use</span>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-2xl mx-auto">
+              <div className="flex items-center justify-center space-x-3">
+                <div className="w-8 h-8 bg-primary-500/20 rounded-full flex items-center justify-center">
+                  <svg className="w-4 h-4 text-primary-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <span className="text-body-small text-neutral-400">100% Free</span>
               </div>
-              <div className="flex items-center space-x-2">
-                <svg className="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-                </svg>
-                <span>Secure & Private</span>
+              <div className="flex items-center justify-center space-x-3">
+                <div className="w-8 h-8 bg-primary-500/20 rounded-full flex items-center justify-center">
+                  <svg className="w-4 h-4 text-primary-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <span className="text-body-small text-neutral-400">Secure & Private</span>
               </div>
-              <div className="flex items-center space-x-2">
-                <svg className="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
-                </svg>
-                <span>Unlimited PDFs</span>
+              <div className="flex items-center justify-center space-x-3">
+                <div className="w-8 h-8 bg-primary-500/20 rounded-full flex items-center justify-center">
+                  <svg className="w-4 h-4 text-primary-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <span className="text-body-small text-neutral-400">Unlimited Access</span>
               </div>
             </div>
           </div>
 
-          {/* Enhanced Feature Cards Grid */}
-          <div id="features" className={`grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto mb-20 transition-all duration-1000 delay-500 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-            <FeatureCard
+          {/* Professional Feature Showcase */}
+          <div id="features" className={`grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto mb-20 transition-all duration-1000 delay-500 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+            <ProfessionalFeatureCard
               icon={
-                <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clipRule="evenodd" />
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
               }
-              title="AI Chat"
-              description="Have natural conversations with your PDF documents. Ask questions and get instant, contextual answers."
-              gradient="from-purple-500 to-pink-500"
+              title="Intelligent Conversations"
+              description="Engage in natural, context-aware conversations with your PDF documents. Ask complex questions and receive detailed, accurate answers."
+              gradient="from-blue-500 to-purple-600"
+              isActive={activeFeature === 0}
             />
-            <FeatureCard
+            <ProfessionalFeatureCard
               icon={
-                <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M9.243 3.03a1 1 0 01.727 1.213L9.53 6h2.94l.56-2.243a1 1 0 111.94.486L14.53 6H17a1 1 0 110 2h-2.97l-1 4H16a1 1 0 110 2h-2.47l-.56 2.242a1 1 0 11-1.94-.485L11.47 14H8.53l-.56 2.242a1 1 0 11-1.94-.485L6.47 14H4a1 1 0 110-2h2.97l1-4H5a1 1 0 110-2h2.47l.56-2.243a1 1 0 011.213-.727zM9.53 8l-1 4h2.94l1-4H9.53z" clipRule="evenodd" />
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                 </svg>
               }
-              title="Question Generator"
-              description="Auto-generate FAQs, MCQs, and True/False questions from your documents."
-              gradient="from-emerald-500 to-cyan-500"
+              title="Smart Analysis"
+              description="Automatically extract key insights, generate summaries, and create questions from your documents using advanced AI algorithms."
+              gradient="from-green-500 to-teal-600"
+              isActive={activeFeature === 1}
             />
-            <FeatureCard
+            <ProfessionalFeatureCard
               icon={
-                <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clipRule="evenodd" />
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
                 </svg>
               }
-              title="Voice Input"
-              description="Use natural voice commands to ask questions about your documents."
-              gradient="from-orange-500 to-red-500"
+              title="Voice Interaction"
+              description="Use natural voice commands to interact with your documents. Speak your questions and get audio responses for hands-free productivity."
+              gradient="from-orange-500 to-red-600"
+              isActive={activeFeature === 2}
             />
           </div>
 
-          {/* Enhanced Stats Section */}
-          <div className={`card max-w-4xl mx-auto mb-20 transition-all duration-1000 delay-700 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-            <div className="card-body">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                <div className="text-center">
-                  <div className="text-heading-1 font-bold text-green-400 mb-2">7+</div>
-                  <div className="text-body-small text-neutral-400">AI Models</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-heading-1 font-bold text-green-400 mb-2">100%</div>
-                  <div className="text-body-small text-neutral-400">Free to Use</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-heading-1 font-bold text-green-400 mb-2">∞</div>
-                  <div className="text-body-small text-neutral-400">PDF Uploads</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-heading-1 font-bold text-green-400 mb-2">24/7</div>
-                  <div className="text-body-small text-neutral-400">Available</div>
+          {/* Professional Stats Section */}
+          <div className={`max-w-6xl mx-auto mb-20 transition-all duration-1000 delay-700 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+            <div className="card card-feature">
+              <div className="card-body">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                  <div className="text-center">
+                    <div className="text-heading-1 font-bold text-gradient mb-2">7+</div>
+                    <div className="text-body-small text-neutral-400">AI Models</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-heading-1 font-bold text-gradient mb-2">99.9%</div>
+                    <div className="text-body-small text-neutral-400">Accuracy</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-heading-1 font-bold text-gradient mb-2">∞</div>
+                    <div className="text-body-small text-neutral-400">PDF Uploads</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-heading-1 font-bold text-gradient mb-2">24/7</div>
+                    <div className="text-body-small text-neutral-400">Support</div>
+                  </div>
                 </div>
               </div>
+            </div>
+          </div>
+
+          {/* Professional CTA Section */}
+          <div className={`max-w-4xl mx-auto text-center transition-all duration-1000 delay-900 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+            <div className="card bg-gradient-primary p-12 rounded-3xl">
+              <h3 className="text-heading-2 font-bold text-white mb-4">
+                Ready to Transform Your PDFs?
+              </h3>
+              <p className="text-body-large text-white/90 mb-8">
+                Join thousands of professionals who are already using ChatPDF to unlock the power of their documents.
+              </p>
+              <button
+                onClick={() => setCurrentView('app')}
+                className="btn btn-secondary btn-lg"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                Get Started Now
+              </button>
             </div>
           </div>
         </div>
       </main>
 
-      {/* Enhanced Footer */}
-      <footer className="relative z-10 border-t border-white/10 bg-black/20 backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto px-6 py-8">
+      {/* Professional Footer */}
+      <footer className="relative z-10 section-sm border-t border-white/10">
+        <div className="container mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-between">
-            <div className="flex items-center space-x-4 mb-4 md:mb-0">
-              <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg flex items-center justify-center">
-                <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+            <div className="flex items-center space-x-4 mb-6 md:mb-0">
+              <div className="w-10 h-10 bg-gradient-primary rounded-xl flex items-center justify-center">
+                <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 0v12h8V4H6z" clipRule="evenodd" />
                 </svg>
               </div>
-              <span className="text-white font-semibold">ChatPDF</span>
+              <div>
+                <h4 className="text-heading-5 font-bold text-white">ChatPDF</h4>
+                <p className="text-caption text-neutral-400">AI-Powered Document Intelligence</p>
+              </div>
             </div>
             
             <div className="text-center md:text-right">
-              <p className="text-neutral-400 text-body-small mb-2">
-                Built with ❤️ for PDF lovers
+              <p className="text-body-small text-neutral-400 mb-2">
+                Built with ❤️ for the future of document interaction
               </p>
-              <p className="text-neutral-500 text-caption">
-                AI-Powered Document Assistant
+              <p className="text-caption text-neutral-500">
+                © 2024 ChatPDF. All rights reserved.
               </p>
             </div>
           </div>
