@@ -794,35 +794,36 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
         <div className="absolute -bottom-8 -left-4 w-72 h-72 bg-accent-blue/10 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-1000"></div>
       </div>
       {/* Enhanced Sidebar */}
-      <div className={`${sidebarOpen ? 'w-80' : 'w-16'} sidebar transition-all duration-300 flex flex-col`}>
-        {/* Sidebar Header */}
-        <div className="sidebar-header">
-          <div className="flex items-center justify-between">
-            {sidebarOpen && (
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-blue-500 rounded-lg flex items-center justify-center">
-                  <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 0v12h8V4H6z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <div>
-                  <span className="text-white font-semibold">ChatPDF</span>
-                  <div className="flex items-center gap-2 mt-1">
-                    <StatusIndicator status={connectionStatus} text={connectionStatus} />
+      <div className={`${sidebarOpen ? 'w-80' : 'w-16'} relative z-10 transition-all duration-300 flex flex-col`}>
+        <div className="h-full bg-gradient-to-b from-black/20 via-black/30 to-black/20 backdrop-blur-xl border-r border-white/10">
+          {/* Sidebar Header */}
+          <div className="p-4 border-b border-white/10">
+            <div className="flex items-center justify-between">
+              {sidebarOpen && (
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-blue-500 rounded-lg flex items-center justify-center shadow-lg">
+                    <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 0v12h8V4H6z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div>
+                    <span className="text-white font-semibold">ChatPDF</span>
+                    <div className="flex items-center gap-2 mt-1">
+                      <StatusIndicator status={connectionStatus} text={connectionStatus} />
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
-            <button
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="btn btn-ghost btn-sm"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
+              )}
+              <button
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+                className="btn btn-ghost btn-sm"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </button>
+            </div>
           </div>
-        </div>
 
         {/* New Chat Button */}
         {sidebarOpen && (
