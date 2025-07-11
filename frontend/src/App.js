@@ -825,62 +825,63 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
             </div>
           </div>
 
-        {/* New Chat Button */}
-        {sidebarOpen && (
-          <div className="p-4">
-            <button
-              onClick={createNewSession}
-              className="btn btn-primary w-full"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-              New Chat
-            </button>
-          </div>
-        )}
-
-        {/* Feature Navigation */}
-        {sidebarOpen && (
-          <div className="sidebar-nav">
-            <div className="space-y-1">
-              {[
-                { key: 'chat', label: 'PDF Chat', icon: '💬' },
-                { key: 'question_generation', label: 'Question Generator', icon: '❓' },
-                { key: 'general_ai', label: 'General AI', icon: '🤖' }
-              ].map((feature) => (
-                <button
-                  key={feature.key}
-                  onClick={() => setCurrentFeature(feature.key)}
-                  className={`sidebar-nav-item w-full text-left feature-tab ${
-                    currentFeature === feature.key ? 'active' : ''
-                  }`}
-                >
-                  <span className="text-lg">{feature.icon}</span>
-                  {feature.label}
-                </button>
-              ))}
+          {/* New Chat Button */}
+          {sidebarOpen && (
+            <div className="p-4">
+              <button
+                onClick={createNewSession}
+                className="btn btn-primary w-full"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+                New Chat
+              </button>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Sessions List */}
-        {sidebarOpen && (
-          <div className="flex-1 overflow-y-auto px-4">
-            <div className="py-2">
-              <h3 className="text-caption mb-4">Recent Chats</h3>
-              <div className="space-y-2">
-                {sessions.map((session) => (
-                  <div
-                    key={session.id}
-                    className={`card group cursor-pointer transition-all duration-200 ${
-                      currentSession?.id === session.id
-                        ? 'border-green-500 bg-green-500/10'
-                        : ''
+          {/* Feature Navigation */}
+          {sidebarOpen && (
+            <div className="px-4 py-2">
+              <div className="space-y-1">
+                {[
+                  { key: 'chat', label: 'PDF Chat', icon: '💬' },
+                  { key: 'question_generation', label: 'Question Generator', icon: '❓' },
+                  { key: 'general_ai', label: 'General AI', icon: '🤖' }
+                ].map((feature) => (
+                  <button
+                    key={feature.key}
+                    onClick={() => setCurrentFeature(feature.key)}
+                    className={`w-full text-left p-3 rounded-lg transition-all duration-200 flex items-center gap-3 ${
+                      currentFeature === feature.key 
+                        ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-lg' 
+                        : 'text-neutral-300 hover:bg-white/5 hover:text-white'
                     }`}
-                    onClick={() => selectSession(session)}
                   >
-                    <div className="card-body p-3">
+                    <span className="text-lg">{feature.icon}</span>
+                    {feature.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Sessions List */}
+          {sidebarOpen && (
+            <div className="flex-1 overflow-y-auto px-4">
+              <div className="py-2">
+                <h3 className="text-caption mb-4 text-neutral-400">Recent Chats</h3>
+                <div className="space-y-2">
+                  {sessions.map((session) => (
+                    <div
+                      key={session.id}
+                      className={`group cursor-pointer transition-all duration-200 p-3 rounded-lg backdrop-blur-sm ${
+                        currentSession?.id === session.id
+                          ? 'bg-gradient-to-r from-green-500/20 to-blue-500/20 border border-green-500/30'
+                          : 'bg-black/20 hover:bg-black/30 border border-white/10'
+                      }`}
+                      onClick={() => selectSession(session)}
+                    >
                       <div className="flex items-center justify-between">
                         <div className="flex-1 min-w-0">
                           <p className="text-body font-medium text-white truncate">
@@ -905,27 +906,27 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                         </button>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Back to Home */}
-        {sidebarOpen && (
-          <div className="p-4 border-t border-white/10">
-            <button
-              onClick={() => setCurrentView('home')}
-              className="btn btn-ghost w-full"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-              </svg>
-              Back to Home
-            </button>
-          </div>
-        )}
+          {/* Back to Home */}
+          {sidebarOpen && (
+            <div className="p-4 border-t border-white/10">
+              <button
+                onClick={() => setCurrentView('home')}
+                className="btn btn-ghost w-full"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Back to Home
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Main Content */}
