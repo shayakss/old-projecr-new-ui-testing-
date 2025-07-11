@@ -507,6 +507,18 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
     loadModels();
     initializeSpeechRecognition();
     checkConnectionStatus();
+    
+    // Check for mobile device and handle resize
+    const checkMobile = () => {
+      const isMobileDevice = window.innerWidth < 768;
+      setIsMobile(isMobileDevice);
+      setSidebarOpen(!isMobileDevice); // Open sidebar on desktop, closed on mobile
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   const checkConnectionStatus = async () => {
