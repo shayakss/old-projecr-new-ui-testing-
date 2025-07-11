@@ -917,12 +917,25 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex-1 min-w-0">
-                          <p className="text-body font-medium text-white truncate">
-                            {session.title}
+                          <p className="text-sm font-medium text-white truncate mb-1">
+                            {session.title && session.title !== 'New Chat' ? session.title : 'Untitled Chat'}
                           </p>
                           {session.pdf_filename && (
-                            <p className="text-body-small text-neutral-400 truncate">
-                              📄 {session.pdf_filename}
+                            <p className="text-xs text-green-400 truncate flex items-center gap-1">
+                              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" />
+                              </svg>
+                              {session.pdf_filename}
+                            </p>
+                          )}
+                          {session.created_at && (
+                            <p className="text-xs text-neutral-500 truncate">
+                              {new Date(session.created_at).toLocaleDateString('en-US', { 
+                                month: 'short', 
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })}
                             </p>
                           )}
                         </div>
@@ -931,7 +944,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                             e.stopPropagation();
                             deleteSession(session.id);
                           }}
-                          className="btn btn-ghost btn-sm opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-300"
+                          className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-red-500/20 text-red-400 hover:text-red-300 transition-all duration-200"
                         >
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
