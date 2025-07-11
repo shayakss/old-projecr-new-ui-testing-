@@ -926,7 +926,17 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
           {sidebarOpen && (
             <div className="flex-1 overflow-y-auto px-4">
               <div className="py-2">
-                <h3 className="text-caption mb-4 text-neutral-400">Recent Chats</h3>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-caption text-neutral-400">Recent Chats</h3>
+                  {sessions.length > 0 && (
+                    <button
+                      onClick={clearAllSessions}
+                      className="text-xs text-red-400 hover:text-red-300 transition-colors"
+                    >
+                      Clear All
+                    </button>
+                  )}
+                </div>
                 <div className="space-y-2">
                   {sessions.map((session) => (
                     <div
