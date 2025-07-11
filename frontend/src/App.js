@@ -491,6 +491,12 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
   const [generatingQA, setGeneratingQA] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState('online');
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState('');
+  const [insightsOpen, setInsightsOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [insights, setInsights] = useState(null);
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
