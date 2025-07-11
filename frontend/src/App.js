@@ -775,7 +775,24 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
   };
 
   return (
-    <div className="flex h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className="flex h-screen relative overflow-hidden" style={{
+      backgroundImage: 'url(/download (1).jpeg)',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat'
+    }}>
+      {/* Same background overlay as home page */}
+      <div className="absolute inset-0 bg-gradient-to-br from-black/50 via-black/40 to-black/50"></div>
+      
+      {/* Enhanced Background Elements */}
+      <div className="absolute inset-0 bg-grid opacity-20"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-green-500/5 via-transparent to-blue-500/5"></div>
+      
+      {/* Floating Particles */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-4 -right-4 w-72 h-72 bg-primary-500/10 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
+        <div className="absolute -bottom-8 -left-4 w-72 h-72 bg-accent-blue/10 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-1000"></div>
+      </div>
       {/* Enhanced Sidebar */}
       <div className={`${sidebarOpen ? 'w-80' : 'w-16'} sidebar transition-all duration-300 flex flex-col`}>
         {/* Sidebar Header */}
