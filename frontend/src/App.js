@@ -121,7 +121,6 @@ const LoadingSpinner = ({ size = 'md', text = '' }) => {
     <div className="flex items-center gap-3">
       <div className={`loading-spinner ${sizeClasses[size]}`}></div>
       {text && <span className="text-body-small text-neutral-400">{text}</span>}
-      }
     </div>
   );
 };
