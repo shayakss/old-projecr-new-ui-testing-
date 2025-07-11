@@ -1014,42 +1014,54 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
           {messages.length === 0 ? (
             <div className="flex items-center justify-center h-full">
               <div className="text-center">
-                <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center">
+                <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center shadow-2xl">
                   <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                   </svg>
                 </div>
                 <h3 className="text-heading-3 mb-4 text-white">Start a conversation</h3>
-                <p className="text-body text-neutral-400 max-w-md">
+                <p className="text-body text-neutral-300 max-w-md">
                   Upload a PDF and ask questions, or use General AI for any topic
                 </p>
               </div>
             </div>
           ) : (
             messages.map((message) => (
-              <div key={message.id} className="message-container">
-                <div className={`message-avatar ${message.role}`}>
+              <div key={message.id} className="flex gap-4 max-w-full">
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+                  message.role === 'user' 
+                    ? 'bg-gradient-to-r from-green-500 to-emerald-500' 
+                    : message.role === 'system' 
+                    ? 'bg-gradient-to-r from-blue-500 to-purple-500' 
+                    : 'bg-gradient-to-r from-purple-500 to-pink-500'
+                }`}>
                   {message.role === 'user' ? (
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
                     </svg>
                   ) : message.role === 'system' ? (
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                     </svg>
                   ) : (
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clipRule="evenodd" />
                     </svg>
                   )}
                 </div>
-                <div className={`message-content ${message.role}`}>
+                <div className={`flex-1 p-4 rounded-2xl backdrop-blur-sm border max-w-4xl ${
+                  message.role === 'user' 
+                    ? 'bg-gradient-to-r from-green-500/20 to-emerald-500/20 border-green-500/30' 
+                    : message.role === 'system' 
+                    ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 border-blue-500/30' 
+                    : 'bg-black/20 border-white/10'
+                }`}>
                   {containsMarkdown(message.content) ? (
                     <MarkdownRenderer content={message.content} messageType={message.role} />
                   ) : (
-                    <p className="whitespace-pre-wrap text-body">{message.content}</p>
+                    <p className="whitespace-pre-wrap text-body text-white">{message.content}</p>
                   )}
-                  <div className="message-timestamp">
+                  <div className="text-xs text-neutral-400 mt-2">
                     {new Date(message.timestamp).toLocaleTimeString()}
                   </div>
                 </div>
