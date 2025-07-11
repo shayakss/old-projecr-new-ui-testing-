@@ -651,6 +651,28 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
     setCurrentSession(session);
   };
 
+  const clearAllSessions = async () => {
+    if (window.confirm('Are you sure you want to clear all chat sessions? This action cannot be undone.')) {
+      try {
+        // Delete all sessions
+        const deletePromises = sessions.map(session => 
+          apiClient.delete(`/sessions/${session.id}`)
+        );
+        await Promise.all(deletePromises);
+        
+        // Clear local state
+        setSessions([]);
+        setCurrentSession(null);
+        setMessages([]);
+        
+        // Create a new session
+        await createNewSession();
+      } catch (error) {
+        console.error('Error clearing sessions:', error);
+      }
+    }
+  };
+
   const deleteSession = async (sessionId) => {
     try {
       await apiClient.delete(`/sessions/${sessionId}`);
@@ -662,6 +684,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
         } else {
           setCurrentSession(null);
           setMessages([]);
+          await createNewSession();
         }
       }
     } catch (error) {
