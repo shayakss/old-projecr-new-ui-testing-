@@ -937,7 +937,10 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                 {[
                   { key: 'chat', label: 'PDF Chat', icon: '💬' },
                   { key: 'question_generation', label: 'Question Generator', icon: '❓' },
-                  { key: 'general_ai', label: 'General AI', icon: '🤖' }
+                  { key: 'general_ai', label: 'General AI', icon: '🤖' },
+                  { key: 'research', label: 'Research & Summary', icon: '📊' },
+                  { key: 'translation', label: 'Translation', icon: '🌐' },
+                  { key: 'annotations', label: 'Annotations', icon: '📝' }
                 ].map((feature) => (
                   <button
                     key={feature.key}
