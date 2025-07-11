@@ -483,7 +483,8 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
   const [selectedModel, setSelectedModel] = useState('claude-3-opus-20240229');
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [generatingQA, setGeneratingQA] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState('online');
