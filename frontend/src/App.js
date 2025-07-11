@@ -2,108 +2,57 @@ import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
-import { classifyError, handleErrorWithRetry, NotificationManager, ConnectionChecker } from './utils/errorHandling';
-import NotificationContainer from './components/NotificationContainer';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 const API = `${BACKEND_URL}/api`;
 
-// Enhanced axios instance with error handling
+// Enhanced axios instance with better error handling
 const apiClient = axios.create({
   baseURL: API,
-  timeout: 30000, // 30 second timeout
+  timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Request interceptor
-apiClient.interceptors.request.use(
-  (config) => {
-    // Check if we're online
-    if (!ConnectionChecker.isOnline) {
-      return Promise.reject(new Error('You are offline. Please check your internet connection.'));
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
-
-// Response interceptor for global error handling
-apiClient.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-  (error) => {
-    const errorInfo = classifyError(error);
-    
-    // Log error for debugging
-    console.error('API Error:', {
-      url: error.config?.url,
-      method: error.config?.method,
-      status: error.response?.status,
-      data: error.response?.data,
-      message: errorInfo.message
-    });
-    
-    // Don't show notifications for certain errors (we'll handle them specifically)
-    if (error.response?.status !== 404 && error.response?.status !== 401) {
-      NotificationManager.showError(errorInfo.message);
-    }
-    
-    return Promise.reject(error);
-  }
-);
-
-// Function to detect if content contains markdown syntax
+// Enhanced markdown detection
 const containsMarkdown = (content) => {
   if (!content) return false;
   
-  // Check for various markdown patterns
   const markdownPatterns = [
     /\*\*.*?\*\*/,  // Bold text
-    /\*.*?\*/,      // Italic text (not inside bold)
+    /\*.*?\*/,      // Italic text
     /^#{1,6}\s/m,   // Headers
     /^[-*+]\s/m,    // Unordered lists
     /^\d+\.\s/m,    // Ordered lists
     /```[\s\S]*?```/, // Code blocks
     /`.*?`/,        // Inline code
     /^\>/m,         // Blockquotes
-    /\n\n/,         // Multiple line breaks (paragraph separation)
+    /\n\n/,         // Multiple line breaks
   ];
   
   return markdownPatterns.some(pattern => pattern.test(content));
 };
+
+// Enhanced Markdown Renderer with better styling
 const MarkdownRenderer = ({ content, messageType = 'assistant' }) => {
-  const isDark = messageType === 'assistant';
-  
   return (
     <div className="markdown-content">
       <ReactMarkdown
         components={{
-          // Custom styling for different markdown elements
           p: ({ children }) => (
-            <p className={`mb-4 leading-relaxed font-['Inter','system-ui',sans-serif] ${
-              messageType === 'user' ? 'text-gray-200' : 'text-gray-100'
+            <p className={`mb-4 leading-relaxed ${
+              messageType === 'user' ? 'text-neutral-200' : 'text-neutral-100'
             }`}>
               {children}
             </p>
           ),
           strong: ({ children }) => (
-            <strong className={`font-semibold font-['Inter','system-ui',sans-serif] ${
+            <strong className={`font-semibold ${
               messageType === 'user' ? 'text-green-300' : 'text-green-400'
             }`}>
               {children}
             </strong>
-          ),
-          em: ({ children }) => (
-            <em className={`italic font-['Inter','system-ui',sans-serif] ${
-              messageType === 'user' ? 'text-gray-300' : 'text-gray-200'
-            }`}>
-              {children}
-            </em>
           ),
           ul: ({ children }) => (
             <ul className="space-y-2 mb-4 pl-6 list-disc">
@@ -116,32 +65,11 @@ const MarkdownRenderer = ({ content, messageType = 'assistant' }) => {
             </ol>
           ),
           li: ({ children }) => (
-            <li className={`font-['Inter','system-ui',sans-serif] leading-relaxed ${
-              messageType === 'user' ? 'text-gray-200' : 'text-gray-100'
+            <li className={`leading-relaxed ${
+              messageType === 'user' ? 'text-neutral-200' : 'text-neutral-100'
             }`}>
               {children}
             </li>
-          ),
-          h1: ({ children }) => (
-            <h1 className={`text-xl font-bold mb-4 font-['Inter','system-ui',sans-serif] ${
-              messageType === 'user' ? 'text-green-300' : 'text-green-400'
-            }`}>
-              {children}
-            </h1>
-          ),
-          h2: ({ children }) => (
-            <h2 className={`text-lg font-semibold mb-3 font-['Inter','system-ui',sans-serif] ${
-              messageType === 'user' ? 'text-green-300' : 'text-green-400'
-            }`}>
-              {children}
-            </h2>
-          ),
-          h3: ({ children }) => (
-            <h3 className={`text-base font-medium mb-2 font-['Inter','system-ui',sans-serif] ${
-              messageType === 'user' ? 'text-green-300' : 'text-green-400'
-            }`}>
-              {children}
-            </h3>
           ),
           code: ({ inline, children }) => (
             inline ? (
@@ -164,14 +92,14 @@ const MarkdownRenderer = ({ content, messageType = 'assistant' }) => {
               </pre>
             )
           ),
-          blockquote: ({ children }) => (
-            <blockquote className={`border-l-4 pl-4 py-2 mb-4 italic ${
-              messageType === 'user' 
-                ? 'border-green-300 text-gray-300' 
-                : 'border-green-400 text-gray-200'
-            }`}>
-              {children}
-            </blockquote>
+          h1: ({ children }) => (
+            <h1 className="text-heading-2 mb-4 text-green-400">{children}</h1>
+          ),
+          h2: ({ children }) => (
+            <h2 className="text-heading-3 mb-3 text-green-400">{children}</h2>
+          ),
+          h3: ({ children }) => (
+            <h3 className="text-lg font-semibold mb-2 text-green-400">{children}</h3>
           ),
         }}
       >
@@ -181,15 +109,71 @@ const MarkdownRenderer = ({ content, messageType = 'assistant' }) => {
   );
 };
 
+// Enhanced Loading Component
+const LoadingSpinner = ({ size = 'md', text = '' }) => {
+  const sizeClasses = {
+    sm: 'w-4 h-4',
+    md: 'w-6 h-6',
+    lg: 'w-8 h-8'
+  };
+
+  return (
+    <div className="flex items-center gap-3">
+      <div className={`loading-spinner ${sizeClasses[size]}`}></div>
+      {text && <span className="text-body-small text-neutral-400">{text}</span>}
+      }
+    </div>
+  );
+};
+
+// Enhanced Typing Indicator
+const TypingIndicator = () => {
+  return (
+    <div className="message-container">
+      <div className="message-avatar assistant">
+        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+          <path fillRule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clipRule="evenodd" />
+        </svg>
+      </div>
+      <div className="message-content assistant">
+        <div className="flex items-center gap-2">
+          <span className="text-body-small text-neutral-400">AI is thinking</span>
+          <div className="loading-dots">
+            <div className="loading-dot"></div>
+            <div className="loading-dot"></div>
+            <div className="loading-dot"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Enhanced Status Indicator Component
+const StatusIndicator = ({ status, text }) => {
+  const statusConfig = {
+    online: { color: 'online', icon: '●' },
+    offline: { color: 'offline', icon: '●' },
+    processing: { color: 'processing', icon: '●' }
+  };
+
+  const config = statusConfig[status] || statusConfig.offline;
+
+  return (
+    <div className={`status-indicator ${config.color}`}>
+      <span className={`status-dot ${status === 'processing' ? 'pulse' : ''}`}></span>
+      {text}
+    </div>
+  );
+};
+
+// Main App Component
 const App = () => {
   const [currentView, setCurrentView] = useState('home');
   const [currentFeature, setCurrentFeature] = useState('chat');
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-green-900">
-      {/* Global Notification Container */}
-      <NotificationContainer />
-      
+    <div className="App">
       {currentView === 'home' && <HomePage setCurrentView={setCurrentView} />}
       {currentView === 'app' && (
         <ChatInterface 
@@ -202,39 +186,40 @@ const App = () => {
   );
 };
 
+// Enhanced HomePage Component
 const HomePage = ({ setCurrentView }) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    setIsLoaded(true);
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
-      {/* Animated background elements */}
+      {/* Enhanced Background Elements */}
       <div className="absolute inset-0 bg-grid-white/[0.02] bg-[length:50px_50px]"></div>
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-purple-500/5 to-transparent"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 via-transparent to-blue-500/10"></div>
       
-      {/* Floating orbs */}
-      <div className="absolute top-20 left-20 w-72 h-72 bg-purple-500/20 rounded-full blur-3xl animate-pulse"></div>
-      <div className="absolute bottom-20 right-20 w-96 h-96 bg-blue-500/15 rounded-full blur-3xl animate-pulse delay-1000"></div>
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl animate-pulse delay-500"></div>
-
-      {/* Header */}
-      <header className="relative z-10 px-6 py-8">
+      {/* Enhanced Header */}
+      <header className={`relative z-10 px-6 py-8 transition-all duration-1000 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10'}`}>
         <nav className="flex items-center justify-between max-w-7xl mx-auto">
           <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg">
+            <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg">
               <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 0v12h8V4H6z" clipRule="evenodd" />
               </svg>
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-white">Baloch AI PDF</h1>
-              <p className="text-sm text-gray-400">AI-Powered Document Assistant</p>
+              <h1 className="text-heading-2 font-bold text-white">ChatPDF</h1>
+              <p className="text-body-small text-neutral-400">AI-Powered PDF Assistant</p>
             </div>
           </div>
           
           <div className="hidden md:flex items-center space-x-6">
-            <a href="#features" className="text-gray-300 hover:text-white transition-colors">Features</a>
-            <a href="#how-it-works" className="text-gray-300 hover:text-white transition-colors">How it Works</a>
+            <a href="#features" className="text-neutral-300 hover:text-white transition-colors text-body">Features</a>
             <button
               onClick={() => setCurrentView('app')}
-              className="bg-gradient-to-r from-purple-500 to-emerald-500 text-white px-6 py-2 rounded-full hover:from-purple-600 hover:to-emerald-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+              className="btn btn-primary"
             >
               Get Started
             </button>
@@ -242,55 +227,55 @@ const HomePage = ({ setCurrentView }) => {
         </nav>
       </header>
 
-      {/* Hero Section */}
+      {/* Enhanced Hero Section */}
       <main className="relative z-10 px-6 pt-16 pb-32">
         <div className="max-w-7xl mx-auto text-center">
-          {/* Hero Content */}
-          <div className="max-w-4xl mx-auto mb-16">
-            <div className="mb-8">
-            </div>
-            
-            <h2 className="text-5xl md:text-7xl font-bold text-white mb-8 leading-tight">
+          <div className={`max-w-4xl mx-auto mb-16 transition-all duration-1000 delay-300 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+            <h2 className="text-display mb-8 leading-tight">
               Transform Your
-              <span className="bg-gradient-to-r from-purple-400 via-emerald-400 to-purple-400 bg-clip-text text-transparent block">
+              <span className="block bg-gradient-to-r from-green-400 via-emerald-400 to-green-400 bg-clip-text text-transparent">
                 PDFs into Conversations
               </span>
             </h2>
             
-            <p className="text-xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-body-large mb-12 max-w-3xl mx-auto leading-relaxed text-neutral-300">
               Upload any PDF document and engage in intelligent conversations with your content. 
               Get instant answers, generate summaries, and unlock insights with the power of AI.
             </p>
 
-            {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
               <button
                 onClick={() => setCurrentView('app')}
-                className="bg-gradient-to-r from-purple-500 to-emerald-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:from-purple-600 hover:to-emerald-600 transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:scale-105 flex items-center space-x-2"
+                className="btn btn-primary btn-lg group"
               >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
                 </svg>
-                <span>Start Chatting Now</span>
+                Start Chatting Now
+              </button>
+              <button className="btn btn-secondary btn-lg">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h8m-9-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Watch Demo
               </button>
             </div>
 
-            {/* Trust Indicators */}
-            <div className="flex items-center justify-center space-x-8 text-sm text-gray-400">
+            <div className="flex items-center justify-center space-x-8 text-body-small text-neutral-400">
               <div className="flex items-center space-x-2">
-                <svg className="w-5 h-5 text-emerald-400" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
                 <span>Free to Use</span>
               </div>
               <div className="flex items-center space-x-2">
-                <svg className="w-5 h-5 text-emerald-400" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
                 </svg>
                 <span>Secure & Private</span>
               </div>
               <div className="flex items-center space-x-2">
-                <svg className="w-5 h-5 text-emerald-400" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
                 </svg>
                 <span>Unlimited PDFs</span>
@@ -298,8 +283,8 @@ const HomePage = ({ setCurrentView }) => {
             </div>
           </div>
 
-          {/* Feature Cards Grid */}
-          <div id="features" className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto mb-20">
+          {/* Enhanced Feature Cards Grid */}
+          <div id="features" className={`grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto mb-20 transition-all duration-1000 delay-500 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
             <FeatureCard
               icon={
                 <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
@@ -317,18 +302,8 @@ const HomePage = ({ setCurrentView }) => {
                 </svg>
               }
               title="Question Generator"
-              description="Auto-generate FAQs, MCQs, and True/False questions from your documents. Segment by chapters for targeted learning."
+              description="Auto-generate FAQs, MCQs, and True/False questions from your documents."
               gradient="from-emerald-500 to-cyan-500"
-            />
-            <FeatureCard
-              icon={
-                <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
-                </svg>
-              }
-              title="Quiz Generator"
-              description="Generate daily revision quizzes or custom quizzes from your PDF library with adjustable difficulty levels."
-              gradient="from-blue-500 to-indigo-500"
             />
             <FeatureCard
               icon={
@@ -337,75 +312,55 @@ const HomePage = ({ setCurrentView }) => {
                 </svg>
               }
               title="Voice Input"
-              description="Use natural voice commands to ask questions about your documents with speech recognition."
+              description="Use natural voice commands to ask questions about your documents."
               gradient="from-orange-500 to-red-500"
-            />
-            <FeatureCard
-              icon={
-                <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
-                </svg>
-              }
-              title="Advanced Search"
-              description="Search across all your documents and conversations with intelligent, context-aware results."
-              gradient="from-teal-500 to-green-500"
-            />
-            <FeatureCard
-              icon={
-                <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z" />
-                </svg>
-              }
-              title="Multi-Language Support"
-              description="Translate your PDFs and interact with content in multiple languages powered by AI."
-              gradient="from-violet-500 to-purple-500"
             />
           </div>
 
-          {/* Stats Section */}
-          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 max-w-4xl mx-auto mb-20">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-2">7+</div>
-                <div className="text-sm text-gray-400">AI Models</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-2">100%</div>
-                <div className="text-sm text-gray-400">Free to Use</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-2">∞</div>
-                <div className="text-sm text-gray-400">PDF Uploads</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-white mb-2">24/7</div>
-                <div className="text-sm text-gray-400">Available</div>
+          {/* Enhanced Stats Section */}
+          <div className={`card max-w-4xl mx-auto mb-20 transition-all duration-1000 delay-700 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+            <div className="card-body">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div className="text-center">
+                  <div className="text-heading-1 font-bold text-green-400 mb-2">7+</div>
+                  <div className="text-body-small text-neutral-400">AI Models</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-heading-1 font-bold text-green-400 mb-2">100%</div>
+                  <div className="text-body-small text-neutral-400">Free to Use</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-heading-1 font-bold text-green-400 mb-2">∞</div>
+                  <div className="text-body-small text-neutral-400">PDF Uploads</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-heading-1 font-bold text-green-400 mb-2">24/7</div>
+                  <div className="text-body-small text-neutral-400">Available</div>
+                </div>
               </div>
             </div>
           </div>
-
-
         </div>
       </main>
 
-      {/* Footer */}
+      {/* Enhanced Footer */}
       <footer className="relative z-10 border-t border-white/10 bg-black/20 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-6 py-8">
           <div className="flex flex-col md:flex-row items-center justify-between">
             <div className="flex items-center space-x-4 mb-4 md:mb-0">
-              <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-emerald-500 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg flex items-center justify-center">
                 <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 0v12h8V4H6z" clipRule="evenodd" />
                 </svg>
               </div>
-              <span className="text-white font-semibold">Baloch AI PDF</span>
+              <span className="text-white font-semibold">ChatPDF</span>
             </div>
             
             <div className="text-center md:text-right">
-              <p className="text-gray-400 text-sm mb-2">
-                Built with ❤️ by <span className="text-white font-medium">Shayak Siraj & Ahmed</span>
+              <p className="text-neutral-400 text-body-small mb-2">
+                Built with ❤️ for PDF lovers
               </p>
-              <p className="text-gray-500 text-xs">
+              <p className="text-neutral-500 text-caption">
                 AI-Powered Document Assistant
               </p>
             </div>
@@ -416,56 +371,28 @@ const HomePage = ({ setCurrentView }) => {
   );
 };
 
+// Enhanced FeatureCard Component
 const FeatureCard = ({ icon, title, description, gradient }) => {
   return (
-    <div className="group relative overflow-hidden">
-      {/* Background gradient */}
-      <div className={`absolute inset-0 bg-gradient-to-r ${gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-300 rounded-2xl`}></div>
-      
-      {/* Card content */}
-      <div className="relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 hover:border-white/20 transition-all duration-300 group-hover:transform group-hover:scale-105">
-        <div className={`inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r ${gradient} rounded-xl mb-6 text-white shadow-lg`}>
+    <div className="card group cursor-pointer">
+      <div className="card-body text-center">
+        <div className={`inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r ${gradient} rounded-xl mb-6 text-white shadow-lg group-hover:scale-110 transition-transform duration-300`}>
           {icon}
         </div>
         
-        <h3 className="text-xl font-semibold text-white mb-4 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:bg-clip-text group-hover:from-purple-400 group-hover:to-emerald-400 transition-all duration-300">
+        <h3 className="text-heading-3 mb-4 text-white">
           {title}
         </h3>
         
-        <p className="text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors duration-300">
+        <p className="text-body text-neutral-400 leading-relaxed">
           {description}
         </p>
-        
-        {/* Hover effect arrow */}
-        <div className="absolute top-8 right-8 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
-          </svg>
-        </div>
       </div>
     </div>
   );
 };
 
-const FeatureCardEnhanced = ({ icon, title, description, isNew = false }) => {
-  return (
-    <div className="feature-card-enhanced rounded-xl text-white group">
-      {isNew && (
-        <div className="absolute -top-2 -right-2 bg-gradient-to-r from-green-400 to-green-600 text-black text-xs px-2 py-1 rounded-full font-medium">
-          NEW
-        </div>
-      )}
-      <div className="feature-card-icon group-hover:scale-110 transition-transform duration-300">{icon}</div>
-      <h3 className="feature-card-title group-hover:text-green-300 transition-colors duration-300">
-        {title}
-      </h3>
-      <p className="feature-card-description group-hover:opacity-100 transition-opacity duration-300">
-        {description}
-      </p>
-    </div>
-  );
-};
-
+// Enhanced ChatInterface Component
 const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) => {
   const [sessions, setSessions] = useState([]);
   const [currentSession, setCurrentSession] = useState(null);
@@ -477,24 +404,12 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
   const [uploading, setUploading] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [generatingQA, setGeneratingQA] = useState(false);
-  const [researching, setResearching] = useState(false);
   const [isListening, setIsListening] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
-  const [showSearch, setShowSearch] = useState(false);
-  const [voiceLanguage, setVoiceLanguage] = useState('ur-PK'); // Default to Urdu
-
-  // System Health States
-  const [healthData, setHealthData] = useState(null);
-  const [healthLoading, setHealthLoading] = useState(false);
-  const [showFixConfirmation, setShowFixConfirmation] = useState(null);
-  const [fixingIssue, setFixingIssue] = useState(false);
-  const [healthMetrics, setHealthMetrics] = useState(null);
+  const [connectionStatus, setConnectionStatus] = useState('online');
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
 
-  // Helper function to create valid message objects
   const createMessage = (role, content, featureType = 'chat', timestamp = null) => {
     return {
       id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
@@ -509,7 +424,17 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
     loadSessions();
     loadModels();
     initializeSpeechRecognition();
+    checkConnectionStatus();
   }, []);
+
+  const checkConnectionStatus = async () => {
+    try {
+      await apiClient.get('/health');
+      setConnectionStatus('online');
+    } catch (error) {
+      setConnectionStatus('offline');
+    }
+  };
 
   const initializeSpeechRecognition = () => {
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
@@ -517,7 +442,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = false;
       recognitionRef.current.interimResults = false;
-      recognitionRef.current.lang = 'ur-PK'; // Set to Urdu (Pakistan) as default
+      recognitionRef.current.lang = 'en-US';
 
       recognitionRef.current.onstart = () => {
         setIsListening(true);
@@ -532,20 +457,11 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
       recognitionRef.current.onerror = (event) => {
         console.error('Speech recognition error:', event.error);
         setIsListening(false);
-        if (event.error === 'not-allowed') {
-          alert('Microphone access denied. Please allow microphone access to use voice input.');
-        } else if (event.error === 'no-speech') {
-          alert('No speech detected. Please try again.');
-        } else {
-          alert('Speech recognition error: ' + event.error);
-        }
       };
 
       recognitionRef.current.onend = () => {
         setIsListening(false);
       };
-    } else {
-      console.warn('Speech recognition not supported in this browser');
     }
   };
 
@@ -577,64 +493,45 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
 
   const loadSessions = async () => {
     try {
-      const response = await handleErrorWithRetry(
-        () => apiClient.get('/sessions'),
-        2, // 2 retries
-        1000 // 1 second delay
-      );
+      setConnectionStatus('processing');
+      const response = await apiClient.get('/sessions');
       setSessions(response.data);
+      setConnectionStatus('online');
       if (response.data.length === 0) {
         await createNewSession();
       }
-      NotificationManager.showSuccess('Sessions loaded successfully');
     } catch (error) {
       console.error('Error loading sessions:', error);
-      const errorInfo = classifyError(error);
-      NotificationManager.showError(`Failed to load sessions: ${errorInfo.message}`);
-      // Set empty sessions if loading fails
       setSessions([]);
+      setConnectionStatus('offline');
     }
   };
 
   const loadModels = async () => {
     try {
-      const response = await handleErrorWithRetry(
-        () => apiClient.get('/models'),
-        2,
-        1000
-      );
+      const response = await apiClient.get('/models');
       setModels(response.data.models);
       if (response.data.models && response.data.models.length > 0) {
-        // Set default model if not already set
         if (!selectedModel || !response.data.models.some(model => model.id === selectedModel)) {
           setSelectedModel(response.data.models[0].id);
         }
       }
     } catch (error) {
       console.error('Error loading models:', error);
-      const errorInfo = classifyError(error);
-      NotificationManager.showError(`Failed to load AI models: ${errorInfo.message}`);
-      // Set empty models array if loading fails
       setModels([]);
     }
   };
 
   const loadMessages = async (sessionId, featureType = null) => {
     if (!sessionId) {
-      console.warn('Cannot load messages: sessionId is required');
       setMessages([]);
       return;
     }
 
     try {
       const params = featureType && featureType !== 'chat' ? { feature_type: featureType } : {};
-      const response = await handleErrorWithRetry(
-        () => apiClient.get(`/sessions/${sessionId}/messages`, { params }),
-        2,
-        1000
-      );
+      const response = await apiClient.get(`/sessions/${sessionId}/messages`, { params });
       
-      // Filter out any invalid messages
       const validMessages = (response.data || []).filter(message => 
         message && 
         typeof message === 'object' && 
@@ -645,115 +542,8 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
       setMessages(validMessages);
     } catch (error) {
       console.error('Error loading messages:', error);
-      const errorInfo = classifyError(error);
-      
-      // Only show error notification if it's not a 404 (session not found)
-      if (error.response?.status !== 404) {
-        NotificationManager.showError(`Failed to load messages: ${errorInfo.message}`);
-      }
-      
-      setMessages([]); // Set empty array on error
+      setMessages([]);
     }
-  };
-
-  // System Health Functions
-  const loadSystemHealth = async () => {
-    setHealthLoading(true);
-    try {
-      const response = await apiClient.get('/system-health');
-      setHealthData(response.data);
-    } catch (error) {
-      console.error('Error loading system health:', error);
-      setHealthData({
-        overall_status: 'critical',
-        backend_status: 'unhealthy',
-        frontend_status: 'unhealthy',
-        database_status: 'unknown',
-        api_status: 'unknown',
-        metrics: {
-          cpu_usage: 0,
-          memory_usage: 0,
-          disk_usage: 0,
-          response_time: 0,
-          active_sessions: 0,
-          total_api_calls: 0,
-          error_rate: 100
-        },
-        issues: [{
-          id: 'frontend-error',
-          issue_type: 'critical',
-          category: 'frontend',
-          title: 'Frontend Connection Failed',
-          description: 'Cannot connect to backend health endpoint',
-          suggested_fix: 'Check backend service status',
-          auto_fixable: false,
-          severity: 5
-        }],
-        uptime: 0
-      });
-    } finally {
-      setHealthLoading(false);
-    }
-  };
-
-  const loadHealthMetrics = async () => {
-    try {
-      const response = await apiClient.get('/system-health/metrics');
-      setHealthMetrics(response.data);
-    } catch (error) {
-      console.error('Error loading health metrics:', error);
-    }
-  };
-
-  const fixSystemIssue = async (issueId) => {
-    setFixingIssue(true);
-    try {
-      const response = await apiClient.post('/system-health/fix', {
-        issue_id: issueId,
-        confirm_fix: true
-      });
-
-      if (response.data.success) {
-        // Refresh health data
-        await loadSystemHealth();
-        setShowFixConfirmation(null);
-        alert(`Fix applied successfully: ${response.data.message}`);
-      } else {
-        alert(`Fix failed: ${response.data.error}`);
-      }
-    } catch (error) {
-      console.error('Error fixing issue:', error);
-      alert('Error applying fix: ' + (error.response?.data?.detail || error.message));
-    } finally {
-      setFixingIssue(false);
-    }
-  };
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'healthy': return 'text-green-400';
-      case 'warning': return 'text-yellow-400';
-      case 'critical': return 'text-red-400';
-      case 'unhealthy': return 'text-red-400';
-      default: return 'text-gray-400';
-    }
-  };
-
-  const getStatusBgColor = (status) => {
-    switch (status) {
-      case 'healthy': return 'bg-green-400/10 border-green-400/30';
-      case 'warning': return 'bg-yellow-400/10 border-yellow-400/30';
-      case 'critical': return 'bg-red-400/10 border-red-400/30';
-      case 'unhealthy': return 'bg-red-400/10 border-red-400/30';
-      default: return 'bg-gray-400/10 border-gray-400/30';
-    }
-  };
-
-  const getSeverityColor = (severity) => {
-    if (severity >= 4) return 'text-red-400';
-    if (severity >= 3) return 'text-orange-400';
-    if (severity >= 2) return 'text-yellow-400';
-    return 'text-blue-400';
   };
 
   const createNewSession = async () => {
@@ -820,7 +610,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
 
       setMessages(prev => [...prev, createMessage(
         'system',
-        `📄 PDF "${response.data.filename}" uploaded successfully! You can now use all features with this document.`,
+        `📄 PDF "${response.data.filename}" uploaded successfully! You can now ask questions about this document.`,
         'system'
       )]);
 
@@ -848,12 +638,10 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
         feature_type: currentFeature
       });
 
-      // Ensure AI response has valid structure
       const aiResponse = response.data.ai_response;
       if (aiResponse && aiResponse.role && aiResponse.content !== undefined) {
         setMessages(prev => [...prev, aiResponse]);
       } else {
-        // Fallback with valid structure
         setMessages(prev => [...prev, createMessage(
           'assistant',
           aiResponse?.content || 'Response received but content is missing.',
@@ -887,7 +675,6 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
         model: selectedModel
       });
 
-      // Switch to questions view and load messages
       setCurrentFeature('question_generation');
       setTimeout(() => loadMessages(currentSession.id, 'question_generation'), 500);
     } catch (error) {
@@ -897,186 +684,113 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
     }
   };
 
-  const generateQuiz = async (quizType = 'manual', difficulty = 'medium', questionCount = 10) => {
-    if (!currentSession || !currentSession.pdf_filename) {
-      alert('Please upload a PDF first');
-      return;
-    }
-
-    setResearching(true);
-    try {
-      const response = await apiClient.post('/generate-quiz', {
-        session_id: currentSession.id,
-        quiz_type: quizType,
-        difficulty: difficulty,
-        question_count: questionCount,
-        model: selectedModel
-      });
-
-      // Switch to quiz view and load messages
-      setCurrentFeature('quiz_generation');
-      setTimeout(() => loadMessages(currentSession.id, 'quiz_generation'), 500);
-    } catch (error) {
-      alert('Error generating quiz: ' + (error.response?.data?.detail || error.message));
-    } finally {
-      setResearching(false);
-    }
-  };
-
-  const searchContent = async () => {
-    if (!searchQuery.trim()) return;
-
-    try {
-      const response = await apiClient.post('/search', {
-        query: searchQuery,
-        search_type: 'all',
-        limit: 20
-      });
-
-      setSearchResults(response.data.results);
-      setShowSearch(true);
-    } catch (error) {
-      alert('Error searching: ' + (error.response?.data?.detail || error.message));
-    }
-  };
-
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
-  };
-
-  const getFeatureTitle = () => {
-    switch (currentFeature) {
-      case 'chat': return 'PDF Chat';
-      case 'question_generation': return 'Question Generator';
-      case 'quiz_generation': return 'Quiz Generator';
-      case 'general_ai': return 'General AI Assistant';
-      case 'system_health': return 'System Health Monitor';
-      default: return 'Chat';
-    }
-  };
-
-  const getPlaceholder = () => {
-    switch (currentFeature) {
-      case 'chat': return currentSession?.pdf_filename 
-        ? "Ask a question about your PDF..." 
-        : "Upload a PDF to start chatting...";
-      case 'general_ai': return "Ask me anything...";
-      case 'question_generation': return "Upload a PDF and generate questions...";
-      case 'quiz_generation': return "Upload a PDF and create quizzes...";
-      case 'system_health': return "System health monitoring - no input required";
-      default: return "Type a message...";
-    }
+  const getFeatureName = (feature) => {
+    const featureNames = {
+      'chat': 'PDF Chat',
+      'question_generation': 'Question Generator',
+      'general_ai': 'General AI'
+    };
+    return featureNames[feature] || feature;
   };
 
   return (
-    <div className="h-screen flex" style={{background: '#000000'}}>
-      {/* Modern Compact Sidebar */}
-      <div className={`${sidebarOpen ? 'w-72' : 'w-20'} text-white transition-all duration-300 flex flex-col`} style={{background: 'linear-gradient(180deg, #0f1419 0%, #0a0e13 100%)'}}>
-        {/* Header Section */}
-        <div className="p-4 border-b border-green-400/20">
+    <div className="flex h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      {/* Enhanced Sidebar */}
+      <div className={`${sidebarOpen ? 'w-80' : 'w-16'} sidebar transition-all duration-300 flex flex-col`}>
+        {/* Sidebar Header */}
+        <div className="sidebar-header">
           <div className="flex items-center justify-between">
             {sidebarOpen && (
-              <button
-                onClick={() => setCurrentView('home')}
-                className="flex items-center space-x-2 text-green-400 hover:text-green-300 transition-colors font-medium text-sm"
-              >
-                <div className="w-6 h-6 rounded-full bg-green-400/20 flex items-center justify-center">
-                  <span className="text-xs">←</span>
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-blue-500 rounded-lg flex items-center justify-center">
+                  <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 0v12h8V4H6z" clipRule="evenodd" />
+                  </svg>
                 </div>
-                <span>Home</span>
-              </button>
+                <div>
+                  <span className="text-white font-semibold">ChatPDF</span>
+                  <div className="flex items-center gap-2 mt-1">
+                    <StatusIndicator status={connectionStatus} text={connectionStatus} />
+                  </div>
+                </div>
+              </div>
             )}
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="w-8 h-8 rounded-full bg-green-400/10 hover:bg-green-400/20 flex items-center justify-center text-green-400 transition-all duration-200"
+              className="btn btn-ghost btn-sm"
             >
-              <span className="text-sm">{sidebarOpen ? '←' : '→'}</span>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
             </button>
           </div>
         </div>
 
-        {/* Navigation Tabs - Modern Circular Design */}
-        <div className="flex-1 p-4 space-y-3">
-          <div className="space-y-2">
-            <ModernNavTab 
-              isActive={currentFeature === 'chat'} 
-              onClick={() => setCurrentFeature('chat')}
-              icon="💬"
-              name="Chat"
-              isCompact={!sidebarOpen}
-            />
-            <ModernNavTab 
-              isActive={currentFeature === 'question_generation'} 
-              onClick={() => setCurrentFeature('question_generation')}
-              icon="❓"
-              name="Questions"
-              isCompact={!sidebarOpen}
-            />
-            <ModernNavTab 
-              isActive={currentFeature === 'quiz_generation'} 
-              onClick={() => setCurrentFeature('quiz_generation')}
-              icon="📝"
-              name="Quiz"
-              isCompact={!sidebarOpen}
-            />
-            <ModernNavTab 
-              isActive={currentFeature === 'general_ai'} 
-              onClick={() => setCurrentFeature('general_ai')}
-              icon="🤖"
-              name="General AI"
-              isCompact={!sidebarOpen}
-            />
-            <ModernNavTab 
-              isActive={currentFeature === 'system_health'} 
-              onClick={() => {
-                setCurrentFeature('system_health');
-                loadSystemHealth();
-                loadHealthMetrics();
-              }}
-              icon="🏥"
-              name="System Health"
-              isCompact={!sidebarOpen}
-            />
+        {/* New Chat Button */}
+        {sidebarOpen && (
+          <div className="p-4">
+            <button
+              onClick={createNewSession}
+              className="btn btn-primary w-full"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              New Chat
+            </button>
           </div>
+        )}
 
-          {sidebarOpen && (
-            <>
-              {/* New Chat Button */}
-              <div className="pt-4 border-t border-green-400/20">
+        {/* Feature Navigation */}
+        {sidebarOpen && (
+          <div className="sidebar-nav">
+            <div className="space-y-1">
+              {[
+                { key: 'chat', label: 'PDF Chat', icon: '💬' },
+                { key: 'question_generation', label: 'Question Generator', icon: '❓' },
+                { key: 'general_ai', label: 'General AI', icon: '🤖' }
+              ].map((feature) => (
                 <button
-                  onClick={createNewSession}
-                  className="w-full bg-green-400/10 hover:bg-green-400/20 border border-green-400/30 hover:border-green-400/50 text-green-400 py-3 px-4 rounded-xl font-medium text-sm transition-all duration-200 flex items-center justify-center space-x-2"
+                  key={feature.key}
+                  onClick={() => setCurrentFeature(feature.key)}
+                  className={`sidebar-nav-item w-full text-left feature-tab ${
+                    currentFeature === feature.key ? 'active' : ''
+                  }`}
                 >
-                  <span className="text-lg">+</span>
-                  <span>New Chat</span>
+                  <span className="text-lg">{feature.icon}</span>
+                  {feature.label}
                 </button>
-              </div>
+              ))}
+            </div>
+          </div>
+        )}
 
-              {/* Sessions List */}
-              <div className="pt-4">
-                <div className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-3 px-2">Sessions</div>
-                <div className="space-y-2 max-h-64 overflow-y-auto">
-                  {sessions.map(session => (
-                    <div
-                      key={session.id}
-                      className={`p-3 rounded-xl cursor-pointer group transition-all duration-200 ${
-                        currentSession?.id === session.id 
-                          ? 'bg-green-400/15 border border-green-400/30' 
-                          : 'hover:bg-green-400/10 border border-transparent hover:border-green-400/20'
-                      }`}
-                      onClick={() => selectSession(session)}
-                    >
+        {/* Sessions List */}
+        {sidebarOpen && (
+          <div className="flex-1 overflow-y-auto px-4">
+            <div className="py-2">
+              <h3 className="text-caption mb-4">Recent Chats</h3>
+              <div className="space-y-2">
+                {sessions.map((session) => (
+                  <div
+                    key={session.id}
+                    className={`card group cursor-pointer transition-all duration-200 ${
+                      currentSession?.id === session.id
+                        ? 'border-green-500 bg-green-500/10'
+                        : ''
+                    }`}
+                    onClick={() => selectSession(session)}
+                  >
+                    <div className="card-body p-3">
                       <div className="flex items-center justify-between">
                         <div className="flex-1 min-w-0">
-                          <div className="text-sm font-medium text-white truncate">{session.title}</div>
+                          <p className="text-body font-medium text-white truncate">
+                            {session.title}
+                          </p>
                           {session.pdf_filename && (
-                            <div className="text-xs text-gray-400 truncate mt-1 flex items-center">
-                              <span className="w-2 h-2 bg-green-400 rounded-full mr-2"></span>
-                              {session.pdf_filename}
-                            </div>
+                            <p className="text-body-small text-neutral-400 truncate">
+                              📄 {session.pdf_filename}
+                            </p>
                           )}
                         </div>
                         <button
@@ -1084,750 +798,236 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                             e.stopPropagation();
                             deleteSession(session.id);
                           }}
-                          className="opacity-0 group-hover:opacity-100 w-6 h-6 rounded-full bg-red-400/20 hover:bg-red-400/30 text-red-400 flex items-center justify-center text-xs transition-all duration-200"
+                          className="btn btn-ghost btn-sm opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-300"
                         >
-                          ✕
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
                         </button>
                       </div>
                     </div>
-                  ))}
-                </div>
-              </div>
-            </>
-          )}
-        </div>
-      </div>
-
-      {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col" style={{background: '#000000'}}>
-        {currentSession ? (
-          <>
-            {/* Modern Chat Header */}
-            <div className="border-b border-green-400/20 p-6" style={{background: 'linear-gradient(135deg, #0f1419 0%, #1a1f2e 100%)'}}>
-              {/* Title and Status Row */}
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center space-x-3">
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                    currentFeature === 'chat' ? 'bg-blue-500/20 text-blue-400' :
-                    currentFeature === 'question_generation' ? 'bg-purple-500/20 text-purple-400' :
-                    currentFeature === 'quiz_generation' ? 'bg-orange-500/20 text-orange-400' :
-                    currentFeature === 'general_ai' ? 'bg-green-500/20 text-green-400' :
-                    currentFeature === 'system_health' ? 'bg-red-500/20 text-red-400' :
-                    'bg-gray-500/20 text-gray-400'
-                  }`}>
-                    <span className="text-lg">
-                      {currentFeature === 'chat' ? '💬' :
-                       currentFeature === 'question_generation' ? '❓' :
-                       currentFeature === 'quiz_generation' ? '📝' :
-                       currentFeature === 'general_ai' ? '🤖' : 
-                       currentFeature === 'system_health' ? '🏥' : '📊'}
-                    </span>
                   </div>
-                  <div>
-                    <h2 className="text-lg font-semibold text-white">{getFeatureTitle()}</h2>
-                    {currentSession?.pdf_filename && (
-                      <div className="flex items-center space-x-2 mt-1">
-                        <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                        <span className="text-sm text-gray-400">{currentSession.pdf_filename}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-                
-                {/* AI Model Selection */}
-                <div className="flex items-center space-x-3">
-                  <div className="text-xs text-gray-400 uppercase tracking-wider">Model</div>
-                  <select
-                    value={selectedModel}
-                    onChange={(e) => setSelectedModel(e.target.value)}
-                    className="bg-gray-800/50 border border-green-400/20 rounded-lg px-3 py-2 text-sm text-white focus:border-green-400/50 focus:ring-0 focus:outline-none transition-all"
-                  >
-                    {models.map(model => (
-                      <option key={model.id} value={model.id} className="bg-gray-800">
-                        {model.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              {/* Quick Actions */}
-              <div className="flex flex-wrap gap-3">
-                {/* Upload PDF Button */}
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  accept=".pdf"
-                  onChange={(e) => {
-                    if (e.target.files[0]) {
-                      uploadPDF(e.target.files[0]);
-                    }
-                  }}
-                  className="hidden"
-                />
-                <button
-                  onClick={() => fileInputRef.current?.click()}
-                  disabled={uploading}
-                  className="flex items-center space-x-2 px-4 py-2 bg-green-400/10 hover:bg-green-400/20 border border-green-400/30 hover:border-green-400/50 text-green-400 rounded-lg text-sm font-medium transition-all duration-200 disabled:opacity-50"
-                >
-                  {uploading ? (
-                    <>
-                      <div className="w-4 h-4 border-2 border-green-400/30 border-t-green-400 rounded-full animate-spin"></div>
-                      <span>Uploading...</span>
-                    </>
-                  ) : (
-                    <>
-                      <span>📄</span>
-                      <span>Upload PDF</span>
-                    </>
-                  )}
-                </button>
-
-                {/* Search Button */}
-                <button
-                  onClick={() => setShowSearch(!showSearch)}
-                  className="flex items-center space-x-2 px-4 py-2 bg-blue-400/10 hover:bg-blue-400/20 border border-blue-400/30 hover:border-blue-400/50 text-blue-400 rounded-lg text-sm font-medium transition-all duration-200"
-                >
-                  <span>🔍</span>
-                  <span>Search</span>
-                </button>
-
-                {/* Feature-Specific Actions */}
-                {currentFeature === 'qa_generation' && (
-                  <button
-                    onClick={() => generateQuestions('mixed')}
-                    disabled={generatingQA || !currentSession?.pdf_filename}
-                    className="flex items-center space-x-2 px-4 py-2 bg-purple-400/10 hover:bg-purple-400/20 border border-purple-400/30 hover:border-purple-400/50 text-purple-400 rounded-lg text-sm font-medium transition-all duration-200 disabled:opacity-50"
-                  >
-                    {generatingQA ? (
-                      <>
-                        <div className="w-4 h-4 border-2 border-purple-400/30 border-t-purple-400 rounded-full animate-spin"></div>
-                        <span>Generating...</span>
-                      </>
-                    ) : (
-                      <>
-                        <span>❓</span>
-                        <span>Generate Q&A</span>
-                      </>
-                    )}
-                  </button>
-                )}
-
-                {currentFeature === 'quiz_generation' && (
-                  <>
-                    <button
-                      onClick={() => generateQuiz('manual', 'easy')}
-                      disabled={researching || !currentSession?.pdf_filename}
-                      className="flex items-center space-x-2 px-4 py-2 bg-orange-400/10 hover:bg-orange-400/20 border border-orange-400/30 hover:border-orange-400/50 text-orange-400 rounded-lg text-sm font-medium transition-all duration-200 disabled:opacity-50"
-                    >
-                      {researching ? (
-                        <>
-                          <div className="w-4 h-4 border-2 border-orange-400/30 border-t-orange-400 rounded-full animate-spin"></div>
-                          <span>Processing...</span>
-                        </>
-                      ) : (
-                        <>
-                          <span>📋</span>
-                          <span>Easy Quiz</span>
-                        </>
-                      )}
-                    </button>
-                    <button
-                      onClick={() => generateQuiz('manual', 'hard')}
-                      disabled={researching || !currentSession?.pdf_filename}
-                      className="flex items-center space-x-2 px-4 py-2 bg-red-400/10 hover:bg-red-400/20 border border-red-400/30 hover:border-red-400/50 text-red-400 rounded-lg text-sm font-medium transition-all duration-200 disabled:opacity-50"
-                    >
-                      {researching ? (
-                        <>
-                          <div className="w-4 h-4 border-2 border-red-400/30 border-t-red-400 rounded-full animate-spin"></div>
-                          <span>Processing...</span>
-                        </>
-                      ) : (
-                        <>
-                          <span>🔬</span>
-                          <span>Hard Quiz</span>
-                        </>
-                      )}
-                    </button>
-                  </>
-                )}
+                ))}
               </div>
             </div>
+          </div>
+        )}
 
-            {/* Modern Search Interface */}
-            {showSearch && (
-              <div className="p-6 bg-gray-900/50 border-b border-green-400/20">
-                <div className="max-w-2xl mx-auto">
-                  <div className="flex items-center space-x-3">
-                    <div className="flex-1 relative">
-                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
-                        </svg>
-                      </div>
-                      <input
-                        type="text"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="Search across all PDFs and conversations..."
-                        className="w-full pl-12 pr-4 py-3 bg-gray-800/50 border border-gray-600/50 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-400/50 focus:border-transparent transition-all"
-                        onKeyPress={(e) => e.key === 'Enter' && searchContent()}
-                      />
-                    </div>
-                    <button
-                      onClick={searchContent}
-                      className="px-6 py-3 bg-green-400/10 hover:bg-green-400/20 border border-green-400/30 hover:border-green-400/50 text-green-400 rounded-xl font-medium transition-all duration-200"
-                    >
-                      Search
-                    </button>
-                    <button
-                      onClick={() => setShowSearch(false)}
-                      className="w-10 h-10 rounded-xl bg-gray-700/50 hover:bg-gray-600/50 flex items-center justify-center text-gray-400 hover:text-white transition-all duration-200"
-                    >
-                      ✕
-                    </button>
-                  </div>
-                  
-                  {searchResults.length > 0 && (
-                    <div className="mt-4 space-y-3 max-h-64 overflow-y-auto">
-                      {searchResults.map((result, index) => (
-                        <div key={index} className="p-4 bg-gray-800/30 rounded-xl border border-gray-600/30">
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <div className="flex items-center space-x-2 mb-2">
-                                <span className={`w-2 h-2 rounded-full ${
-                                  result.type === 'pdf' ? 'bg-blue-400' : 'bg-green-400'
-                                }`}></span>
-                                <span className="text-sm font-medium text-white">
-                                  {result.type === 'pdf' ? result.filename : result.session_title}
-                                </span>
-                                <span className="text-xs text-gray-400 uppercase">
-                                  {result.type}
-                                </span>
-                              </div>
-                              <p className="text-sm text-gray-300 leading-relaxed">
-                                {result.type === 'pdf' ? result.snippet : result.content}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* Messages Container */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-6" style={{background: '#000000'}}>
-              {currentFeature === 'system_health' ? (
-                // System Health Dashboard
-                <div className="max-w-6xl mx-auto space-y-6">
-                  {/* Header */}
-                  <div className="text-center mb-8">
-                    <h2 className="text-3xl font-bold text-white mb-2">System Health Monitor</h2>
-                    <p className="text-gray-400">Real-time monitoring and automated issue resolution</p>
-                  </div>
-
-                  {/* Refresh Button */}
-                  <div className="flex justify-end">
-                    <button
-                      onClick={() => {
-                        loadSystemHealth();
-                        loadHealthMetrics();
-                      }}
-                      disabled={healthLoading}
-                      className="flex items-center space-x-2 px-4 py-2 bg-green-400/10 hover:bg-green-400/20 border border-green-400/30 hover:border-green-400/50 text-green-400 rounded-lg text-sm font-medium transition-all duration-200 disabled:opacity-50"
-                    >
-                      {healthLoading ? (
-                        <>
-                          <div className="w-4 h-4 border-2 border-green-400/30 border-t-green-400 rounded-full animate-spin"></div>
-                          <span>Refreshing...</span>
-                        </>
-                      ) : (
-                        <>
-                          <span>🔄</span>
-                          <span>Refresh</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
-
-                  {healthLoading ? (
-                    <div className="flex justify-center items-center h-64">
-                      <div className="text-center">
-                        <div className="w-16 h-16 border-4 border-green-400/30 border-t-green-400 rounded-full animate-spin mx-auto mb-4"></div>
-                        <p className="text-gray-400">Loading system health...</p>
-                      </div>
-                    </div>
-                  ) : healthData ? (
-                    <>
-                      {/* Overall Status */}
-                      <div className={`p-6 rounded-xl border ${getStatusBgColor(healthData.overall_status)}`}>
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <h3 className="text-xl font-semibold text-white mb-2">Overall System Status</h3>
-                            <p className={`text-lg font-medium ${getStatusColor(healthData.overall_status)}`}>
-                              {healthData.overall_status.toUpperCase()}
-                            </p>
-                          </div>
-                          <div className="text-right">
-                            <p className="text-sm text-gray-400">Uptime</p>
-                            <p className="text-lg font-medium text-white">
-                              {Math.floor(healthData.uptime / 3600)}h {Math.floor((healthData.uptime % 3600) / 60)}m
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Component Status */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div className={`p-4 rounded-xl border ${getStatusBgColor(healthData.backend_status)}`}>
-                          <h4 className="font-medium text-white mb-1">Backend</h4>
-                          <p className={`text-sm ${getStatusColor(healthData.backend_status)}`}>
-                            {healthData.backend_status}
-                          </p>
-                        </div>
-                        <div className={`p-4 rounded-xl border ${getStatusBgColor(healthData.database_status)}`}>
-                          <h4 className="font-medium text-white mb-1">Database</h4>
-                          <p className={`text-sm ${getStatusColor(healthData.database_status)}`}>
-                            {healthData.database_status}
-                          </p>
-                        </div>
-                        <div className={`p-4 rounded-xl border ${getStatusBgColor(healthData.api_status)}`}>
-                          <h4 className="font-medium text-white mb-1">API Services</h4>
-                          <p className={`text-sm ${getStatusColor(healthData.api_status)}`}>
-                            {healthData.api_status}
-                          </p>
-                        </div>
-                        <div className={`p-4 rounded-xl border ${getStatusBgColor(healthData.frontend_status)}`}>
-                          <h4 className="font-medium text-white mb-1">Frontend</h4>
-                          <p className={`text-sm ${getStatusColor(healthData.frontend_status)}`}>
-                            {healthData.frontend_status}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* System Metrics */}
-                      <div className="bg-gray-800/30 rounded-xl border border-gray-600/30 p-6">
-                        <h3 className="text-lg font-semibold text-white mb-4">System Metrics</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                          <div className="text-center">
-                            <p className="text-sm text-gray-400">CPU Usage</p>
-                            <p className="text-xl font-bold text-white">{healthData.metrics.cpu_usage.toFixed(1)}%</p>
-                          </div>
-                          <div className="text-center">
-                            <p className="text-sm text-gray-400">Memory</p>
-                            <p className="text-xl font-bold text-white">{healthData.metrics.memory_usage.toFixed(1)}%</p>
-                          </div>
-                          <div className="text-center">
-                            <p className="text-sm text-gray-400">Disk Usage</p>
-                            <p className="text-xl font-bold text-white">{healthData.metrics.disk_usage.toFixed(1)}%</p>
-                          </div>
-                          <div className="text-center">
-                            <p className="text-sm text-gray-400">Response Time</p>
-                            <p className="text-xl font-bold text-white">{healthData.metrics.response_time.toFixed(0)}ms</p>
-                          </div>
-                          <div className="text-center">
-                            <p className="text-sm text-gray-400">API Calls</p>
-                            <p className="text-xl font-bold text-white">{healthData.metrics.total_api_calls}</p>
-                          </div>
-                          <div className="text-center">
-                            <p className="text-sm text-gray-400">Error Rate</p>
-                            <p className="text-xl font-bold text-white">{healthData.metrics.error_rate.toFixed(1)}%</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Issues */}
-                      {healthData.issues && healthData.issues.length > 0 && (
-                        <div className="bg-gray-800/30 rounded-xl border border-gray-600/30 p-6">
-                          <h3 className="text-lg font-semibold text-white mb-4">
-                            System Issues ({healthData.issues.length})
-                          </h3>
-                          <div className="space-y-4">
-                            {healthData.issues.map((issue, index) => (
-                              <div key={issue.id || index} className={`p-4 rounded-lg border ${getStatusBgColor(issue.issue_type)}`}>
-                                <div className="flex items-start justify-between">
-                                  <div className="flex-1">
-                                    <div className="flex items-center space-x-2 mb-2">
-                                      <span className={`text-sm font-medium px-2 py-1 rounded ${getSeverityColor(issue.severity)}`}>
-                                        Severity {issue.severity}
-                                      </span>
-                                      <span className="text-xs text-gray-400 uppercase">
-                                        {issue.category}
-                                      </span>
-                                    </div>
-                                    <h4 className="font-medium text-white mb-1">{issue.title}</h4>
-                                    <p className="text-sm text-gray-300 mb-2">{issue.description}</p>
-                                    <p className="text-sm text-blue-400">💡 {issue.suggested_fix}</p>
-                                  </div>
-                                  {issue.auto_fixable && !issue.resolved && (
-                                    <button
-                                      onClick={() => setShowFixConfirmation(issue)}
-                                      disabled={fixingIssue}
-                                      className="ml-4 px-3 py-1 bg-blue-400/10 hover:bg-blue-400/20 border border-blue-400/30 hover:border-blue-400/50 text-blue-400 rounded text-sm transition-all duration-200 disabled:opacity-50"
-                                    >
-                                      Auto-Fix
-                                    </button>
-                                  )}
-                                  {issue.resolved && (
-                                    <span className="ml-4 px-3 py-1 bg-green-400/10 border border-green-400/30 text-green-400 rounded text-sm">
-                                      ✅ Resolved
-                                    </span>
-                                  )}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* No Issues */}
-                      {(!healthData.issues || healthData.issues.length === 0) && (
-                        <div className="text-center py-12">
-                          <div className="text-6xl mb-4">✅</div>
-                          <h3 className="text-xl font-semibold text-green-400 mb-2">All Systems Healthy</h3>
-                          <p className="text-gray-400">No issues detected. System is running optimally.</p>
-                        </div>
-                      )}
-                    </>
-                  ) : (
-                    <div className="text-center py-12">
-                      <div className="text-6xl mb-4">🏥</div>
-                      <h3 className="text-xl font-semibold text-white mb-2">System Health Monitor</h3>
-                      <p className="text-gray-400 mb-4">Click refresh to load system health data</p>
-                      <button
-                        onClick={() => {
-                          loadSystemHealth();
-                          loadHealthMetrics();
-                        }}
-                        className="px-6 py-3 bg-green-400/10 hover:bg-green-400/20 border border-green-400/30 hover:border-green-400/50 text-green-400 rounded-xl font-medium transition-all duration-200"
-                      >
-                        Load Health Data
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ) : messages.length === 0 ? (
-                <div className="flex items-center justify-center h-full text-quaternary">
-                  <div className="text-center">
-                    <div className="text-6xl mb-4">🤖</div>
-                    <h3 className="font-heading-sm text-primary mb-2">Ready to Chat!</h3>
-                    <p className="font-body text-secondary">
-                      {currentFeature === 'general_ai' 
-                        ? "Ask me anything, or upload a PDF to get started with document analysis."
-                        : currentSession?.pdf_filename 
-                          ? "Your PDF is loaded. Ask questions or use the features above!"
-                          : "Upload a PDF document to start chatting with your content."
-                      }
-                    </p>
-                  </div>
-                </div>
-              ) : (
-                messages.map((message, index) => (
-                  <div key={message.id || index} className="message-bubble-container">
-                    <div className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} mb-6`}>
-                      <div className={`flex items-start space-x-3 max-w-4xl ${message.role === 'user' ? 'flex-row-reverse space-x-reverse' : ''}`}>
-                        {/* Enhanced Avatar */}
-                        <div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center shadow-lg ${
-                          message.role === 'user' 
-                            ? 'bg-gradient-to-br from-emerald-500 to-green-600' 
-                            : message.role === 'system'
-                            ? 'bg-gradient-to-br from-blue-500 to-indigo-600'
-                            : 'bg-gradient-to-br from-purple-500 to-violet-600'
-                        }`}>
-                          {message.role === 'user' ? (
-                            <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-                            </svg>
-                          ) : message.role === 'system' ? (
-                            <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 0v12h8V4H6z" clipRule="evenodd" />
-                            </svg>
-                          ) : (
-                            <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                              <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z" />
-                              <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z" />
-                            </svg>
-                          )}
-                        </div>
-
-                        {/* Message Bubble */}
-                        <div className={`relative group ${message.role === 'user' ? 'text-right' : 'text-left'}`}>
-                          {/* Message Header */}
-                          <div className={`flex items-center mb-1 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                            <span className="text-sm font-semibold text-gray-300">
-                              {message.role === 'user' ? 'You' : message.role === 'system' ? 'System' : 'AI Assistant'}
-                            </span>
-                            <span className="text-xs text-gray-500 ml-2">
-                              {message.timestamp ? new Date(message.timestamp).toLocaleTimeString() : ''}
-                            </span>
-                          </div>
-                          
-                          {/* Enhanced Message Content */}
-                          <div className={`relative ${
-                            message.role === 'user' 
-                              ? 'bg-gradient-to-br from-emerald-600 to-green-700 text-white' 
-                              : 'bg-gradient-to-br from-gray-800 to-gray-900 text-gray-100 border border-gray-700/50'
-                          } rounded-2xl px-4 py-3 shadow-lg hover:shadow-xl transition-all duration-200`}>
-                            {containsMarkdown(message.content) ? (
-                              <div className="prose prose-invert max-w-none">
-                                <MarkdownRenderer 
-                                  content={message.content} 
-                                  messageType={message.role}
-                                />
-                              </div>
-                            ) : (
-                              <div className="text-base leading-relaxed whitespace-pre-wrap">
-                                {message.content || ''}
-                              </div>
-                            )}
-                            
-                            {/* Message Actions */}
-                            <div className={`absolute top-2 ${message.role === 'user' ? 'left-2' : 'right-2'} 
-                              opacity-0 group-hover:opacity-100 transition-opacity duration-200`}>
-                              <button
-                                onClick={() => {
-                                  navigator.clipboard.writeText(message.content);
-                                  // You could add a toast notification here
-                                }}
-                                className="w-6 h-6 bg-black/20 hover:bg-black/40 rounded-full flex items-center justify-center transition-colors"
-                                title="Copy message"
-                              >
-                                <svg className="w-3 h-3 text-white/70" fill="currentColor" viewBox="0 0 20 20">
-                                  <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" />
-                                  <path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" />
-                                </svg>
-                              </button>
-                            </div>
-
-                            {/* Message Tail */}
-                            <div className={`absolute top-4 ${
-                              message.role === 'user' 
-                                ? 'right-[-6px] border-l-emerald-600' 
-                                : 'left-[-6px] border-r-gray-800'
-                            } w-3 h-3 ${
-                              message.role === 'user' 
-                                ? 'border-l-8 border-t-4 border-b-4 border-t-transparent border-b-transparent' 
-                                : 'border-r-8 border-t-4 border-b-4 border-t-transparent border-b-transparent'
-                            }`}></div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))
-              )}
-              {loading && (
-                <div className="flex justify-start message-bubble-container mb-6">
-                  <div className="flex items-start space-x-3 max-w-4xl">
-                    {/* AI Avatar */}
-                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center shadow-lg">
-                      <svg className="w-5 h-5 text-white animate-pulse" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z" />
-                        <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z" />
-                      </svg>
-                    </div>
-
-                    {/* Enhanced Typing Indicator */}
-                    <div className="relative">
-                      <div className="flex items-center mb-1">
-                        <span className="text-sm font-semibold text-gray-300">AI Assistant</span>
-                        <span className="text-xs text-gray-500 ml-2">typing...</span>
-                      </div>
-                      
-                      <div className="bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700/50 rounded-2xl px-6 py-4 shadow-lg">
-                        <div className="flex items-center space-x-2">
-                          <div className="flex space-x-1">
-                            <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"></div>
-                            <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                            <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
-                          </div>
-                          <span className="text-sm text-gray-400 ml-2">AI is thinking...</span>
-                        </div>
-                      </div>
-
-                      {/* Message Tail */}
-                      <div className="absolute top-9 left-[-6px] border-r-gray-800 w-3 h-3 border-r-8 border-t-4 border-b-4 border-t-transparent border-b-transparent"></div>
-                    </div>
-                  </div>
-                </div>
-              )}
-              <div ref={messagesEndRef} />
-            </div>
-
-            {/* Enhanced Message Input Area */}
-            <div className="message-input-container border-t border-green-400/20 p-6" style={{background: 'linear-gradient(135deg, #0f1419 0%, #1a1f2e 100%)'}}>
-              <div className="flex items-end space-x-4">
-                <div className="flex-1 relative">
-                  <textarea
-                    value={inputMessage}
-                    onChange={(e) => setInputMessage(e.target.value)}
-                    onKeyPress={handleKeyPress}
-                    placeholder={getPlaceholder()}
-                    disabled={loading || (currentFeature !== 'general_ai' && currentFeature !== 'system_health' && !currentSession?.pdf_filename)}
-                    className="w-full bg-gray-800/70 backdrop-blur-sm border border-gray-600/50 rounded-2xl px-4 py-4 text-white placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-green-400/50 focus:border-green-400/50 disabled:opacity-50 transition-all duration-200 shadow-lg"
-                    rows={inputMessage.split('\n').length || 1}
-                    style={{minHeight: '56px', maxHeight: '120px'}}
-                  />
-                  {recognitionRef.current && (currentFeature === 'chat' || currentFeature === 'general_ai') && (
-                    <button
-                      onClick={isListening ? stopListening : startListening}
-                      className={`absolute right-4 bottom-4 w-10 h-10 rounded-xl flex items-center justify-center font-medium transition-all duration-200 shadow-lg ${
-                        isListening 
-                          ? 'bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500/30' 
-                          : 'bg-green-400/10 text-green-400 border border-green-400/30 hover:bg-green-400/20 hover:scale-105'
-                      }`}
-                      disabled={loading}
-                    >
-                      {isListening ? (
-                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clipRule="evenodd" />
-                        </svg>
-                      ) : (
-                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clipRule="evenodd" />
-                        </svg>
-                      )}
-                    </button>
-                  )}
-                </div>
-                <button
-                  onClick={sendMessage}
-                  disabled={!inputMessage.trim() || loading || (currentFeature !== 'general_ai' && currentFeature !== 'system_health' && !currentSession?.pdf_filename) || currentFeature === 'system_health'}
-                  className="send-button flex items-center justify-center w-14 h-14 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-2xl font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
-                >
-                  {loading ? (
-                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                  ) : (
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                    </svg>
-                  )}
-                </button>
-              </div>
-              
-              {/* Quick Actions */}
-              <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-700/30">
-                <div className="flex items-center space-x-2 text-xs text-gray-400">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                  </svg>
-                  <span>Press Enter to send, Shift+Enter for new line</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  {currentSession?.pdf_filename && (
-                    <div className="flex items-center space-x-1 text-xs text-green-400 bg-green-400/10 px-2 py-1 rounded-full">
-                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 0v12h8V4H6z" clipRule="evenodd" />
-                      </svg>
-                      <span>PDF Loaded</span>
-                    </div>
-                  )}
-                  <div className="text-xs text-gray-500">
-                    Model: {models.find(m => m.value === selectedModel)?.name || selectedModel}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </>
-        ) : (
-          <div className="flex-1 flex items-center justify-center text-gray-400">
-            <div className="text-center">
-              <h3 className="text-xl font-medium mb-2 text-green-400">No chat selected</h3>
-              <p className="text-secondary">Create a new chat or select an existing one to get started.</p>
-            </div>
+        {/* Back to Home */}
+        {sidebarOpen && (
+          <div className="p-4 border-t border-white/10">
+            <button
+              onClick={() => setCurrentView('home')}
+              className="btn btn-ghost w-full"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              Back to Home
+            </button>
           </div>
         )}
       </div>
 
-      {/* Fix Confirmation Dialog */}
-      {showFixConfirmation && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-gray-800 rounded-xl border border-gray-600 p-6 max-w-md w-full mx-4">
-            <h3 className="text-lg font-semibold text-white mb-4">Confirm Auto-Fix</h3>
-            <div className="mb-4">
-              <p className="text-gray-300 mb-2">
-                <strong>Issue:</strong> {showFixConfirmation.title}
-              </p>
-              <p className="text-gray-300 mb-2">
-                <strong>Description:</strong> {showFixConfirmation.description}
-              </p>
-              <p className="text-blue-400 mb-4">
-                <strong>Suggested Fix:</strong> {showFixConfirmation.suggested_fix}
-              </p>
-              <p className="text-yellow-400 text-sm">
-                ⚠️ This action will attempt to automatically fix the issue. Are you sure you want to proceed?
-              </p>
-            </div>
-            <div className="flex space-x-3">
-              <button
-                onClick={() => fixSystemIssue(showFixConfirmation.id)}
-                disabled={fixingIssue}
-                className="flex-1 px-4 py-2 bg-blue-400/10 hover:bg-blue-400/20 border border-blue-400/30 hover:border-blue-400/50 text-blue-400 rounded-lg font-medium transition-all duration-200 disabled:opacity-50"
-              >
-                {fixingIssue ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-blue-400/30 border-t-blue-400 rounded-full animate-spin inline mr-2"></div>
-                    Applying Fix...
-                  </>
-                ) : (
-                  'Apply Fix'
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col">
+        {/* Enhanced Header */}
+        <div className="bg-gradient-to-r from-slate-900/95 to-purple-900/95 border-b border-white/10 backdrop-blur-sm">
+          <div className="card-header">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-heading-2 text-white">
+                  {getFeatureName(currentFeature)}
+                </h1>
+                {currentSession && (
+                  <p className="text-body-small text-neutral-400 mt-1">
+                    {currentSession.pdf_filename ? `📄 ${currentSession.pdf_filename}` : 'No PDF uploaded'}
+                  </p>
                 )}
-              </button>
-              <button
-                onClick={() => setShowFixConfirmation(null)}
-                disabled={fixingIssue}
-                className="flex-1 px-4 py-2 bg-gray-600/20 hover:bg-gray-600/30 border border-gray-600/30 hover:border-gray-600/50 text-gray-300 rounded-lg font-medium transition-all duration-200 disabled:opacity-50"
-              >
-                Cancel
-              </button>
+              </div>
+              
+              <div className="flex items-center space-x-4">
+                {/* Model Selection */}
+                <select
+                  value={selectedModel}
+                  onChange={(e) => setSelectedModel(e.target.value)}
+                  className="form-input form-select w-48"
+                >
+                  {models.map((model) => (
+                    <option key={model.id} value={model.id}>
+                      {model.name} {model.free ? '(Free)' : ''}
+                    </option>
+                  ))}
+                </select>
+
+                {/* Upload PDF Button */}
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
+                  className="btn btn-secondary"
+                >
+                  {uploading ? (
+                    <LoadingSpinner size="sm" />
+                  ) : (
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                  )}
+                  {uploading ? 'Uploading...' : 'Upload PDF'}
+                </button>
+                
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".pdf"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) uploadPDF(file);
+                  }}
+                  className="hidden"
+                />
+
+                {/* Generate Questions Button */}
+                {currentFeature === 'question_generation' && (
+                  <button
+                    onClick={() => generateQuestions('mixed')}
+                    disabled={generatingQA || !currentSession?.pdf_filename}
+                    className="btn btn-primary"
+                  >
+                    {generatingQA ? (
+                      <LoadingSpinner size="sm" />
+                    ) : (
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    )}
+                    {generatingQA ? 'Generating...' : 'Generate Questions'}
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>
-      )}
-    </div>
-  );
-};
 
-const ModernNavTab = ({ isActive, onClick, icon, name, isCompact }) => {
-  return (
-    <button
-      onClick={onClick}
-      className={`w-full flex items-center transition-all duration-200 rounded-xl p-3 group ${
-        isActive 
-          ? 'bg-green-400/20 border border-green-400/40 text-green-400' 
-          : 'hover:bg-green-400/10 border border-transparent hover:border-green-400/20 text-gray-400 hover:text-green-400'
-      }`}
-    >
-      <div className={`flex-shrink-0 w-8 h-8 rounded-xl flex items-center justify-center text-lg transition-all duration-200 ${
-        isActive 
-          ? 'bg-green-400/30' 
-          : 'bg-gray-700/50 group-hover:bg-green-400/20'
-      }`}>
-        {icon}
+        {/* Enhanced Messages Area */}
+        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+          {messages.length === 0 ? (
+            <div className="flex items-center justify-center h-full">
+              <div className="text-center">
+                <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center">
+                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                  </svg>
+                </div>
+                <h3 className="text-heading-3 mb-4 text-white">Start a conversation</h3>
+                <p className="text-body text-neutral-400 max-w-md">
+                  Upload a PDF and ask questions, or use General AI for any topic
+                </p>
+              </div>
+            </div>
+          ) : (
+            messages.map((message) => (
+              <div key={message.id} className="message-container">
+                <div className={`message-avatar ${message.role}`}>
+                  {message.role === 'user' ? (
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                    </svg>
+                  ) : message.role === 'system' ? (
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                    </svg>
+                  ) : (
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clipRule="evenodd" />
+                    </svg>
+                  )}
+                </div>
+                <div className={`message-content ${message.role}`}>
+                  {containsMarkdown(message.content) ? (
+                    <MarkdownRenderer content={message.content} messageType={message.role} />
+                  ) : (
+                    <p className="whitespace-pre-wrap text-body">{message.content}</p>
+                  )}
+                  <div className="message-timestamp">
+                    {new Date(message.timestamp).toLocaleTimeString()}
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+          
+          {loading && <TypingIndicator />}
+          
+          <div ref={messagesEndRef} />
+        </div>
+
+        {/* Enhanced Input Area */}
+        <div className="chat-input-container m-6">
+          <div className="flex items-end gap-4">
+            <div className="flex-1">
+              <textarea
+                value={inputMessage}
+                onChange={(e) => setInputMessage(e.target.value)}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                  }
+                }}
+                placeholder={`Ask about your ${currentFeature === 'general_ai' ? 'anything' : 'PDF'} or type a message...`}
+                className="form-input resize-none min-h-[3rem] max-h-32"
+                disabled={loading}
+                rows={1}
+                style={{
+                  height: 'auto',
+                  minHeight: '3rem'
+                }}
+                onInput={(e) => {
+                  e.target.style.height = 'auto';
+                  e.target.style.height = Math.min(e.target.scrollHeight, 128) + 'px';
+                }}
+              />
+            </div>
+            
+            {/* Voice Input Button */}
+            <button
+              onClick={isListening ? stopListening : startListening}
+              className={`btn btn-secondary voice-button ${isListening ? 'listening' : ''}`}
+              disabled={loading}
+            >
+              {isListening ? (
+                <svg className="w-5 h-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a2 2 0 114 0v4a2 2 0 11-4 0V7z" clipRule="evenodd" />
+                </svg>
+              ) : (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                </svg>
+              )}
+            </button>
+            
+            {/* Send Button */}
+            <button
+              onClick={sendMessage}
+              disabled={!inputMessage.trim() || loading}
+              className="btn btn-primary"
+            >
+              {loading ? (
+                <LoadingSpinner size="sm" />
+              ) : (
+                <>
+                  <span>Send</span>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                  </svg>
+                </>
+              )}
+            </button>
+          </div>
+        </div>
       </div>
-      {!isCompact && (
-        <span className="ml-3 font-medium text-sm truncate">{name}</span>
-      )}
-    </button>
-  );
-};
-
-const FeatureTab = ({ isActive, onClick, icon, name }) => {
-  return (
-    <button
-      onClick={onClick}
-      className={`w-full text-left px-3 py-2 rounded transition-colors font-ui ${
-        isActive 
-          ? 'bg-gradient-to-r from-green-400 to-green-600 text-black font-semibold' 
-          : 'text-secondary hover:bg-green-400/20 hover:text-primary'
-      }`}
-    >
-      <span className="mr-2">{icon}</span>
-      {name}
-    </button>
+    </div>
   );
 };
 
