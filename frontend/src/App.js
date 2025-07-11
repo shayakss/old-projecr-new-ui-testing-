@@ -195,7 +195,15 @@ const HomePage = ({ setCurrentView }) => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden" style={{
+      backgroundImage: 'url(/download (1).jpeg)',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat'
+    }}>
+      {/* Background Overlay */}
+      <div className="absolute inset-0 bg-slate-900/80"></div>
+      
       {/* Enhanced Background Elements */}
       <div className="absolute inset-0 bg-grid-white/[0.02] bg-[length:50px_50px]"></div>
       <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 via-transparent to-blue-500/10"></div>
