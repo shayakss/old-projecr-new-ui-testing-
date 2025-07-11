@@ -1399,7 +1399,10 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
 
                 {/* Insights Button */}
                 <button
-                  onClick={() => setInsightsOpen(!insightsOpen)}
+                  onClick={() => {
+                    setInsightsOpen(!insightsOpen);
+                    if (!insightsOpen) loadInsights();
+                  }}
                   className="btn btn-ghost text-xs sm:text-sm px-2 sm:px-4 py-2"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
