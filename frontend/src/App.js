@@ -862,13 +862,28 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
         <div className="absolute -top-4 -right-4 w-72 h-72 bg-primary-500/10 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
         <div className="absolute -bottom-8 -left-4 w-72 h-72 bg-accent-blue/10 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-1000"></div>
       </div>
-      {/* Enhanced Sidebar */}
-      <div className={`${sidebarOpen ? 'w-80' : 'w-16'} relative z-10 transition-all duration-300 flex flex-col`}>
+
+      {/* Mobile Menu Overlay */}
+      {isMobile && sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Enhanced Responsive Sidebar */}
+      <div className={`${
+        isMobile 
+          ? `fixed left-0 top-0 h-full w-80 z-50 transform transition-transform duration-300 ${
+              sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+            }` 
+          : `${sidebarOpen ? 'w-80' : 'w-16'} relative z-10 transition-all duration-300`
+      } flex flex-col`}>
         <div className="h-full bg-gradient-to-b from-black/20 via-black/30 to-black/20 backdrop-blur-xl border-r border-white/10">
           {/* Sidebar Header */}
           <div className="p-4 border-b border-white/10">
             <div className="flex items-center justify-between">
-              {sidebarOpen && (
+              {(sidebarOpen || !isMobile) && (
                 <div className="flex items-center space-x-3">
                   <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-blue-500 rounded-lg flex items-center justify-center shadow-lg">
                     <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
@@ -895,10 +910,13 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
           </div>
 
           {/* New Chat Button */}
-          {sidebarOpen && (
+          {(sidebarOpen || !isMobile) && (
             <div className="p-4">
               <button
-                onClick={createNewSession}
+                onClick={() => {
+                  createNewSession();
+                  if (isMobile) setSidebarOpen(false);
+                }}
                 className="btn btn-primary w-full"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -910,7 +928,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
           )}
 
           {/* Feature Navigation */}
-          {sidebarOpen && (
+          {(sidebarOpen || !isMobile) && (
             <div className="px-4 py-2">
               <div className="space-y-1">
                 {[
@@ -920,7 +938,10 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                 ].map((feature) => (
                   <button
                     key={feature.key}
-                    onClick={() => setCurrentFeature(feature.key)}
+                    onClick={() => {
+                      setCurrentFeature(feature.key);
+                      if (isMobile) setSidebarOpen(false);
+                    }}
                     className={`w-full text-left p-3 rounded-lg transition-all duration-200 flex items-center gap-3 ${
                       currentFeature === feature.key 
                         ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-lg' 
@@ -928,7 +949,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                     }`}
                   >
                     <span className="text-lg">{feature.icon}</span>
-                    {feature.label}
+                    <span className="truncate">{feature.label}</span>
                   </button>
                 ))}
               </div>
@@ -936,7 +957,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
           )}
 
           {/* Sessions List */}
-          {sidebarOpen && (
+          {(sidebarOpen || !isMobile) && (
             <div className="flex-1 overflow-y-auto px-4">
               <div className="py-2">
                 <div className="flex items-center justify-between mb-4">
@@ -959,7 +980,10 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                           ? 'bg-gradient-to-r from-green-500/20 to-blue-500/20 border border-green-500/30'
                           : 'bg-black/20 hover:bg-black/30 border border-white/10'
                       }`}
-                      onClick={() => selectSession(session)}
+                      onClick={() => {
+                        selectSession(session);
+                        if (isMobile) setSidebarOpen(false);
+                      }}
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex-1 min-w-0">
@@ -1005,7 +1029,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
           )}
 
           {/* Back to Home */}
-          {sidebarOpen && (
+          {(sidebarOpen || !isMobile) && (
             <div className="p-4 border-t border-white/10">
               <button
                 onClick={() => setCurrentView('home')}
@@ -1022,41 +1046,54 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col relative z-10">
-        {/* Enhanced Header */}
+      <div className="flex-1 flex flex-col relative z-10 min-w-0">
+        {/* Enhanced Mobile-First Header */}
         <div className="bg-gradient-to-r from-black/30 via-black/20 to-black/30 border-b border-white/10 backdrop-blur-sm">
           <div className="p-4">
             <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-heading-3 text-white">
-                  {getFeatureName(currentFeature)}
-                </h1>
-                {currentSession && (
-                  <p className="text-body-small text-neutral-300 mt-1">
-                    {currentSession.pdf_filename ? `📄 ${currentSession.pdf_filename}` : 'No PDF uploaded'}
-                  </p>
+              <div className="flex items-center gap-3">
+                {/* Mobile Menu Button */}
+                {isMobile && (
+                  <button
+                    onClick={() => setSidebarOpen(!sidebarOpen)}
+                    className="btn btn-ghost btn-sm md:hidden"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                  </button>
                 )}
+                <div className="min-w-0">
+                  <h1 className="text-lg sm:text-xl md:text-2xl text-white font-semibold truncate">
+                    {getFeatureName(currentFeature)}
+                  </h1>
+                  {currentSession && (
+                    <p className="text-xs sm:text-sm text-neutral-300 mt-1 truncate">
+                      {currentSession.pdf_filename ? `📄 ${currentSession.pdf_filename}` : 'No PDF uploaded'}
+                    </p>
+                  )}
+                </div>
               </div>
               
-              <div className="flex items-center space-x-4">
-                {/* Model Selection */}
+              <div className="flex items-center space-x-2 sm:space-x-4">
+                {/* Model Selection - Responsive */}
                 <select
                   value={selectedModel}
                   onChange={(e) => setSelectedModel(e.target.value)}
-                  className="bg-black/20 backdrop-blur-sm border border-white/20 rounded-lg px-4 py-2 text-white w-48 focus:outline-none focus:border-primary-500"
+                  className="bg-black/20 backdrop-blur-sm border border-white/20 rounded-lg px-2 sm:px-4 py-2 text-white text-xs sm:text-sm w-24 sm:w-48 focus:outline-none focus:border-primary-500"
                 >
                   {models.map((model) => (
                     <option key={model.id} value={model.id} className="bg-black text-white">
-                      {model.name} {model.free ? '(Free)' : ''}
+                      {isMobile ? model.name.substring(0, 15) + '...' : model.name} {model.free ? '(Free)' : ''}
                     </option>
                   ))}
                 </select>
 
-                {/* Upload PDF Button */}
+                {/* Upload PDF Button - Responsive */}
                 <button
                   onClick={() => fileInputRef.current?.click()}
                   disabled={uploading}
-                  className="btn btn-secondary"
+                  className="btn btn-secondary text-xs sm:text-sm px-2 sm:px-4 py-2"
                 >
                   {uploading ? (
                     <LoadingSpinner size="sm" />
@@ -1065,7 +1102,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                     </svg>
                   )}
-                  {uploading ? 'Uploading...' : 'Upload PDF'}
+                  <span className="hidden sm:inline">{uploading ? 'Uploading...' : 'Upload PDF'}</span>
                 </button>
                 
                 <input
@@ -1079,12 +1116,12 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                   className="hidden"
                 />
 
-                {/* Generate Questions Button */}
+                {/* Generate Questions Button - Responsive */}
                 {currentFeature === 'question_generation' && (
                   <button
                     onClick={() => generateQuestions('mixed')}
                     disabled={generatingQA || !currentSession?.pdf_filename}
-                    className="btn btn-primary"
+                    className="btn btn-primary text-xs sm:text-sm px-2 sm:px-4 py-2"
                   >
                     {generatingQA ? (
                       <LoadingSpinner size="sm" />
@@ -1093,7 +1130,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                     )}
-                    {generatingQA ? 'Generating...' : 'Generate Questions'}
+                    <span className="hidden sm:inline">{generatingQA ? 'Generating...' : 'Generate Questions'}</span>
                   </button>
                 )}
               </div>
@@ -1101,26 +1138,26 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
           </div>
         </div>
 
-        {/* Enhanced Messages Area */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+        {/* Enhanced Responsive Messages Area */}
+        <div className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6 space-y-4 sm:space-y-6">
           {messages.length === 0 ? (
             <div className="flex items-center justify-center h-full">
-              <div className="text-center">
-                <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center shadow-2xl">
-                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="text-center px-4">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center shadow-2xl">
+                  <svg className="w-6 h-6 sm:w-8 sm:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                   </svg>
                 </div>
-                <h3 className="text-heading-3 mb-4 text-white">Start a conversation</h3>
-                <p className="text-body text-neutral-300 max-w-md">
+                <h3 className="text-lg sm:text-xl md:text-2xl mb-2 sm:mb-4 text-white">Start a conversation</h3>
+                <p className="text-sm sm:text-base text-neutral-300 max-w-md">
                   Upload a PDF and ask questions, or use General AI for any topic
                 </p>
               </div>
             </div>
           ) : (
             messages.map((message) => (
-              <div key={message.id} className="flex gap-4 max-w-full">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+              <div key={message.id} className="flex gap-2 sm:gap-4 max-w-full">
+                <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
                   message.role === 'user' 
                     ? 'bg-gradient-to-r from-green-500 to-emerald-500' 
                     : message.role === 'system' 
@@ -1128,20 +1165,20 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                     : 'bg-gradient-to-r from-purple-500 to-pink-500'
                 }`}>
                   {message.role === 'user' ? (
-                    <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
                     </svg>
                   ) : message.role === 'system' ? (
-                    <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                     </svg>
                   ) : (
-                    <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clipRule="evenodd" />
                     </svg>
                   )}
                 </div>
-                <div className={`flex-1 p-4 rounded-2xl backdrop-blur-sm border max-w-4xl ${
+                <div className={`flex-1 p-3 sm:p-4 rounded-xl sm:rounded-2xl backdrop-blur-sm border max-w-full ${
                   message.role === 'user' 
                     ? 'bg-gradient-to-r from-green-500/20 to-emerald-500/20 border-green-500/30' 
                     : message.role === 'system' 
@@ -1151,7 +1188,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                   {containsMarkdown(message.content) ? (
                     <MarkdownRenderer content={message.content} messageType={message.role} />
                   ) : (
-                    <p className="whitespace-pre-wrap text-body text-white">{message.content}</p>
+                    <p className="whitespace-pre-wrap text-sm sm:text-base text-white break-words">{message.content}</p>
                   )}
                   <div className="text-xs text-neutral-400 mt-2">
                     {new Date(message.timestamp).toLocaleTimeString()}
@@ -1166,10 +1203,10 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Enhanced Input Area */}
-        <div className="p-6 bg-gradient-to-r from-black/20 via-black/30 to-black/20 backdrop-blur-sm border-t border-white/10">
-          <div className="flex items-end gap-4">
-            <div className="flex-1">
+        {/* Enhanced Responsive Input Area */}
+        <div className="p-3 sm:p-4 md:p-6 bg-gradient-to-r from-black/20 via-black/30 to-black/20 backdrop-blur-sm border-t border-white/10">
+          <div className="flex items-end gap-2 sm:gap-4">
+            <div className="flex-1 min-w-0">
               <textarea
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
@@ -1180,12 +1217,12 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                   }
                 }}
                 placeholder={`Ask about your ${currentFeature === 'general_ai' ? 'anything' : 'PDF'} or type a message...`}
-                className="w-full bg-black/20 backdrop-blur-sm border border-white/20 rounded-2xl px-6 py-4 text-white placeholder-neutral-400 resize-none min-h-[3rem] max-h-32 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20"
+                className="w-full bg-black/20 backdrop-blur-sm border border-white/20 rounded-xl sm:rounded-2xl px-3 sm:px-6 py-3 sm:py-4 text-white placeholder-neutral-400 resize-none min-h-[2.5rem] sm:min-h-[3rem] max-h-32 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 text-sm sm:text-base"
                 disabled={loading}
                 rows={1}
                 style={{
                   height: 'auto',
-                  minHeight: '3rem'
+                  minHeight: isMobile ? '2.5rem' : '3rem'
                 }}
                 onInput={(e) => {
                   e.target.style.height = 'auto';
@@ -1194,10 +1231,10 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
               />
             </div>
             
-            {/* Voice Input Button */}
+            {/* Voice Input Button - Responsive */}
             <button
               onClick={isListening ? stopListening : startListening}
-              className={`p-3 rounded-full transition-all duration-200 ${
+              className={`p-2 sm:p-3 rounded-full transition-all duration-200 ${
                 isListening 
                   ? 'bg-red-500 hover:bg-red-600 shadow-lg shadow-red-500/25' 
                   : 'bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20'
@@ -1205,28 +1242,28 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
               disabled={loading}
             >
               {isListening ? (
-                <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a2 2 0 114 0v4a2 2 0 11-4 0V7z" clipRule="evenodd" />
                 </svg>
               ) : (
-                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
                 </svg>
               )}
             </button>
             
-            {/* Send Button */}
+            {/* Send Button - Responsive */}
             <button
               onClick={sendMessage}
               disabled={!inputMessage.trim() || loading}
-              className="btn btn-primary px-6 py-3 rounded-2xl"
+              className="btn btn-primary px-3 sm:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl text-sm sm:text-base"
             >
               {loading ? (
                 <LoadingSpinner size="sm" />
               ) : (
                 <>
-                  <span>Send</span>
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <span className="hidden sm:inline">Send</span>
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                   </svg>
                 </>
