@@ -217,40 +217,43 @@ const HomePage = ({ setCurrentView }) => {
       
       {/* Floating Particles */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-4 -right-4 w-72 h-72 bg-primary-500/10 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
-        <div className="absolute -bottom-8 -left-4 w-72 h-72 bg-accent-blue/10 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-1000"></div>
+        <div className="absolute -top-4 -right-4 w-36 h-36 sm:w-72 sm:h-72 bg-primary-500/10 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
+        <div className="absolute -bottom-8 -left-4 w-36 h-36 sm:w-72 sm:h-72 bg-accent-blue/10 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-1000"></div>
       </div>
       
       {/* Professional Header */}
       <header className={`relative z-10 transition-all duration-1000 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-10'}`}>
-        <div className="container mx-auto">
-          <nav className="flex items-center justify-between py-6">
-            <div className="flex items-center space-x-4">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <nav className="flex items-center justify-between py-4 sm:py-6">
+            <div className="flex items-center space-x-3 sm:space-x-4">
               <div className="relative">
-                <div className="w-12 h-12 bg-gradient-primary rounded-2xl flex items-center justify-center shadow-lg">
-                  <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-primary rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg">
+                  <svg className="w-5 h-5 sm:w-7 sm:h-7 text-white" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 0v12h8V4H6z" clipRule="evenodd" />
                   </svg>
                 </div>
-                <div className="absolute -top-1 -right-1 w-4 h-4 bg-primary-400 rounded-full animate-pulse"></div>
+                <div className="absolute -top-1 -right-1 w-3 h-3 sm:w-4 sm:h-4 bg-primary-400 rounded-full animate-pulse"></div>
               </div>
               <div>
-                <h1 className="text-heading-4 font-bold text-white">ChatPDF</h1>
-                <p className="text-caption text-neutral-400">Next-Gen AI Assistant</p>
+                <h1 className="text-lg sm:text-xl font-bold text-white">ChatPDF</h1>
+                <p className="text-xs sm:text-sm text-neutral-400">Next-Gen AI Assistant</p>
               </div>
             </div>
             
-            <div className="hidden md:flex items-center space-x-8">
-              <a href="#features" className="text-body text-neutral-300 hover:text-white transition-colors">Features</a>
-              <a href="#about" className="text-body text-neutral-300 hover:text-white transition-colors">About</a>
+            <div className="flex items-center space-x-4 sm:space-x-8">
+              <div className="hidden sm:flex items-center space-x-6 lg:space-x-8">
+                <a href="#features" className="text-sm sm:text-base text-neutral-300 hover:text-white transition-colors">Features</a>
+                <a href="#about" className="text-sm sm:text-base text-neutral-300 hover:text-white transition-colors">About</a>
+              </div>
               <button
                 onClick={() => setCurrentView('app')}
-                className="btn btn-primary btn-lg"
+                className="btn btn-primary text-sm sm:text-base px-4 sm:px-6 py-2 sm:py-3"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
-                Get Started
+                <span className="hidden sm:inline">Get Started</span>
+                <span className="sm:hidden">Start</span>
               </button>
             </div>
           </nav>
@@ -258,38 +261,38 @@ const HomePage = ({ setCurrentView }) => {
       </header>
 
       {/* Professional Hero Section */}
-      <main className="relative z-10 section-lg">
-        <div className="container mx-auto text-center">
-          <div className={`max-w-5xl mx-auto mb-16 transition-all duration-1000 delay-300 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-            <div className="mb-8">
-              <span className="inline-block px-4 py-2 bg-primary-500/10 border border-primary-500/20 rounded-full text-primary-400 text-caption mb-6">
+      <main className="relative z-10 py-8 sm:py-12 md:py-16 lg:py-20">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className={`max-w-5xl mx-auto mb-12 sm:mb-16 transition-all duration-1000 delay-300 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+            <div className="mb-6 sm:mb-8">
+              <span className="inline-block px-3 py-1 sm:px-4 sm:py-2 bg-primary-500/10 border border-primary-500/20 rounded-full text-primary-400 text-xs sm:text-sm mb-4 sm:mb-6">
                 🚀 Powered by Advanced AI
               </span>
             </div>
             
-            <h2 className="text-display mb-8 leading-tight">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 sm:mb-8 leading-tight">
               Transform Your
-              <span className="block text-gradient mt-2">
+              <span className="block text-gradient mt-1 sm:mt-2">
                 PDFs into Intelligence
               </span>
             </h2>
             
-            <p className="text-body-large mb-12 max-w-3xl mx-auto leading-relaxed text-neutral-300">
+            <p className="text-base sm:text-lg md:text-xl mb-8 sm:mb-12 max-w-3xl mx-auto leading-relaxed text-neutral-300 px-4">
               Experience the future of document interaction. Upload any PDF and engage in natural conversations, 
               extract insights, generate summaries, and unlock the full potential of your documents with cutting-edge AI.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-16">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mb-12 sm:mb-16">
               <button
                 onClick={() => setCurrentView('app')}
-                className="btn btn-primary btn-lg group"
+                className="btn btn-primary btn-lg group w-full sm:w-auto"
               >
                 <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
                 Start Free Trial
               </button>
-              <button className="btn btn-secondary btn-lg group">
+              <button className="btn btn-secondary btn-lg group w-full sm:w-auto">
                 <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h8m-9-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
@@ -297,39 +300,39 @@ const HomePage = ({ setCurrentView }) => {
               </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-2xl mx-auto">
-              <div className="flex items-center justify-center space-x-3">
-                <div className="w-8 h-8 bg-primary-500/20 rounded-full flex items-center justify-center">
-                  <svg className="w-4 h-4 text-primary-400" fill="currentColor" viewBox="0 0 20 20">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 max-w-2xl mx-auto">
+              <div className="flex items-center justify-center space-x-2 sm:space-x-3">
+                <div className="w-6 h-6 sm:w-8 sm:h-8 bg-primary-500/20 rounded-full flex items-center justify-center">
+                  <svg className="w-3 h-3 sm:w-4 sm:h-4 text-primary-400" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
                 </div>
-                <span className="text-body-small text-neutral-400">100% Free</span>
+                <span className="text-sm sm:text-base text-neutral-400">100% Free</span>
               </div>
-              <div className="flex items-center justify-center space-x-3">
-                <div className="w-8 h-8 bg-primary-500/20 rounded-full flex items-center justify-center">
-                  <svg className="w-4 h-4 text-primary-400" fill="currentColor" viewBox="0 0 20 20">
+              <div className="flex items-center justify-center space-x-2 sm:space-x-3">
+                <div className="w-6 h-6 sm:w-8 sm:h-8 bg-primary-500/20 rounded-full flex items-center justify-center">
+                  <svg className="w-3 h-3 sm:w-4 sm:h-4 text-primary-400" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
                   </svg>
                 </div>
-                <span className="text-body-small text-neutral-400">Secure & Private</span>
+                <span className="text-sm sm:text-base text-neutral-400">Secure & Private</span>
               </div>
-              <div className="flex items-center justify-center space-x-3">
-                <div className="w-8 h-8 bg-primary-500/20 rounded-full flex items-center justify-center">
-                  <svg className="w-4 h-4 text-primary-400" fill="currentColor" viewBox="0 0 20 20">
+              <div className="flex items-center justify-center space-x-2 sm:space-x-3">
+                <div className="w-6 h-6 sm:w-8 sm:h-8 bg-primary-500/20 rounded-full flex items-center justify-center">
+                  <svg className="w-3 h-3 sm:w-4 sm:h-4 text-primary-400" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
                   </svg>
                 </div>
-                <span className="text-body-small text-neutral-400">Unlimited Access</span>
+                <span className="text-sm sm:text-base text-neutral-400">Unlimited Access</span>
               </div>
             </div>
           </div>
 
           {/* Professional Feature Showcase */}
-          <div id="features" className={`grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto mb-20 transition-all duration-1000 delay-500 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+          <div id="features" className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-7xl mx-auto mb-16 sm:mb-20 transition-all duration-1000 delay-500 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
             <ProfessionalFeatureCard
               icon={
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6 sm:w-8 sm:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
               }
@@ -340,7 +343,7 @@ const HomePage = ({ setCurrentView }) => {
             />
             <ProfessionalFeatureCard
               icon={
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6 sm:w-8 sm:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                 </svg>
               }
@@ -351,7 +354,7 @@ const HomePage = ({ setCurrentView }) => {
             />
             <ProfessionalFeatureCard
               icon={
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6 sm:w-8 sm:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
                 </svg>
               }
@@ -363,25 +366,25 @@ const HomePage = ({ setCurrentView }) => {
           </div>
 
           {/* Professional Stats Section */}
-          <div className={`max-w-6xl mx-auto mb-20 transition-all duration-1000 delay-700 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+          <div className={`max-w-6xl mx-auto mb-16 sm:mb-20 transition-all duration-1000 delay-700 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
             <div className="card card-feature">
-              <div className="card-body">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+              <div className="card-body p-6 sm:p-8">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
                   <div className="text-center">
-                    <div className="text-heading-1 font-bold text-gradient mb-2">7+</div>
-                    <div className="text-body-small text-neutral-400">AI Models</div>
+                    <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-gradient mb-2">7+</div>
+                    <div className="text-xs sm:text-sm text-neutral-400">AI Models</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-heading-1 font-bold text-gradient mb-2">99.9%</div>
-                    <div className="text-body-small text-neutral-400">Accuracy</div>
+                    <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-gradient mb-2">99.9%</div>
+                    <div className="text-xs sm:text-sm text-neutral-400">Accuracy</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-heading-1 font-bold text-gradient mb-2">∞</div>
-                    <div className="text-body-small text-neutral-400">PDF Uploads</div>
+                    <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-gradient mb-2">∞</div>
+                    <div className="text-xs sm:text-sm text-neutral-400">PDF Uploads</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-heading-1 font-bold text-gradient mb-2">24/7</div>
-                    <div className="text-body-small text-neutral-400">Support</div>
+                    <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-gradient mb-2">24/7</div>
+                    <div className="text-xs sm:text-sm text-neutral-400">Support</div>
                   </div>
                 </div>
               </div>
@@ -390,16 +393,16 @@ const HomePage = ({ setCurrentView }) => {
 
           {/* Professional CTA Section */}
           <div className={`max-w-4xl mx-auto text-center transition-all duration-1000 delay-900 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-            <div className="card bg-gradient-primary p-12 rounded-3xl">
-              <h3 className="text-heading-2 font-bold text-white mb-4">
+            <div className="card bg-gradient-primary p-8 sm:p-12 rounded-2xl sm:rounded-3xl">
+              <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-3 sm:mb-4">
                 Ready to Transform Your PDFs?
               </h3>
-              <p className="text-body-large text-white/90 mb-8">
+              <p className="text-base sm:text-lg text-white/90 mb-6 sm:mb-8">
                 Join thousands of professionals who are already using ChatPDF to unlock the power of their documents.
               </p>
               <button
                 onClick={() => setCurrentView('app')}
-                className="btn btn-secondary btn-lg"
+                className="btn btn-secondary btn-lg w-full sm:w-auto"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -412,26 +415,26 @@ const HomePage = ({ setCurrentView }) => {
       </main>
 
       {/* Professional Footer */}
-      <footer className="relative z-10 section-sm border-t border-white/10">
-        <div className="container mx-auto">
+      <footer className="relative z-10 py-8 sm:py-12 border-t border-white/10">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between">
-            <div className="flex items-center space-x-4 mb-6 md:mb-0">
-              <div className="w-10 h-10 bg-gradient-primary rounded-xl flex items-center justify-center">
-                <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+            <div className="flex items-center space-x-3 sm:space-x-4 mb-4 sm:mb-6 md:mb-0">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-primary rounded-lg sm:rounded-xl flex items-center justify-center">
+                <svg className="w-4 h-4 sm:w-6 sm:h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 0v12h8V4H6z" clipRule="evenodd" />
                 </svg>
               </div>
               <div>
-                <h4 className="text-heading-5 font-bold text-white">ChatPDF</h4>
-                <p className="text-caption text-neutral-400">AI-Powered Document Intelligence</p>
+                <h4 className="text-base sm:text-lg font-bold text-white">ChatPDF</h4>
+                <p className="text-xs sm:text-sm text-neutral-400">AI-Powered Document Intelligence</p>
               </div>
             </div>
             
             <div className="text-center md:text-right">
-              <p className="text-body-small text-neutral-400 mb-2">
+              <p className="text-xs sm:text-sm text-neutral-400 mb-1 sm:mb-2">
                 Built with ❤️ for the future of document interaction
               </p>
-              <p className="text-caption text-neutral-500">
+              <p className="text-xs text-neutral-500">
                 © 2024 ChatPDF. All rights reserved.
               </p>
             </div>
