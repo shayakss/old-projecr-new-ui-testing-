@@ -708,10 +708,30 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
     }
   };
 
+  const updateSessionTitle = async (sessionId, content) => {
+    try {
+      // Generate a title from the first message (first 30 characters)
+      const title = content.length > 30 ? content.substring(0, 30) + '...' : content;
+      await apiClient.put(`/sessions/${sessionId}`, { title });
+      
+      // Update the session in the local state
+      setSessions(prev => prev.map(s => 
+        s.id === sessionId ? { ...s, title } : s
+      ));
+      
+      if (currentSession?.id === sessionId) {
+        setCurrentSession(prev => ({ ...prev, title }));
+      }
+    } catch (error) {
+      console.error('Error updating session title:', error);
+    }
+  };
+
   const sendMessage = async () => {
     if (!inputMessage.trim() || !currentSession || loading) return;
 
     const userMessage = createMessage('user', inputMessage, currentFeature);
+    const messageContent = inputMessage;
 
     setMessages(prev => [...prev, userMessage]);
     setInputMessage('');
@@ -720,7 +740,7 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
     try {
       const response = await apiClient.post(`/sessions/${currentSession.id}/messages`, {
         session_id: currentSession.id,
-        content: inputMessage,
+        content: messageContent,
         model: selectedModel,
         feature_type: currentFeature
       });
@@ -734,6 +754,11 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
           aiResponse?.content || 'Response received but content is missing.',
           currentFeature
         )]);
+      }
+
+      // Update session title if it's a new session (still has default title)
+      if (currentSession.title.startsWith('Chat ') && !currentSession.title.includes('...')) {
+        await updateSessionTitle(currentSession.id, messageContent);
       }
     } catch (error) {
       console.error('Error sending message:', error);
