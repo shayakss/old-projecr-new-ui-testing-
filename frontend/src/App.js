@@ -176,6 +176,33 @@ const App = () => {
   const [insightsOpen, setInsightsOpen] = useState(false);
   const [insights, setInsights] = useState(null);
 
+  const performSearch = async (query) => {
+    if (!query.trim()) return;
+
+    try {
+      const response = await apiClient.post('/search', {
+        query: query,
+        search_type: 'all',
+        limit: 20
+      });
+
+      setSearchResults(response.data.results || []);
+    } catch (error) {
+      console.error('Search error:', error);
+      setSearchResults([]);
+    }
+  };
+
+  const loadInsights = async () => {
+    try {
+      const response = await apiClient.get('/insights');
+      setInsights(response.data);
+    } catch (error) {
+      console.error('Insights error:', error);
+      setInsights(null);
+    }
+  };
+
   return (
     <div className="App">
       {currentView === 'home' && <HomePage setCurrentView={setCurrentView} />}
