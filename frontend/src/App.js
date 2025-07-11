@@ -170,6 +170,11 @@ const StatusIndicator = ({ status, text }) => {
 const App = () => {
   const [currentView, setCurrentView] = useState('home');
   const [currentFeature, setCurrentFeature] = useState('chat');
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [insightsOpen, setInsightsOpen] = useState(false);
+  const [insights, setInsights] = useState(null);
 
   return (
     <div className="App">
