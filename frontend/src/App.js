@@ -449,24 +449,24 @@ const HomePage = ({ setCurrentView }) => {
 const ProfessionalFeatureCard = ({ icon, title, description, gradient, isActive }) => {
   return (
     <div className={`card card-feature group cursor-pointer transition-all duration-500 ${isActive ? 'scale-105' : ''}`}>
-      <div className="card-body text-center relative">
-        <div className={`inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br ${gradient} rounded-2xl mb-8 text-white shadow-2xl group-hover:scale-110 transition-all duration-300 relative`}>
+      <div className="card-body text-center relative p-4 sm:p-6 md:p-8">
+        <div className={`inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br ${gradient} rounded-xl sm:rounded-2xl mb-4 sm:mb-6 md:mb-8 text-white shadow-2xl group-hover:scale-110 transition-all duration-300 relative`}>
           {icon}
-          <div className="absolute -top-2 -right-2 w-6 h-6 bg-primary-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity animate-pulse"></div>
+          <div className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 w-4 h-4 sm:w-6 sm:h-6 bg-primary-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity animate-pulse"></div>
         </div>
         
-        <h3 className="text-heading-4 mb-4 text-white font-semibold">
+        <h3 className="text-lg sm:text-xl md:text-2xl mb-3 sm:mb-4 text-white font-semibold">
           {title}
         </h3>
         
-        <p className="text-body text-neutral-400 leading-relaxed">
+        <p className="text-sm sm:text-base text-neutral-400 leading-relaxed">
           {description}
         </p>
         
-        <div className="mt-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="mt-4 sm:mt-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
           <div className="flex items-center space-x-2 text-primary-400">
-            <span className="text-body-small font-medium">Learn More</span>
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <span className="text-xs sm:text-sm font-medium">Learn More</span>
+            <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
           </div>
