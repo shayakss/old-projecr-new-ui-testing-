@@ -208,8 +208,8 @@ const HomePage = ({ setCurrentView }) => {
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat'
     }}>
-      {/* Professional Background Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/70 to-black/80"></div>
+      {/* Lighter Professional Background Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-black/50 via-black/40 to-black/50"></div>
       
       {/* Enhanced Background Elements */}
       <div className="absolute inset-0 bg-grid opacity-30"></div>
