@@ -629,7 +629,13 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
 
   const createNewSession = async () => {
     try {
-      const response = await apiClient.post('/sessions', { title: 'New Chat' });
+      const timestamp = new Date().toLocaleDateString('en-US', { 
+        month: 'short', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+      const response = await apiClient.post('/sessions', { title: `Chat ${timestamp}` });
       const newSession = response.data;
       setSessions(prev => [newSession, ...prev]);
       setCurrentSession(newSession);
