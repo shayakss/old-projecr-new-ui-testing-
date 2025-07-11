@@ -1139,6 +1139,59 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                     <span className="hidden sm:inline">{generatingQA ? 'Generating...' : 'Generate Questions'}</span>
                   </button>
                 )}
+
+                {/* Search Button */}
+                <button
+                  onClick={() => setSearchOpen(!searchOpen)}
+                  className="btn btn-ghost text-xs sm:text-sm px-2 sm:px-4 py-2"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                  <span className="hidden sm:inline">Search</span>
+                </button>
+
+                {/* Translation Dropdown */}
+                <div className="relative">
+                  <select
+                    value={selectedLanguage}
+                    onChange={(e) => translateContent(e.target.value)}
+                    className="bg-black/20 backdrop-blur-sm border border-white/20 rounded-lg px-2 sm:px-4 py-2 text-white text-xs sm:text-sm focus:outline-none focus:border-primary-500"
+                  >
+                    <option value="">🌐 Translate</option>
+                    <option value="spanish">Spanish</option>
+                    <option value="french">French</option>
+                    <option value="german">German</option>
+                    <option value="chinese">Chinese</option>
+                    <option value="japanese">Japanese</option>
+                    <option value="portuguese">Portuguese</option>
+                  </select>
+                </div>
+
+                {/* Export Dropdown */}
+                <div className="relative">
+                  <select
+                    value=""
+                    onChange={(e) => exportConversation(e.target.value)}
+                    className="bg-black/20 backdrop-blur-sm border border-white/20 rounded-lg px-2 sm:px-4 py-2 text-white text-xs sm:text-sm focus:outline-none focus:border-primary-500"
+                  >
+                    <option value="">📄 Export</option>
+                    <option value="txt">TXT</option>
+                    <option value="pdf">PDF</option>
+                    <option value="docx">DOCX</option>
+                  </select>
+                </div>
+
+                {/* Insights Button */}
+                <button
+                  onClick={() => setInsightsOpen(!insightsOpen)}
+                  className="btn btn-ghost text-xs sm:text-sm px-2 sm:px-4 py-2"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                  <span className="hidden sm:inline">Insights</span>
+                </button>
               </div>
             </div>
           </div>
