@@ -930,17 +930,17 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col relative z-10">
         {/* Enhanced Header */}
-        <div className="bg-gradient-to-r from-slate-900/95 to-purple-900/95 border-b border-white/10 backdrop-blur-sm">
-          <div className="card-header">
+        <div className="bg-gradient-to-r from-black/30 via-black/20 to-black/30 border-b border-white/10 backdrop-blur-sm">
+          <div className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-heading-2 text-white">
+                <h1 className="text-heading-3 text-white">
                   {getFeatureName(currentFeature)}
                 </h1>
                 {currentSession && (
-                  <p className="text-body-small text-neutral-400 mt-1">
+                  <p className="text-body-small text-neutral-300 mt-1">
                     {currentSession.pdf_filename ? `📄 ${currentSession.pdf_filename}` : 'No PDF uploaded'}
                   </p>
                 )}
@@ -951,10 +951,10 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
                 <select
                   value={selectedModel}
                   onChange={(e) => setSelectedModel(e.target.value)}
-                  className="form-input form-select w-48"
+                  className="bg-black/20 backdrop-blur-sm border border-white/20 rounded-lg px-4 py-2 text-white w-48 focus:outline-none focus:border-primary-500"
                 >
                   {models.map((model) => (
-                    <option key={model.id} value={model.id}>
+                    <option key={model.id} value={model.id} className="bg-black text-white">
                       {model.name} {model.free ? '(Free)' : ''}
                     </option>
                   ))}
