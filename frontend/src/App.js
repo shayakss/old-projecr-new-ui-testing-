@@ -576,9 +576,11 @@ const ChatInterface = ({ currentFeature, setCurrentFeature, setCurrentView }) =>
     try {
       setConnectionStatus('processing');
       const response = await apiClient.get('/sessions');
-      setSessions(response.data);
+      // Limit to 10 most recent sessions to avoid clutter
+      const limitedSessions = response.data.slice(0, 10);
+      setSessions(limitedSessions);
       setConnectionStatus('online');
-      if (response.data.length === 0) {
+      if (limitedSessions.length === 0) {
         await createNewSession();
       }
     } catch (error) {
