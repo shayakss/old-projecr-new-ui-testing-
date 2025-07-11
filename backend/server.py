@@ -643,6 +643,11 @@ class SendMessageRequest(BaseModel):
     model: str = "claude-3-opus-20240229"
     feature_type: str = "chat"
 
+class ResearchRequest(BaseModel):
+    session_id: str
+    research_type: str = "summary"  # 'summary', 'detailed_research'
+    model: str = "claude-3-opus-20240229"
+
 class CreateSessionRequest(BaseModel):
     title: str = "New Chat"
 
